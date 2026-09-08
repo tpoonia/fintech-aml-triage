@@ -9,3 +9,4 @@ models/*.pkl
 .DS_Store
 *.log
 !models/feature_columns.json
+data/*.db
