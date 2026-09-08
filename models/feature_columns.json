@@ -1,0 +1,22 @@
+[
+  "amount",
+  "log_amount",
+  "near_threshold",
+  "hour_of_day",
+  "is_weekend",
+  "is_cross_border",
+  "sender_high_risk_loc",
+  "receiver_high_risk_loc",
+  "ptype_ACH",
+  "ptype_Cash Deposit",
+  "ptype_Cash Withdrawal",
+  "ptype_Cheque",
+  "ptype_Credit card",
+  "ptype_Cross-border",
+  "sender_txn_count_24h",
+  "sender_total_amount_24h",
+  "sender_avg_amount_24h",
+  "sender_unique_receivers_24h",
+  "receiver_unique_senders_24h",
+  "amount_zscore_vs_sender_history"
+]
