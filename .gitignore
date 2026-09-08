@@ -10,3 +10,5 @@ models/*.pkl
 *.log
 !models/feature_columns.json
 data/*.db
+Claude outputs/
+*.zip

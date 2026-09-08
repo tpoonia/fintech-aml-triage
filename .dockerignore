@@ -1,0 +1,11 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+data/raw/*.csv
+data/processed/*.csv
+data/*.db
+notebooks/
+docs/
+reports/*.png
+README*.md
