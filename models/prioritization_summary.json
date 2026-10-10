@@ -1,0 +1,29 @@
+{
+  "stage": "Stage 4 - AML Alert Prioritization",
+  "input_file": "/Users/pooniatushar2000gmail.com/Desktop/AML_Alert_Triage_Engine_UPDATED/data/processed/aml_explained_alerts.csv",
+  "output_file": "/Users/pooniatushar2000gmail.com/Desktop/AML_Alert_Triage_Engine_UPDATED/data/processed/aml_prioritized_alerts.csv",
+  "total_alerts": 155927,
+  "average_risk_score": 38.1406,
+  "average_priority_score": 26.3582,
+  "priority_distribution": {
+    "P1": 0,
+    "P2": 245,
+    "P3": 10779,
+    "P4": 144903
+  },
+  "risk_level_distribution": {
+    "CRITICAL": 514,
+    "HIGH": 8144,
+    "MEDIUM": 26676,
+    "LOW": 120593
+  },
+  "priority_weights": {
+    "ml_risk_score": 0.6,
+    "amount_deviation": 0.1,
+    "recent_activity": 0.1,
+    "transaction_velocity": 0.1,
+    "cross_border": 0.05,
+    "counterparty_activity": 0.05
+  },
+  "note": "Project-level transparent heuristic; not a regulatory rule."
+}
