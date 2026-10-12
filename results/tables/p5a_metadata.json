@@ -1,0 +1,102 @@
+{
+  "experiment_id": "phase5a_pool",
+  "study_id": "p5a_v1",
+  "g3a": {
+    "verdict": "PASS",
+    "criteria": {
+      "a_size": true,
+      "b_coverage": true,
+      "c_prediction_diversity": true,
+      "d_no_dominance": true,
+      "e_clean_signal": true,
+      "f_feasible": true
+    },
+    "fail_conditions": {
+      "too_few_models": false,
+      "near_identical_predictions": false,
+      "mostly_identical_pairs": false,
+      "infeasible_compute": false
+    },
+    "qualified": 64,
+    "attempted_candidates": 64,
+    "median_between_structure_spearman": 0.23605201475201304,
+    "identical_pair_fraction": 0.004464285714285714,
+    "coverage": {
+      "features=top4": 32,
+      "features=next4": 16,
+      "features=pca4": 16,
+      "encoding=e3": 56,
+      "encoding=e2": 4,
+      "encoding=s5": 4,
+      "family=real_amplitudes": 36,
+      "family=efficient_su2": 28,
+      "reps=1": 28,
+      "reps=2": 36,
+      "readout=parity": 56,
+      "readout=mean_z": 8
+    },
+    "shares": {
+      "max_family_share": 0.5625,
+      "max_seed_share": 0.25,
+      "max_structure_share": 0.0625
+    },
+    "median_auprc": 0.2353937393974011
+  },
+  "context": {
+    "phase1_partition_row_ids_sha256": {
+      "vqc_train": "670882c4aac161f35b0d3375cb8950bef2de0c2b5a2127cfd90a257c2051dff1",
+      "vqc_val": "68e8f30d537794a7a92eb98b51bd2cf706291c1a66861134873942ef9de4a8e7"
+    },
+    "phase1_preprocessing_artifact_sha256": "ce78309f985b922f25870cf7aecfeffb213025ada2c0bbf95c9a0ecf6d795ecf",
+    "split_method": "stratified_group_random",
+    "partitions_read": [
+      "vqc_train",
+      "vqc_val"
+    ],
+    "vqc_val_rows": 28372,
+    "vqc_val_frauds": 47,
+    "vqc_train_rows": 127677,
+    "prevalence": 0.0016565628084026505,
+    "experiment_config_hash": "85638ce5aefea154e64cd0a14c75c24f36eae306764018a9a36f007d59560e8d",
+    "study_config_hash": "567f4545602873e2a0444e20d17d9304638c4964fcc5c6e699789e6eebbd9edd",
+    "anchor_artifact_file_sha256": "82cd4884c1c9ca35bf7b13fee7e9b49cc2fc8ab764675381a1f1b9463e6de50f",
+    "subsets": {
+      "0": {
+        "subset_id": "p5a-lpf4-s0",
+        "rows": 1065,
+        "frauds": 213,
+        "row_ids_sha256": "f8e2e88a1a248d9a3aeecef0aa5b7659988f3da0961c71130a7ec6ed79cdf1d9"
+      },
+      "1": {
+        "subset_id": "p5a-lpf4-s1",
+        "rows": 1065,
+        "frauds": 213,
+        "row_ids_sha256": "0dc5de7d9f464bde3fcd9e96f87716ec92aa5d9d13b995c494e440423bbd4cc9"
+      },
+      "2": {
+        "subset_id": "p5a-lpf4-s2",
+        "rows": 1065,
+        "frauds": 213,
+        "row_ids_sha256": "feccdfd00696839888728ccdaef2cfcaaad6a7acf3d5090cbaabd83e6c762933"
+      },
+      "3": {
+        "subset_id": "p5a-lpf4-s3",
+        "rows": 1065,
+        "frauds": 213,
+        "row_ids_sha256": "0a70e5458b6b3cfd7049acf523825412648a7487168b4e33a2e6742025c00382"
+      }
+    }
+  },
+  "software": {
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1"
+  },
+  "notes": {
+    "threshold": "per-model tau = max-F1 on clean vqc_val (optimistic on vqc_val)",
+    "exclusions": "no noise, mitigation, counterfactuals or controller; controller partitions not read (access phase phase5a)",
+    "runtime": "timing-dependent outputs are in p5a_runtime_projection.csv (measured; not byte-reproducible) and raw runtime.json"
+  }
+}

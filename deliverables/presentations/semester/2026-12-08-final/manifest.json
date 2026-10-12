@@ -1,0 +1,18 @@
+{
+  "id": "2026-12-08",
+  "date": "December 8, 2026",
+  "topic": "Final capstone defense",
+  "file": "Q-TRACE_2026-12-08_Final-Defense",
+  "retrospective": false,
+  "slides": 24,
+  "coreSlides": 18,
+  "backupSlides": 6,
+  "words": 1856,
+  "minutes": 13.26,
+  "speakers": {
+    "Mayank": 6.14,
+    "Tushar": 7.11
+  },
+  "split": "Mayank: slides 1–5, 10–11, 17–18 · Tushar: slides 6–9, 12–16",
+  "splitStatus": "proposed for roughly equal time; team to confirm"
+}

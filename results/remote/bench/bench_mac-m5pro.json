@@ -1,0 +1,614 @@
+{
+  "tag": "mac-m5pro",
+  "hardware": {
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.12.11",
+    "logical_cpus": 15,
+    "ram_gb": 24.0,
+    "cpu_model": "Apple M5 Pro",
+    "perf_cores": "5",
+    "efficiency_cores": "10",
+    "gpu": null,
+    "packages": {
+      "qiskit": "2.5.2",
+      "qiskit-aer": "0.17.2",
+      "qiskit-aer-gpu": null,
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "pandas": "3.0.6"
+    }
+  },
+  "aer_devices": [
+    "CPU"
+  ],
+  "model": "p5a-top4-e3-ra2-parity-s0",
+  "gate_plots": [
+    "g04",
+    "g14",
+    "g06"
+  ],
+  "factors": [
+    1,
+    3,
+    5
+  ],
+  "design_sha256": "331397d2eb607bbee93ca1e964f9782b071b492e0977876f00978c51e71890a3",
+  "exact": [
+    {
+      "rows": 2048,
+      "plot": "g04",
+      "variant": "cpu_production",
+      "seconds": 7.9206440830021165,
+      "ms_per_row_all_factors": 3.867501993653377,
+      "max_abs_dp_vs_reference": 0.0,
+      "fingerprint": {
+        "1": "a3e1106c6b1a770182435f69dae5681ba0f263535c1121123609c7f77cdacce1",
+        "3": "aaa8ca7d2c618ebf2952459f0ad1e563cec06aced764e0a20fb9bc4693e51379",
+        "5": "2f2fd3fc50eeceda96ad85b7b795ded5f7fdd48f9cb20433ac55ed0b5a69f3fc"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g04",
+      "variant": "cpu_default_chunk4096",
+      "seconds": 7.8354461250128224,
+      "ms_per_row_all_factors": 3.825901428228917,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "15",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "1",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g04",
+      "variant": "cpu_parallel_experiments",
+      "seconds": 2.2662080420413986,
+      "ms_per_row_all_factors": 1.1065468955280267,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "1",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "15",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g04",
+      "variant": "cpu_flat_default",
+      "seconds": 7.037865832971875,
+      "ms_per_row_all_factors": 3.436457926255798,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "15",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "1",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g04",
+      "variant": "cpu_flat_parallel_experiments",
+      "seconds": 1.5638920000055805,
+      "ms_per_row_all_factors": 0.7636191406277248,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "1",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "15",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g14",
+      "variant": "cpu_production",
+      "seconds": 7.901341457967646,
+      "ms_per_row_all_factors": 3.858076883773265,
+      "max_abs_dp_vs_reference": 0.0,
+      "fingerprint": {
+        "1": "4c2ae6d7a370770124968c044744a05944b36efee2ac9c634ef8c58fab0b2fb9",
+        "3": "7154a4ce64e307e8bd3971c976993d48577d269cb18c2619389224c105c207ae",
+        "5": "cf601fc54a08679bf5a23a335820ca9b1aec9c21fb7623b4f0c044c79aad4907"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g14",
+      "variant": "cpu_default_chunk4096",
+      "seconds": 7.869706833967939,
+      "ms_per_row_all_factors": 3.8426302900234077,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "15",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "1",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g14",
+      "variant": "cpu_parallel_experiments",
+      "seconds": 2.2007909580133855,
+      "ms_per_row_all_factors": 1.0746049599674734,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "1",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "15",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g14",
+      "variant": "cpu_flat_default",
+      "seconds": 7.041625000012573,
+      "ms_per_row_all_factors": 3.438293457037389,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "15",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "1",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g14",
+      "variant": "cpu_flat_parallel_experiments",
+      "seconds": 1.5840081250062212,
+      "ms_per_row_all_factors": 0.773441467288194,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "1",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "15",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g06",
+      "variant": "cpu_production",
+      "seconds": 7.867900500015821,
+      "ms_per_row_all_factors": 3.8417482910233502,
+      "max_abs_dp_vs_reference": 0.0,
+      "fingerprint": {
+        "1": "474e330a976c165417637343826b4b16036ebbbd5e3ca073800c6620e24754e1",
+        "3": "a72273274d20b327fb7ebaa7b1568095043ad4e3afaf215c5e60a26eea1c68ec",
+        "5": "3f2811b28e9da9d15d83c83489c4015e947156dfc1caf9c36fb1ccd00bd1d4ba"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g06",
+      "variant": "cpu_default_chunk4096",
+      "seconds": 7.845867209020071,
+      "ms_per_row_all_factors": 3.8309898481543314,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "15",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "1",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g06",
+      "variant": "cpu_parallel_experiments",
+      "seconds": 2.1932907919981517,
+      "ms_per_row_all_factors": 1.0709427695303475,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "1",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "15",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g06",
+      "variant": "cpu_flat_default",
+      "seconds": 7.022899415984284,
+      "ms_per_row_all_factors": 3.4291501054610762,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "15",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "1",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 2048,
+      "plot": "g06",
+      "variant": "cpu_flat_parallel_experiments",
+      "seconds": 1.5286944580147974,
+      "ms_per_row_all_factors": 0.7464328408275378,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "1",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "15",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g04",
+      "variant": "cpu_production",
+      "seconds": 32.13752229104284,
+      "ms_per_row_all_factors": 3.9230373890433157,
+      "max_abs_dp_vs_reference": 0.0,
+      "fingerprint": {
+        "1": "f316b540fbd29c8e60fff1a5c0f0d7520049e2809a5467de295e2eea193e7637",
+        "3": "95e91b89a74eb7f436057d7ae2b8f5072bbdcd4835d9e04b60b0552b1eb527c0",
+        "5": "1a321ad93e010c83edb2ca0e001351f43dadc53075a0f6e0719fd04f0a23c38e"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g04",
+      "variant": "cpu_default_chunk4096",
+      "seconds": 31.937383124954067,
+      "ms_per_row_all_factors": 3.8986063384953695,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "15",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "1",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g04",
+      "variant": "cpu_parallel_experiments",
+      "seconds": 8.739379958016798,
+      "ms_per_row_all_factors": 1.0668188425313474,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "1",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "15",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g04",
+      "variant": "cpu_flat_default",
+      "seconds": 28.5927381250076,
+      "ms_per_row_all_factors": 3.4903244781503417,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "15",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "1",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g04",
+      "variant": "cpu_flat_parallel_experiments",
+      "seconds": 6.319199541001581,
+      "ms_per_row_all_factors": 0.7713866627199195,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "1",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "15",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g14",
+      "variant": "cpu_production",
+      "seconds": 32.074817042041104,
+      "ms_per_row_all_factors": 3.9153829397022832,
+      "max_abs_dp_vs_reference": 0.0,
+      "fingerprint": {
+        "1": "61b287978d5bb639d53bcf814de8bcc5714e43e60b35a22fed0059adf8bab3f3",
+        "3": "e5f98c47251c6d10a3bcaa248d68b27a933fffe0a49354c5f594f5bb3c430b23",
+        "5": "9120699a986a79cb2ede87f38d9b2c07ce5c3aeb88ad97e1a9dca6781287a6a2"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g14",
+      "variant": "cpu_default_chunk4096",
+      "seconds": 32.028538750018924,
+      "ms_per_row_all_factors": 3.9097337341331695,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "15",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "1",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g14",
+      "variant": "cpu_parallel_experiments",
+      "seconds": 8.665273165970575,
+      "ms_per_row_all_factors": 1.0577726032678925,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "1",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "15",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g14",
+      "variant": "cpu_flat_default",
+      "seconds": 28.53805387497414,
+      "ms_per_row_all_factors": 3.483649154659929,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "15",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "1",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g14",
+      "variant": "cpu_flat_parallel_experiments",
+      "seconds": 6.252289374999236,
+      "ms_per_row_all_factors": 0.7632189178465865,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "1",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "15",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g06",
+      "variant": "cpu_production",
+      "seconds": 32.06595437496435,
+      "ms_per_row_all_factors": 3.9143010711626403,
+      "max_abs_dp_vs_reference": 0.0,
+      "fingerprint": {
+        "1": "277286b45dcdab53e8d927ee7bfe1e6314163a4a60c4a90d68316ced61cebc2d",
+        "3": "ed58eb9c3db70b09c0732eccd8b3dcf0416cbfe9b5940e92e88edf14dc56bfd3",
+        "5": "377dd66f04c0794d06a74480de690e2aad34e0d703d26b7bf94c060d25343400"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g06",
+      "variant": "cpu_default_chunk4096",
+      "seconds": 32.10846866603242,
+      "ms_per_row_all_factors": 3.919490803959036,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "15",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "1",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g06",
+      "variant": "cpu_parallel_experiments",
+      "seconds": 9.00073800003156,
+      "ms_per_row_all_factors": 1.0987229003944776,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "1",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "15",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g06",
+      "variant": "cpu_flat_default",
+      "seconds": 28.69790687499335,
+      "ms_per_row_all_factors": 3.5031624603263367,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "15",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "1",
+        "run_omp_enabled": "True"
+      }
+    },
+    {
+      "rows": 8192,
+      "plot": "g06",
+      "variant": "cpu_flat_parallel_experiments",
+      "seconds": 6.235219291993417,
+      "ms_per_row_all_factors": 0.7611351674796651,
+      "max_abs_dp_vs_reference": 0.0,
+      "gpu_memory_used_mb": null,
+      "aer_metadata": {
+        "batched_shots_optimization": "False",
+        "runtime_parameter_bind": "False",
+        "device": "CPU",
+        "method": "density_matrix",
+        "parallel_state_update": "1",
+        "num_bind_params": "1",
+        "run_parallel_experiments": "15",
+        "run_omp_enabled": "True"
+      }
+    }
+  ],
+  "finite_shot": [
+    {
+      "rows": 2048,
+      "draw_s": 0.014704582979902625,
+      "vectors_s": 0.0017806249670684338,
+      "metrics_s": 0.016117250022944063,
+      "total_per_replicate_context_s": 0.03260245796991512
+    },
+    {
+      "rows": 8192,
+      "draw_s": 0.043997208995278925,
+      "vectors_s": 0.003988417040091008,
+      "metrics_s": 0.01865333301248029,
+      "total_per_replicate_context_s": 0.06663895904785022
+    }
+  ],
+  "skipped": [
+    {
+      "variant": "cpu_runtime_bind",
+      "rows": 2048,
+      "reason": "IndexError('list index out of range')"
+    },
+    {
+      "variant": "gpu_default_chunk4096",
+      "reason": "GPU unavailable"
+    },
+    {
+      "variant": "gpu_flat_parallel_experiments",
+      "reason": "GPU unavailable"
+    },
+    {
+      "variant": "gpu_flat_batched_chunk4096",
+      "reason": "GPU unavailable"
+    },
+    {
+      "variant": "gpu_flat_batched_chunk32768",
+      "reason": "GPU unavailable"
+    }
+  ],
+  "peak_rss_mb": 2046.859375,
+  "total_seconds": 408.57915562496055
+}

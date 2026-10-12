@@ -1,0 +1,86 @@
+# Q-TRACE .gitignore — see PROJECT_SPEC §12. Verified by tests/test_repo_hygiene.py.
+# Top-level directories are anchored with "/" so packages such as src/qtrace/data/ stay tracked.
+
+# --- Python / tooling caches ------------------------------------------------------
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.cache/
+*.egg-info/
+/build/
+/dist/
+
+# --- virtual environments ------------------------------------------------------------
+.venv/
+/venv/
+/env/
+
+# --- secrets, credentials, private/local configuration ------------------------------
+.env
+.env.*
+*.pem
+*.key
+*.p12
+kaggle.json
+.kaggle/
+qiskit-ibm.json
+.qiskit/
+**/credentials*
+**/secrets*
+/configs/local/
+*.local.yaml
+*.local.yml
+
+# --- datasets (never committed; identified by SHA-256 instead) -----------------------
+/data/
+*.csv
+*.zip
+*.gz
+*.parquet
+!/results/tables/*.csv
+!/tests/fixtures/*.csv
+
+# --- experiment outputs and caches ---------------------------------------------------
+/results/raw/
+/results/processed/
+/results/lockbox/
+# exported inputs for an optional remote (Colab) job; never committed
+/remote_staging/
+/artifacts/cache/
+/logs/
+*.log
+
+# --- large temporary simulator artifacts ---------------------------------------------
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.qpy
+*.pkl
+*.joblib
+/tmp/
+/scratch/
+
+# --- machine-specific / editor files -------------------------------------------------
+.DS_Store
+.idea/
+.vscode/
+*.swp
+.ipynb_checkpoints/
+
+# deliverables build tooling and LaTeX intermediates (sources and outputs are committed)
+/deliverables/presentations/build/node_modules/
+/deliverables/presentations/semester/_system/node_modules/
+/deliverables/**/_render/
+/deliverables/paper/main.pdf
+/deliverables/paper/main.log
+*.aux
+*.bbl
+*.blg
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz

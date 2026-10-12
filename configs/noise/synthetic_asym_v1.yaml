@@ -1,0 +1,9 @@
+# SYNTHETIC ASYMMETRIC READOUT STRESS-TEST PROFILES (PI, Phase 3B).
+# NOT hardware-derived and NOT IBM/device calibration measurements. O20 remains open.
+# Mean flip rate p as in the symmetric anchors; p01 = 0.5p (read 1 | prepared 0), p10 = 1.5p.
+set_id: synthetic_asym_v1
+description: "synthetic asymmetric readout stress-test profiles (not device calibration data)"
+profiles:
+  - {profile_id: ar-005, family: readout, severity: low, role: synthetic_stress, readout_p01: 0.0025, readout_p10: 0.0075}
+  - {profile_id: ar-020, family: readout, severity: medium, role: synthetic_stress, readout_p01: 0.010, readout_p10: 0.030}
+  - {profile_id: ar-050, family: readout, severity: high, role: synthetic_stress, readout_p01: 0.025, readout_p10: 0.075}

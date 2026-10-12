@@ -1,0 +1,56 @@
+# ULB / Kaggle European Credit Card Fraud [RR §Dataset recommendation].
+# The data file itself is gitignored; it is identified by the SHA-256 below and
+# verified before every pipeline run (E16).
+dataset_id: ulb_v1
+name: ULB / Kaggle European Credit Card Fraud (mlg-ulb/creditcardfraud)
+source_url: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+raw_path: data/raw/creditcard.csv
+expected_sha256: 76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89
+expected_rows: 284807
+expected_frauds: 492
+target_column: Class
+feature_columns: [Time, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14,
+                  V15, V16, V17, V18, V19, V20, V21, V22, V23, V24, V25, V26, V27, V28, Amount]
+provenance:
+  source: kaggle
+  kaggle_ref: mlg-ulb/creditcardfraud
+  kaggle_dataset_id: 310
+  title: Credit Card Fraud Detection
+  license: DbCL-1.0                 # from Kaggle dataset metadata at acquisition time
+  archive_name: creditcardfraud.zip
+  archive_sha256: a0360ce715992212e9ac72d8ccdca97f4be87dc1fdf2bed011358f7ab409a28a
+  archive_bytes: 69155672
+  file_name: creditcard.csv
+  file_bytes: 150828752
+  acquired_utc: "2026-10-07T00:02:16Z"
+  acquisition_tool: Kaggle CLI 2.2.4 (via uvx; credentials in ~/.kaggle, never in the repository)
+  acquisition_commands:
+    - uvx kaggle datasets download -d mlg-ulb/creditcardfraud -p data/raw
+    - uvx kaggle datasets metadata -p data/raw mlg-ulb/creditcardfraud
+    - unzip -o data/raw/creditcardfraud.zip -d data/raw
+deduplication:                      # PI policy, Phase 1 (applied after the duplicate audit)
+  before_split: true
+  duplicate_key: all_feature_columns
+  exact_duplicates: keep_lowest_row_id
+  conflicting_labels: exclude_group
+partitions:                         # O21 = option B; O23 = group-aware (PI, Phase 1)
+  method: stratified_group_random
+  stratify_on: target
+  group_key: features_except_time   # V1-V28 + Amount; such groups never cross partitions
+  group_stratum: any_fraud
+  fractions:
+    vqc_train: 0.45
+    vqc_val: 0.10
+    ctrl_train: 0.15
+    ctrl_val: 0.10
+    ctrl_test: 0.20
+preprocessing:
+  fit_on: vqc_train
+  fit_before_undersampling: true
+  amount_transform: log1p
+  time_scaling: robust
+  amount_scaling: robust
+  quantile_range: [25.0, 75.0]
+reduction:
+  method: null                      # O02: decided in Phase 3A
+  n_components: 4

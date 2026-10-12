@@ -1,0 +1,18 @@
+{
+  "id": "2026-11-24",
+  "date": "November 24, 2026",
+  "topic": "Final experimental findings",
+  "file": "Q-TRACE_2026-11-24_Final-Findings",
+  "retrospective": false,
+  "slides": 5,
+  "coreSlides": 5,
+  "backupSlides": 0,
+  "words": 609,
+  "minutes": 4.35,
+  "speakers": {
+    "Tushar": 2.46,
+    "Mayank": 1.89
+  },
+  "split": "Tushar: slides 1–3 · Mayank: slides 4–5",
+  "splitStatus": "proposed, alternating the opener across meetings; team to confirm"
+}

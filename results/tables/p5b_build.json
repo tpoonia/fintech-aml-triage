@@ -1,0 +1,60 @@
+{
+  "experiment_id": "phase5b_counterfactual",
+  "study_id": "p5b_v1",
+  "preregistration": "docs/PREREG_P5B.md (committed before any outcome)",
+  "dataset_content_sha256": {
+    "train": "5b1071777f5531b230af9bd48907db3ef7dececdfdcb581de68891ff82923796",
+    "val": "5b748b8d7b88d7ea8ba876dfbfcf9b5a9bec8da4117861fe685693c2247e76ec"
+  },
+  "rows": {
+    "train": 61440,
+    "val": 30720,
+    "test": 30720
+  },
+  "context": {
+    "experiment_config_hash": "a9ce8a95dd6fa655caa68e173c79049c37d955b8a3b79c73c83b98afd0b2ee4d",
+    "study_config_hash": "691fb4162d31f9db61df60911db6a43727bd9eec6da8b5766cb145c69415f21a",
+    "pool_manifest_sha256": "90f095623df4c47b6526bcdc9d93bab50051a62a4287516da792b9accca22f9d",
+    "probe_angles_sha256": "ad923b43d7f8a71f933e8d3acee0fcbea2c58dddabe957e516e525e5db3c737d",
+    "registry_deployable": [
+      "n_qubits",
+      "circuit_depth",
+      "n_1q_gates",
+      "n_2q_gates",
+      "ansatz",
+      "ansatz_reps",
+      "shots_per_circuit",
+      "probe_prediction_entropy",
+      "probe_shot_variance",
+      "clean_val_auprc_at_freeze",
+      "noisy_depth",
+      "trainable_parameters",
+      "readout_observable",
+      "encoding_family",
+      "feature_set",
+      "clean_val_auroc_at_freeze",
+      "clean_val_brier_at_freeze",
+      "clean_val_ece_at_freeze",
+      "frozen_tau",
+      "probe_readout_p01_mean",
+      "probe_readout_p10_mean",
+      "probe_readout_error_mean",
+      "probe_readout_asymmetry",
+      "probe_readout_se",
+      "probe_gate_abs_z_lambda1",
+      "probe_gate_abs_z_lambda3",
+      "probe_gate_contraction",
+      "probe_gate_slope",
+      "probe_gate_abs_slope",
+      "probe_gate_shot_variance"
+    ]
+  },
+  "software": {
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1",
+    "pandas": "3.0.6"
+  }
+}

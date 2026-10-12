@@ -1,0 +1,16 @@
+{
+  "name": "qtrace-semester-decks",
+  "private": true,
+  "description": "Builds the Q-TRACE semester presentation decks (pptxgenjs). node_modules is gitignored; run npm ci.",
+  "scripts": {
+    "build": "./build_all.sh"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "pptxgenjs": "^4.0.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-icons": "^5.7.0",
+    "sharp": "^0.35.5"
+  }
+}

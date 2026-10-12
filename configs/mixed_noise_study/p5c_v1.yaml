@@ -1,0 +1,73 @@
+# Phase 5C: PRE-REGISTERED continuous mixed-noise counterfactual study (docs/PREREG_P5C.md).
+# Committed and pushed BEFORE any Phase 5C outcome is generated. Frozen Phase 5A pool, the
+# Phase 5B structure split, panels, actions, cost order, probes and features are INHERITED
+# from base_study (p5b_v1) unchanged. ctrl_test outcomes are sealed in the lockbox.
+study_id: p5c_v1
+base_study: p5b_v1
+design:
+  anchors:                          # severity 0 (absent), 1/2/3 = [RR] low/medium/high (Phase 3B)
+    readout_mean: [0.0, 0.005, 0.020, 0.050]
+    depolarizing_p1: [0.0, 0.0005, 0.001, 0.003]
+    depolarizing_p2: [0.0, 0.005, 0.010, 0.020]
+    thermal_rate1_per_us: [0.0, 0.005, 0.01, 0.02]                       # 1/T1: T1 = inf, 200, 100, 50 us
+    thermal_rate2_per_us: [0.0, 0.004, 0.006666666666666667, 0.014285714285714285]  # 1/T2: inf, 250, 150, 70 us
+  severity_max: 3.0                 # never beyond the validated "high" anchor
+  asymmetry_max: 0.5                # p01 = r(1-a), p10 = r(1+a); a = 0.5 is the synthetic 0.5p/1.5p split
+  gate_plots: 16                    # maximin LHS in (s_dep, s_th) + one gate-free plot = 17 plots
+  gate_free_plot: true
+  readout_points_per_plot: 4        # sliced LHS in (s_ro, alpha): 68 noise points
+  lhs_candidates: 500
+  region_cut: 1.0                   # descriptive regions: severity >= 1 ("low" anchor) counts as present
+  seed_key: p5c-design
+  design_sha256: 331397d2eb607bbee93ca1e964f9782b071b492e0977876f00978c51e71890a3
+shot_budgets:
+  - {arm_id: s256, shots_per_circuit: 256, role: secondary}
+  - {arm_id: s1024, shots_per_circuit: 1024, role: primary}
+  - {arm_id: s4096, shots_per_circuit: 4096, role: secondary}
+replicates: 20
+outcome_metrics: [brier, ece, auprc, auroc, threshold]   # no ranking diagnostics (not 5C endpoints)
+preferred_relative_tolerance: 0.10  # p* = cheapest action with Brier <= (1 + eps) x min (as Phase 5B)
+tolerance_sensitivity: [0.05, 0.20]
+material_reliability_multiple: 2.0  # material reliability failure: Brier > (1 + 2 eps) x min
+material_overspend_shots_fraction: 1.0  # material overspend: >= 1 x S extra shots per inference
+rules:
+  threshold_quantiles: [0.025, 0.050, 0.075, 0.100, 0.125, 0.150, 0.175, 0.200, 0.225, 0.250, 0.275, 0.300, 0.325, 0.350, 0.375, 0.400, 0.425, 0.450, 0.475, 0.500, 0.525, 0.550, 0.575, 0.600, 0.625, 0.650, 0.675, 0.700, 0.725, 0.750, 0.775, 0.800, 0.825, 0.850, 0.875, 0.900, 0.925, 0.950, 0.975]
+  readout_feature: probe_readout_error_mean
+  gate_feature: probe_gate_contraction
+  group_descriptor: readout_observable
+label_bootstrap: 200
+cluster_bootstrap: 2000
+bootstrap_seed_key: p5c-bootstrap
+permutations: 2000
+permutation_seed_key: p5c-structure-permutation
+g3c:
+  fail_dominance_share: 0.90
+  fail_max_rule_failure: 0.05
+  fail_max_rule_material_failure: 0.05
+  fail_min_split_half_agreement: 0.60
+  pass_min_action_share: 0.10
+  pass_min_actions_useful: 2
+  pass_min_rule_failure: 0.15
+  pass_min_noise_only_failure: 0.10
+  pass_min_structure_noise_only_failure: 0.05
+  pass_min_structures_val: 2
+  pass_min_structures_train: 3
+  pass_min_failure_above_label_noise: 0.10
+  pass_min_material_failure: 0.10
+  pass_min_action_structures_train: 3
+  pass_min_action_structures_val: 2
+  pass_max_single_structure_failure_share: 0.60
+additional_prohibited_features:     # Phase 5C design truth: offline only (A15)
+  - noise_point_id
+  - gate_plot_id
+  - noise_region
+  - severity_readout
+  - severity_depolarizing
+  - severity_thermal
+  - readout_asymmetry_true
+  - readout_mean_true
+seed_key: p5c-shots
+validation_head_rows: 256
+validation_tol: 1.0e-10
+processed_dir: results/processed/phase5c
+lockbox_dir: results/lockbox/phase5c

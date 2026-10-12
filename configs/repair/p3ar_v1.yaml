@@ -1,0 +1,76 @@
+# Phase 3A-R: PRE-REGISTERED candidate matrix and rules (PI instruction, 2026-10-07).
+# Fixed and committed BEFORE any candidate is trained or cross-validated.
+# Any candidate added after the first run is EXPLORATORY and must be labelled as such.
+study_id: p3ar_v1
+base_vqc: vqc3a_top4_ra1          # P3A-original (immutable): features, 3A subset, ZZ map, COBYLA
+selection_partition: vqc_train     # candidate selection: vqc_train ONLY (no vqc_val, no ctrl_*)
+evaluation_partition: vqc_val      # one-time evaluation of the frozen selected model
+features: [V17, V14, V12, V10]     # not reopened in 3A-R
+control_encoding: e0
+encodings:
+  - enc_id: e0
+    role: control
+    clip: 3.0
+    half_width: 3.141592653589793  # [-pi, pi]: the P3A-original encoding
+    rationale: P3A-original control (ZZ single-qubit phase 2*theta spans 4*pi -> x and x+pi alias)
+  - enc_id: e1
+    role: candidate
+    clip: 3.0
+    half_width: 0.7853981633974483  # [-pi/4, pi/4]
+    rationale: >-
+      Aliasing repair only. ZZFeatureMap single-qubit phase 2*theta then spans [-pi/2, pi/2]
+      (injective; the two saturated extremes are antipodal, not aliased; hw = pi/2 would alias
+      them). Same clip as e0, so input collisions are unchanged by design.
+  - enc_id: e2
+    role: candidate
+    clip: 5.0
+    half_width: 0.7853981633974483
+    rationale: PI-specified wider clip (+-5 IQR) with the alias-safe [-pi/4, pi/4] range.
+  - enc_id: e3
+    role: candidate
+    clip: 15.0
+    half_width: 0.7853981633974483
+    rationale: >-
+      Added before any CV run from vqc_train clipping descriptives only: +-5 still clips 59% of
+      fraud values (80/213 frauds share an encoded vector); +-15 is the smallest tested clip
+      leaving <= 1% of frauds sharing (2/213). Trade-off: the legitimate bulk is compressed into
+      small angles (more near-identical states); CV adjudicates.
+candidates:                         # 10 configurations (cap 12); fixed order = matrix order
+  - {cand_id: e0-r1-par, encoding: e0, ansatz_reps: 1, observable: parity, purpose: "control: P3A-original architecture under CV"}
+  - {cand_id: e0-r2-par, encoding: e0, ansatz_reps: 2, observable: parity, purpose: "control: depth only"}
+  - {cand_id: e1-r1-par, encoding: e1, ansatz_reps: 1, observable: parity, purpose: "diagnostic: aliasing repair only"}
+  - {cand_id: e1-r2-par, encoding: e1, ansatz_reps: 2, observable: parity, purpose: "diagnostic: aliasing repair + depth"}
+  - {cand_id: e2-r1-par, encoding: e2, ansatz_reps: 1, observable: parity, purpose: "repair"}
+  - {cand_id: e2-r2-par, encoding: e2, ansatz_reps: 2, observable: parity, purpose: "repair + depth"}
+  - {cand_id: e3-r1-par, encoding: e3, ansatz_reps: 1, observable: parity, purpose: "repair"}
+  - {cand_id: e3-r2-par, encoding: e3, ansatz_reps: 2, observable: parity, purpose: "repair + depth"}
+  - {cand_id: e2-r1-z0, encoding: e2, ansatz_reps: 1, observable: z_qubit0, purpose: "limited observable ablation"}
+  - {cand_id: e3-r1-z0, encoding: e3, ansatz_reps: 1, observable: z_qubit0, purpose: "limited observable ablation"}
+cv:
+  n_folds: 5                        # group-aware (V1-V28+Amount groups), stratified (any-fraud groups)
+  grouping: features_except_time
+  stratify: any_fraud
+  seed_key: p3ar-folds              # split stream
+  training_legit_per_fraud: 4       # per fold: all fold-train frauds + 4 legit per fraud (undersample stream)
+  evaluation: held_out_fold_natural_prevalence
+restarts:
+  n_restarts: 3                     # identical seeds for every candidate (model stream)
+  seed_key: p3ar-restart
+  rule: lowest_final_training_bce   # per fold, keep the restart with the lowest training BCE
+optimizer:                          # fixed before execution; never raised per candidate
+  name: COBYLA
+  max_evaluations: 1000
+  rhobeg: 1.0
+  tol: 1.0e-4
+  init: uniform_minus_pi_pi
+selection:
+  primary: mean_cv_auprc            # mean over folds of the held-out-fold AUPRC (selected restarts)
+  tie_tolerance: 0.005              # candidates within 0.005 of the best mean CV AUPRC are tied
+  tie_breakers: [lower_cv_std, fewer_ansatz_reps, fewer_trainable_parameters, matrix_order]
+  eligibility:                      # computed mechanically from vqc_train encoding diagnostics
+    - single_qubit_phase_injective          # half_width < pi/2 (removes the 3A ZZ aliasing)
+    - fewer_shared_fraud_vectors_than_control  # strictly fewer frauds sharing an encoded vector than e0
+final_training: base_3a_subset_restarts_lowest_bce   # retrain on the fixed 3A subset (1,065 rows), same restarts
+collision_probe_legit_sample: 3000
+collision_probe_min_input_separation_iqr: 1.0
+collision_probe_fidelity: 0.999

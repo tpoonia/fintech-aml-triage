@@ -1,0 +1,16 @@
+# Phase 3A: clean 4-qubit VQC baseline + equal-input/equal-data classical comparison.
+experiment_id: phase3a_vqc
+protocol_version: "0.5"
+description: First reproducible clean 4-qubit fraud VQC (Oct 13 milestone)
+reporting: reported
+dataset: ulb_v1
+baseline: classical_v1
+vqc: vqc3a_top4_ra1
+seeds:
+  split: 1701
+  model: 2307
+  undersample: 3301
+  noise: 4501
+  shots: 9011
+  policy: 7717
+  bootstrap: 8123

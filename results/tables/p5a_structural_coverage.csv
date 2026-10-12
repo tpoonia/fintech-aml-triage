@@ -1,0 +1,14 @@
+axis,level,attempted,qualified
+features,next4,16,16
+features,pca4,16,16
+features,top4,32,32
+encoding,e2,4,4
+encoding,e3,56,56
+encoding,s5,4,4
+family,efficient_su2,28,28
+family,real_amplitudes,36,36
+reps,0,0,0
+reps,1,28,28
+reps,2,36,36
+readout,mean_z,8,8
+readout,parity,56,56

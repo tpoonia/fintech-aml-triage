@@ -1,0 +1,95 @@
+# Phase 4: PRE-REGISTERED mitigation characterization (docs/PREREG_P4.md).
+# Committed and pushed BEFORE the real experiment. Frozen P3A-R only; no Q-TRACE; no pool.
+study_id: p4_v1
+partition: vqc_val                         # only partition read (access phase "phase4"); ctrl_* locked
+model:                                     # frozen Phase 3A-R e3-r2-par (byte-identical)
+  model_id: p3a_r
+  kind: p3a_r
+  role: primary
+  artifact: artifacts/frozen_vqcs/vqc3ar_e3-r2-par.json
+  artifact_sha256: 1da6939547f9423edb47c30222e95b6346ec947aeed9ec912a5468281ae0855a
+  transpile_seed: 1154577741
+frozen_tau: 0.3770787869373289             # max-F1 on exact clean vqc_val scores (p3b_metadata.json); never re-tuned
+noise_sets: [anchors_rr_v1, synthetic_asym_v1]   # exact Phase 3B parameterization; nothing new, nothing stronger
+conditions:                                # registered subset, chosen before any mitigation result
+  - clean            # reference; every mitigation action is a negative control here
+  - ro-sym-high      # ranking-preserving calibration-distortion control (exact affine contraction)
+  - ar-020           # synthetic asymmetric readout stress test, medium (non-affine readout)
+  - ar-050           # synthetic asymmetric readout stress test, high
+  - dep-high         # gate noise (depolarizing)
+  - th-high          # thermal relaxation
+  - comb-medium      # combined
+  - comb-high        # combined; strongest Phase 3B finite-shot degradation
+actions:                                   # -> configs/mitigation/<id>.yaml
+  A0: none
+  A1: readout
+  A2: zne
+  A3: combined
+applicability:                             # a priori, from physics; every cell is executed (A12)
+  clean:       {A1: negative_control, A2: negative_control, A3: negative_control}
+  ro-sym-high: {A1: applicable,       A2: negative_control, A3: partial}
+  ar-020:      {A1: applicable,       A2: negative_control, A3: partial}
+  ar-050:      {A1: applicable,       A2: negative_control, A3: partial}
+  dep-high:    {A1: negative_control, A2: applicable,       A3: partial}
+  th-high:     {A1: negative_control, A2: applicable,       A3: partial}
+  comb-medium: {A1: partial,          A2: partial,          A3: applicable}
+  comb-high:   {A1: partial,          A2: partial,          A3: applicable}
+readout:
+  method: tensored                         # per-qubit 2x2 response from |0000> and |1111> calibration circuits
+  calibration_states: [all_zeros, all_ones]
+  shots_per_calibration_circuit: same_as_arm
+  calibration_frequency: per_context_replicate   # fresh calibration draw per (condition, arm, replicate)
+  amortization: per_vqc_val_batch          # 2 calibration circuits per batch of 28,372 logical inferences
+  inversion: tensored_per_qubit_inverse
+  projection: nearest_probability_l2       # Euclidean projection onto the simplex (Smolin-Gambetta-Smith)
+  min_assignment_determinant: 0.5          # 1 - p01_hat - p10_hat per qubit; below -> flagged unstable
+zne:
+  noise_factors: [1, 3, 5]                 # U (U^-1 U)^k, k = 0, 1, 2
+  folding: global_transpiled_unitary
+  inverse_translation: transpile_optimization_level_0   # U^-1 translated to {rz,sx,x,cx}; composite never re-transpiled
+  shot_allocation: equal_per_circuit
+  primary_extrapolator: linear_least_squares            # intercept of the LS line through (1,z1),(3,z3),(5,z5)
+  diagnostic_extrapolators: [richardson]   # quadratic through the 3 points; DIAGNOSTIC ONLY
+  clip_parity_to_physical_range: true      # z clipped to [-1, 1]; clipping rate reported
+  observable: parity
+shot_budgets:
+  - {arm_id: s1024, shots_per_circuit: 1024, role: primary}
+  - {arm_id: s4096, shots_per_circuit: 4096, role: secondary}
+replicates: 20
+resource_matched_multipliers: [3, 9]       # None with 3S (shot-matched; primary) and 9S (2q-exposure-matched; diagnostic)
+seed_key: p4-shots
+e08:                                       # sampler on FOLDED circuits vs direct Aer shots (E08 criteria of Phase 3B)
+  n_rows: 256
+  profiles: [comb-high]
+  shots: 1024
+  seed_key: p4-e08
+  residual_mean_abs_max: 0.25
+  residual_var_range: [0.7, 1.3]
+  chi2_p_min: 0.001
+  min_expected_count: 5.0
+  mean_score_se_multiple: 4.0
+  tvd_ratio_range: [0.9, 1.1]
+  ks_p_min: 0.001
+validation:
+  ideal_unitary_tol: 1.0e-10
+  phase3b_crosscheck_tol: 1.0e-9
+  negative_control_score_tol: 1.0e-10
+  negative_control_metric_tol: 1.0e-9
+  e08_noise_factors: [3, 5]
+  calibration_check_profiles: [comb-high, ar-050]
+  calibration_check_shots: 100000
+  calibration_chi2_p_min: 0.001
+primary_cost: total_shots_per_logical_inference
+top_k: [47, 100, 284]
+ece_bins: 10
+bootstrap_resamples: 1000
+bootstrap_scheme: two_stage_transactions_and_replicate
+g2:                                        # pilot-indicative minimum effects (not publication thresholds)
+  min_delta_auprc: 0.01
+  min_relative_brier: 0.10
+  min_delta_f1_at_tau: 0.05
+  min_delta_ece: 0.01
+  min_delta_precision_recall: 0.05
+  pass_min_auprc_cells: 2
+  confidence: 0.95
+representative_conditions: [ro-sym-high, ar-050, comb-high]

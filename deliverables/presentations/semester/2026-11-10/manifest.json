@@ -1,0 +1,18 @@
+{
+  "id": "2026-11-10",
+  "date": "November 10, 2026",
+  "topic": "Policy selection",
+  "file": "Q-TRACE_2026-11-10_Policy-Selection",
+  "retrospective": false,
+  "slides": 5,
+  "coreSlides": 5,
+  "backupSlides": 0,
+  "words": 624,
+  "minutes": 4.46,
+  "speakers": {
+    "Mayank": 2.41,
+    "Tushar": 2.04
+  },
+  "split": "Mayank: slides 1–3 · Tushar: slides 4–5",
+  "splitStatus": "proposed, alternating the opener across meetings; team to confirm"
+}

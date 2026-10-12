@@ -1,0 +1,22 @@
+# The [RR] VQC pool: 2 ansatze x 2 depths x 10 seeds = 40 frozen models, split
+# 6/2/2 per architecture. Pool size is configuration, not code (A06): the final
+# N is chosen after the Phase 3B runtime benchmark and power analysis.
+pool_id: pool_rr_v1
+n_qubits: 4
+feature_map:
+  type: zz_feature_map
+  reps: 1
+  entanglement: null             # unspecified in [RR]; decided in Phase 3
+architectures:
+  - {arch_id: ra-r1, ansatz: real_amplitudes, reps: 1, entanglement: linear}
+  - {arch_id: ra-r2, ansatz: real_amplitudes, reps: 2, entanglement: linear}
+  - {arch_id: esu2-r1, ansatz: efficient_su2, reps: 1, entanglement: null}
+  - {arch_id: esu2-r2, ansatz: efficient_su2, reps: 2, entanglement: null}
+seeds_per_architecture: 10
+meta_split_per_architecture: {meta_train: 6, meta_val: 2, meta_test: 2}
+training:
+  optimizer: COBYLA
+  maxiter: 100                   # provisional [RR] value; O04
+  loss: null                     # unspecified in [RR]
+observable: null                 # O01: chosen on clean validation performance only
+inclusion_min_clean_val_auprc: null   # O04: pre-registered before pool training

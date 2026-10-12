@@ -1,0 +1,65 @@
+{
+  "artifact_sha256": "9c7fc390aa258d19feb5ee791c047ad1e5782aa4322fb6c960f317ac9979100c",
+  "dataset_sha256": "76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89",
+  "encoder": {
+    "clip": 3.0,
+    "features": [
+      "V17",
+      "V14",
+      "V12",
+      "V10"
+    ],
+    "fit_partition": "vqc_train",
+    "fit_rows": 127677,
+    "fit_rows_sha256": "670882c4aac161f35b0d3375cb8950bef2de0c2b5a2127cfd90a257c2051dff1",
+    "iqr": [
+      0.88322595466216,
+      0.914612668122457,
+      1.022823722245249,
+      0.981232882954981
+    ],
+    "kind": "robust_symmetric",
+    "median": [
+      -0.0691570261776028,
+      0.050135742660792,
+      0.140519354562292,
+      -0.0961489872459979
+    ],
+    "quantile_range": [
+      25.0,
+      75.0
+    ]
+  },
+  "encoder_sha256": "a03d3efcfa6c4e6fd5ae308d1e567bf36b7561e97f047e2fb84384e088f4cf31",
+  "features": [
+    "V17",
+    "V14",
+    "V12",
+    "V10"
+  ],
+  "init_seed": 3726853110,
+  "preprocessing_sha256": "ce78309f985b922f25870cf7aecfeffb213025ada2c0bbf95c9a0ecf6d795ecf",
+  "readout": "p_fraud_eq_1_minus_z_over_2",
+  "software": {
+    "numpy": "2.5.3",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1"
+  },
+  "split_vqc_train_sha256": "670882c4aac161f35b0d3375cb8950bef2de0c2b5a2127cfd90a257c2051dff1",
+  "subset_rows_sha256": "4e04298df9bcb2974f418f7f826117272cbf4806441e07f30afd23b0b7ccc544",
+  "theta": [
+    -2.322004167913644,
+    2.9774318712414383,
+    2.703202170165085,
+    1.572932620431352,
+    -2.197328858478381,
+    -1.739446428800103,
+    -0.08067917045655788,
+    2.253461889109095
+  ],
+  "theta_sha256": "a30e2645aea797b2da2f564ab81ea03cb7e593f532a7443ffd4aaf80a7f29f88",
+  "vqc_config_sha256": "7f9ecdbb7e9e47a655c26711b4b5bffa9d9a7bb06eeb0b2a19a0332ecf84b0cc",
+  "vqc_id": "vqc3a_top4_ra1"
+}

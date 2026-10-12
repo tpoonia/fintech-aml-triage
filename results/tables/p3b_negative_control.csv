@@ -1,0 +1,7 @@
+model,condition,readout_p,contraction_factor,max_abs_affine_residual,abs_delta_auprc,abs_delta_auroc,one_minus_spearman,tolerances,passed
+p3a_r,ro-sym-low,0.005,0.96059601,4.441e-16,0.000e+00,0.000e+00,0.000e+00,"residual<=1e-10; |dAUPRC|,|dAUROC|<=1e-9; 1-rho<=1e-9",True
+p3a_r,ro-sym-medium,0.02,0.84934656,4.441e-16,0.000e+00,0.000e+00,0.000e+00,"residual<=1e-10; |dAUPRC|,|dAUROC|<=1e-9; 1-rho<=1e-9",True
+p3a_r,ro-sym-high,0.05,0.6561,4.441e-16,0.000e+00,0.000e+00,0.000e+00,"residual<=1e-10; |dAUPRC|,|dAUROC|<=1e-9; 1-rho<=1e-9",True
+p3a_original,ro-sym-low,0.005,0.96059601,2.220e-16,0.000e+00,0.000e+00,1.110e-16,"residual<=1e-10; |dAUPRC|,|dAUROC|<=1e-9; 1-rho<=1e-9",True
+p3a_original,ro-sym-medium,0.02,0.84934656,2.776e-16,0.000e+00,1.110e-16,1.315e-13,"residual<=1e-10; |dAUPRC|,|dAUROC|<=1e-9; 1-rho<=1e-9",True
+p3a_original,ro-sym-high,0.05,0.6561,2.776e-16,0.000e+00,0.000e+00,1.110e-16,"residual<=1e-10; |dAUPRC|,|dAUROC|<=1e-9; 1-rho<=1e-9",True

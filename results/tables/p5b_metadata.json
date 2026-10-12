@@ -1,0 +1,116 @@
+{
+  "study_id": "p5b_v1",
+  "g3b": {
+    "verdict": "FAIL",
+    "fail_conditions": {
+      "dominance": false,
+      "negligible_differences": false,
+      "replicate_noise": false,
+      "no_observable_signal": false,
+      "fixed_rule_sufficient": true
+    },
+    "pass_criteria": {
+      "multiple_useful_actions": true,
+      "universal_suboptimal": true,
+      "observable_signal": true,
+      "residual_complexity": false,
+      "model_heterogeneity": true
+    },
+    "metrics": {
+      "max_action_share": 0.34375,
+      "actions_with_share": 4,
+      "improvable_fraction": 0.84375,
+      "split_half_agreement": 1.0,
+      "best_universal_failure_train": 0.65625,
+      "best_universal_failure_val": 0.625,
+      "rule_failure_train": 0.0349609375,
+      "rule_failure_val": 0.0033203125,
+      "rule_gain_val": 0.6216796875,
+      "structure_association_mi": 0.07772689200724092,
+      "structure_association_p": 0.0009995002498750624,
+      "heterogeneous_cell_fraction": 1.0
+    }
+  },
+  "answers": {
+    "Q1_benefit_varies_across_models": {
+      "heterogeneous_cell_fraction": 1.0,
+      "median_icc": 0.8936479175371894,
+      "eta2_model_by_action": {
+        "A1": 0.091440069364902,
+        "A2": 0.00083595999575695,
+        "A3": 0.08716095095741773,
+        "A4": 0.11435198321051111
+      }
+    },
+    "Q2_context_vs_structure": {
+      "A1": {
+        "eta2_noise_context": 0.8250050597615451,
+        "eta2_model": 0.091440069364902,
+        "eta2_model_x_context": 0.0835548708735529
+      },
+      "A2": {
+        "eta2_noise_context": 0.9932924309326537,
+        "eta2_model": 0.00083595999575695,
+        "eta2_model_x_context": 0.0058716090715892596
+      },
+      "A3": {
+        "eta2_noise_context": 0.83783664650471,
+        "eta2_model": 0.08716095095741773,
+        "eta2_model_x_context": 0.07500240253787228
+      },
+      "A4": {
+        "eta2_noise_context": 0.8169316145098926,
+        "eta2_model": 0.11435198321051111,
+        "eta2_model_x_context": 0.06871640227959624
+      }
+    },
+    "Q3_shot_budget_changes_preferred_action": {
+      "fraction_model_condition_pairs_changed": 0.0
+    },
+    "Q4_extra_shots_preferred": {
+      "share_all_contexts": 0.0,
+      "share_among_intervention_contexts": 0.0
+    },
+    "Q5_no_intervention_preferred": {
+      "share": 0.15625
+    },
+    "Q6_residual_after_probes": {
+      "category_rule_failure_val": 0.0033203125,
+      "best_universal_failure_val": 0.625,
+      "rule_gain_val": 0.6216796875,
+      "structure_association_p": 0.0009995002498750624,
+      "structure_association_mi": 0.07772689200724092
+    }
+  },
+  "preferred_shares_train": {
+    "A0": 0.15625,
+    "A1": 0.34375,
+    "A2": 0.25,
+    "A3": 0.25,
+    "A4": 0.0
+  },
+  "preferred_shares_val": {
+    "A0": 0.125,
+    "A1": 0.375,
+    "A2": 0.25,
+    "A3": 0.25,
+    "A4": 0.0
+  },
+  "category_rule_train": {
+    "both|s1024": "A3",
+    "both|s4096": "A3",
+    "gate|s1024": "A2",
+    "gate|s4096": "A2",
+    "none|s1024": "A0",
+    "none|s4096": "A0",
+    "readout|s1024": "A1",
+    "readout|s4096": "A1",
+    "__fallback__": "A1"
+  },
+  "notes": {
+    "test_split": "sealed in the lockbox; not analysed in Phase 5B",
+    "preferred_action": "cost-aware Oracle (descriptive): cheapest action within 10% of the minimum context-mean Brier; never a controller feature",
+    "thresholds": "per-model tau frozen in Phase 5A on vqc_val (optimistic there); never tuned on ctrl_*, under noise or by action",
+    "synthetic_profiles": "ar-020/ar-050 are synthetic asymmetric readout stress-test profiles, not device calibration data (O20 open)"
+  }
+}

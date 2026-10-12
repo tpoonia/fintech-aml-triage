@@ -1,0 +1,18 @@
+{
+  "id": "2026-10-13",
+  "date": "October 13, 2026",
+  "topic": "Implementation progress",
+  "file": "Q-TRACE_2026-10-13_Implementation-Progress",
+  "retrospective": false,
+  "slides": 5,
+  "coreSlides": 5,
+  "backupSlides": 0,
+  "words": 602,
+  "minutes": 4.3,
+  "speakers": {
+    "Mayank": 2.23,
+    "Tushar": 2.07
+  },
+  "split": "Mayank: slides 1–3 · Tushar: slides 4–5",
+  "splitStatus": "same first-half/second-half pattern as the committed Oct 13 script; team to confirm"
+}

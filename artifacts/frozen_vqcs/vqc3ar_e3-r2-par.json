@@ -1,0 +1,72 @@
+{
+  "artifact_sha256": "1da6939547f9423edb47c30222e95b6346ec947aeed9ec912a5468281ae0855a",
+  "base_vqc_config_sha256": "7f9ecdbb7e9e47a655c26711b4b5bffa9d9a7bb06eeb0b2a19a0332ecf84b0cc",
+  "candidate": {
+    "ansatz_reps": 2,
+    "cand_id": "e3-r2-par",
+    "encoding": "e3",
+    "observable": "parity",
+    "purpose": "repair + depth"
+  },
+  "dataset_sha256": "76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89",
+  "encoder": {
+    "clip": 15.0,
+    "enc_id": "e3",
+    "features": [
+      "V17",
+      "V14",
+      "V12",
+      "V10"
+    ],
+    "fit_partition": "vqc_train",
+    "half_width": 0.7853981633974483,
+    "iqr": [
+      0.88322595466216,
+      0.914612668122457,
+      1.022823722245249,
+      0.981232882954981
+    ],
+    "median": [
+      -0.0691570261776028,
+      0.050135742660792,
+      0.140519354562292,
+      -0.0961489872459979
+    ]
+  },
+  "encoder_sha256": "f576fea6b7339dd42af62ea9b7c24f7ccafd7c999c0869ccbd3357732a11c2e0",
+  "kept_restart": 2,
+  "preprocessing_sha256": "ce78309f985b922f25870cf7aecfeffb213025ada2c0bbf95c9a0ecf6d795ecf",
+  "readout": "parity; p_fraud = (1 - z) / 2",
+  "restart_seeds": [
+    1442925776,
+    2144142082,
+    239448633
+  ],
+  "software": {
+    "numpy": "2.5.3",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1"
+  },
+  "split_vqc_train_sha256": "670882c4aac161f35b0d3375cb8950bef2de0c2b5a2127cfd90a257c2051dff1",
+  "study_config_sha256": "dc8ce46b636eb351ec2f58bf6910d5b15528a8fdebac0afe60be2c67513281b1",
+  "study_id": "p3ar_v1",
+  "subset_rows_sha256": "4e04298df9bcb2974f418f7f826117272cbf4806441e07f30afd23b0b7ccc544",
+  "theta": [
+    3.1513161000984673,
+    -1.4548832181697138,
+    1.4862231588483903,
+    1.917474904208687,
+    0.5551610973277638,
+    -1.2289238978970063,
+    1.9336548748324163,
+    -0.4419750990262976,
+    1.2604561897852797,
+    1.875967636786269,
+    1.9975962403025433,
+    -3.3846973580143946
+  ],
+  "theta_sha256": "71c507055d9015575ab36ba023c6ddc39c100aa3b476126df53817b00ad6b446",
+  "vqc_id": "vqc3ar_e3-r2-par"
+}

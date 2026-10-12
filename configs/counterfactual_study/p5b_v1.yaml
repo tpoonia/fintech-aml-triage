@@ -1,0 +1,137 @@
+# Phase 5B: PRE-REGISTERED cross-model counterfactual study (docs/PREREG_P5B.md).
+# Committed and pushed BEFORE any Phase 5B counterfactual outcome is generated.
+# Frozen Phase 5A pool only; no Q-TRACE training; ctrl_test outcomes sealed in the lockbox.
+study_id: p5b_v1
+pool_study: p5a_v1
+pool_manifest: artifacts/model_pool/p5a_pool_manifest.json
+pool_manifest_sha256: 90f095623df4c47b6526bcdc9d93bab50051a62a4287516da792b9accca22f9d
+mitigation_study: p4_v1            # validated readout/ZNE/combined implementations and settings
+conditions: [clean, ro-sym-high, ar-020, ar-050, dep-high, th-high, comb-medium, comb-high]
+shot_budgets:
+  - {arm_id: s1024, shots_per_circuit: 1024, role: primary}
+  - {arm_id: s4096, shots_per_circuit: 4096, role: secondary}
+replicates: 20
+actions:
+  A0: none                         # ordinary execution, S shots
+  A1: readout                      # Phase 4 tensored readout mitigation (calibration counts only)
+  A2: zne                          # Phase 4 global folding (1, 3, 5), linear LS
+  A3: combined                     # readout mitigation at each fold, then ZNE
+  A4: extra_shots                  # REAL action: ordinary execution with 3S shots (Phase 4's RM3)
+extra_shots_multiplier: 3
+diagnostic_vectors: [RM9]          # None with 9S shots: diagnostic comparator, never an action
+cost_order: [A0, A1, A4, A2, A3]   # shots/inference S < S+2S/N < 3S = 3S (A4 fewer CX-shots) < 3S+2S/N
+structure_split:                   # PRIMARY: by structure, all 4 seeds together (8 / 4 / 4)
+  train:
+    - top4-e3-ra1-parity
+    - top4-e3-esu2-parity
+    - next4-e3-ra2-parity
+    - next4-e3-esu2-parity
+    - pca4-e3-ra1-parity
+    - pca4-e3-ra2-parity
+    - top4-e2-ra2-parity
+    - top4-e3-esu1-mean_z
+  val:
+    - top4-e3-ra2-parity
+    - top4-s5-ra2-parity
+    - next4-e3-esu1-parity
+    - pca4-e3-esu1-parity
+  test:
+    - top4-e3-esu1-parity
+    - next4-e3-ra1-parity
+    - pca4-e3-esu2-parity
+    - top4-e3-ra2-mean_z
+partition_of: {train: ctrl_train, val: ctrl_val, test: ctrl_test}   # A04
+secondary_split_holdout_seed: 3    # DIAGNOSTIC only: within a partition, seed index 3 vs 0-2
+panel_kind: full_partition         # every row of the model's controller partition, row_id order
+gate_probe:                        # data-free: fixed synthetic bindings through the model's circuit
+  bindings: 32
+  angle_half_width: 0.7853981633974483
+  noise_factors: [1, 3]
+  seed_key: p5b-probe-bindings
+readout_probe_reused_by: [A1, A3]  # the readout probe IS the calibration; A1/A3 reuse its counts
+static_features:
+  - circuit_depth
+  - noisy_depth
+  - n_1q_gates
+  - n_2q_gates
+  - trainable_parameters
+  - ansatz
+  - ansatz_reps
+  - readout_observable
+  - encoding_family
+  - feature_set
+  - shots_per_circuit
+  - clean_val_auprc_at_freeze
+  - clean_val_auroc_at_freeze
+  - clean_val_brier_at_freeze
+  - clean_val_ece_at_freeze
+  - frozen_tau
+probe_features:
+  - probe_readout_p01_mean
+  - probe_readout_p10_mean
+  - probe_readout_error_mean
+  - probe_readout_asymmetry
+  - probe_readout_se
+  - probe_gate_abs_z_lambda1
+  - probe_gate_abs_z_lambda3
+  - probe_gate_contraction
+  - probe_gate_slope
+  - probe_gate_abs_slope
+  - probe_gate_shot_variance
+prohibited_features:               # A12 + A15: never controller inputs
+  - noise_family
+  - noise_profile_id
+  - noise_severity
+  - p1
+  - p2
+  - readout_p01
+  - readout_p10
+  - t1_us
+  - t2_us
+  - oracle_confusion_matrix
+  - model_id
+  - struct_id
+  - seed_index
+  - model_seed
+  - shot_seed
+  - transaction_label
+  - current_batch_accuracy
+  - current_batch_auprc
+  - current_batch_brier
+  - mitigated_scores
+  - zne_scaled_outputs
+  - realized_delta
+  - oracle_action
+  - preferred_action
+preferred_endpoint: brier          # cost-aware preference: cheapest action within 10% of min Brier
+preferred_relative_tolerance: 0.10
+secondary_endpoint: f1             # cheapest action within 0.05 of max F1@tau (secondary)
+secondary_tolerance: 0.05
+probe_categories:                  # a priori, for the DESCRIPTIVE Q6 analysis only
+  readout_error_min: 0.005
+  gate_contraction_max: 0.90
+heterogeneity:
+  alpha: 0.05
+  correction: holm
+  icc_min: 0.10
+  permutations: 2000
+  permutation_seed_key: p5b-structure-permutation
+g3b:
+  fail_dominance_share: 0.90
+  fail_min_improvable_fraction: 0.10
+  improvable_relative_brier: 0.10
+  fail_min_split_half_agreement: 0.60
+  fail_min_rule_gain: 0.05
+  fail_max_rule_failure: 0.05
+  pass_min_action_share: 0.10
+  pass_min_actions_useful: 2
+  pass_min_universal_failure: 0.25
+  pass_min_rule_gain: 0.20
+  pass_min_rule_failure: 0.15
+  pass_min_heterogeneous_cell_fraction: 0.25
+  pass_max_structure_association_p: 0.05
+seed_key: p5b-shots
+validation_head_rows: 256
+validation_tol: 1.0e-10
+processed_dir: results/processed/phase5b
+lockbox_dir: results/lockbox/phase5b

@@ -1,0 +1,16 @@
+# Phase 3B: controlled-noise characterization of frozen VQCs (study configs/noise_study/p3b_v1.yaml).
+experiment_id: phase3b_noise
+protocol_version: "0.8"
+description: Pre-registered controlled-noise characterization (exact + finite-shot pilot); no mitigation
+reporting: reported
+dataset: ulb_v1
+baseline: classical_v1
+vqc: vqc3a_top4_ra1
+seeds:
+  split: 1701
+  model: 2307
+  undersample: 3301
+  noise: 4501
+  shots: 9011
+  policy: 7717
+  bootstrap: 8123
