@@ -1,0 +1,4 @@
+model,inputs,n_train,auprc,auprc_ci_low,auprc_ci_high,auroc,delta_auprc_vs_clipped_angles,delta_ci_low,delta_ci_high
+logreg,"top-4 robust-scaled, unclipped",1065,0.620753,0.481426,0.784293,0.946191,0.005862,-0.051556,0.08156
+rf,"top-4 robust-scaled, unclipped",1065,0.625416,0.494999,0.773302,0.966221,0.006873,-0.010289,0.025432
+hgb,"top-4 robust-scaled, unclipped",1065,0.592155,0.456444,0.753396,0.960001,0.010366,-0.033002,0.064931

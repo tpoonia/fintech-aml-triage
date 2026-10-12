@@ -1,0 +1,17 @@
+struct_id,split,partition,models,features,encoding,ansatz,readout
+top4-e3-ra1-parity,train,ctrl_train,4,top4,e3,ra1,parity
+top4-e3-esu2-parity,train,ctrl_train,4,top4,e3,esu2,parity
+next4-e3-ra2-parity,train,ctrl_train,4,next4,e3,ra2,parity
+next4-e3-esu2-parity,train,ctrl_train,4,next4,e3,esu2,parity
+pca4-e3-ra1-parity,train,ctrl_train,4,pca4,e3,ra1,parity
+pca4-e3-ra2-parity,train,ctrl_train,4,pca4,e3,ra2,parity
+top4-e2-ra2-parity,train,ctrl_train,4,top4,e2,ra2,parity
+top4-e3-esu1-mean_z,train,ctrl_train,4,top4,e3,esu1,mean_z
+top4-e3-ra2-parity,val,ctrl_val,4,top4,e3,ra2,parity
+top4-s5-ra2-parity,val,ctrl_val,4,top4,s5,ra2,parity
+next4-e3-esu1-parity,val,ctrl_val,4,next4,e3,esu1,parity
+pca4-e3-esu1-parity,val,ctrl_val,4,pca4,e3,esu1,parity
+top4-e3-esu1-parity,test,ctrl_test,4,top4,e3,esu1,parity
+next4-e3-ra1-parity,test,ctrl_test,4,next4,e3,ra1,parity
+pca4-e3-esu2-parity,test,ctrl_test,4,pca4,e3,esu2,parity
+top4-e3-ra2-mean_z,test,ctrl_test,4,top4,e3,ra2,mean_z

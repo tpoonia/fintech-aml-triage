@@ -1,0 +1,17 @@
+# Phase 5B: cross-model counterfactual dataset (study configs/counterfactual_study/p5b_v1.yaml).
+experiment_id: phase5b_counterfactual
+protocol_version: "0.11"
+description: Pre-registered cross-model counterfactual action dataset and observable context; no Q-TRACE training
+reporting: reported
+dataset: ulb_v1
+baseline: classical_v1
+vqc: vqc3a_top4_ra1
+mitigation: [none, readout, zne, combined]
+seeds:
+  split: 1701
+  model: 2307
+  undersample: 3301
+  noise: 4501
+  shots: 9011
+  policy: 7717
+  bootstrap: 8123

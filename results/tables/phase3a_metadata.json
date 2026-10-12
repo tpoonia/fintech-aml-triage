@@ -1,0 +1,240 @@
+{
+  "baseline_config_sha256": "775a8f2c332b5bef66e7cf8c96e7846732e8217673b6d882c521182df60ce0ed",
+  "circuit": {
+    "ansatz": {
+      "ansatz": "real_amplitudes",
+      "arch_id": "ra-r1",
+      "entanglement": "linear",
+      "reps": 1
+    },
+    "feature_map": {
+      "entanglement": "full",
+      "reps": 1,
+      "type": "zz_feature_map"
+    },
+    "transpiled": {
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "data_parameters": 4,
+      "depth": 29,
+      "note": "rz is virtual (noiseless) on the target basis",
+      "one_qubit_gates": 54,
+      "one_qubit_gates_physical": 20,
+      "operation_counts": {
+        "cx": 15,
+        "rz": 34,
+        "sx": 20
+      },
+      "optimization_level": 1,
+      "qubits": 4,
+      "total_operations": 69,
+      "trainable_parameters": 8,
+      "transpile_seed": 1824407106,
+      "two_qubit_gates": 15
+    }
+  },
+  "dataset_id": "ulb_v1",
+  "dataset_sha256": "76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89",
+  "diagnostic_flags": {
+    "feature_map_aliases_on_encoding_range": true,
+    "majority_of_training_frauds_fully_clipped": true,
+    "training_bce_above_constant_predictor": true
+  },
+  "encoding": {
+    "artifact_sha256": "a03d3efcfa6c4e6fd5ae308d1e567bf36b7561e97f047e2fb84384e088f4cf31",
+    "clip": 3.0,
+    "clip_fractions": {
+      "training_subset": {
+        "V10": 0.152113,
+        "V12": 0.157746,
+        "V14": 0.169953,
+        "V17": 0.152113
+      },
+      "vqc_train": {
+        "V10": 0.014732,
+        "V12": 0.013197,
+        "V14": 0.013573,
+        "V17": 0.008287
+      },
+      "vqc_val": {
+        "V10": 0.014416,
+        "V12": 0.013041,
+        "V14": 0.013006,
+        "V17": 0.00786
+      }
+    },
+    "features": [
+      "V17",
+      "V14",
+      "V12",
+      "V10"
+    ],
+    "fit_partition": "vqc_train",
+    "fit_rows": 127677,
+    "fit_rows_sha256": "670882c4aac161f35b0d3375cb8950bef2de0c2b5a2127cfd90a257c2051dff1",
+    "formula": "theta = (pi / clip) * clip((x - median) / IQR, -clip, clip)",
+    "iqr": [
+      0.88322595466216,
+      0.914612668122457,
+      1.022823722245249,
+      0.981232882954981
+    ],
+    "kind": "robust_symmetric",
+    "median": [
+      -0.0691570261776028,
+      0.050135742660792,
+      0.140519354562292,
+      -0.0961489872459979
+    ],
+    "quantile_range": [
+      25.0,
+      75.0
+    ]
+  },
+  "evaluation": {
+    "calibration_note": "VQC trained at 20% fraud prevalence, evaluated at ~0.17%: raw probabilities are not real-world fraud probabilities",
+    "fraud": 47,
+    "partition": "vqc_val",
+    "prevalence": 0.00165656,
+    "rows": 28372
+  },
+  "experiment_config_sha256": "cef1f649712caa9a611b040ba3a35d64ec5e3d0c00393e896490d75ad78680d8",
+  "experiment_id": "phase3a_vqc",
+  "feature_selection": {
+    "f_classif_scores_selected": {
+      "V10": 6115.662,
+      "V12": 9098.33,
+      "V14": 12089.936,
+      "V17": 16320.194
+    },
+    "features": [
+      "V17",
+      "V14",
+      "V12",
+      "V10"
+    ],
+    "matches_expected": true,
+    "method": "f_classif on all of vqc_train, top 4 (O02, provisional for 3A)"
+  },
+  "frozen_vqc": {
+    "artifact_sha256": "9c7fc390aa258d19feb5ee791c047ad1e5782aa4322fb6c960f317ac9979100c",
+    "path": "artifacts/frozen_vqcs/vqc3a_top4_ra1.json",
+    "theta_sha256": "a30e2645aea797b2da2f564ab81ea03cb7e593f532a7443ffd4aaf80a7f29f88"
+  },
+  "phase1_verification": {
+    "partitions_read": [
+      "vqc_train",
+      "vqc_val"
+    ],
+    "phase1_partition_row_ids_sha256": {
+      "vqc_train": "670882c4aac161f35b0d3375cb8950bef2de0c2b5a2127cfd90a257c2051dff1",
+      "vqc_val": "68e8f30d537794a7a92eb98b51bd2cf706291c1a66861134873942ef9de4a8e7"
+    },
+    "phase1_preprocessing_artifact_sha256": "ce78309f985b922f25870cf7aecfeffb213025ada2c0bbf95c9a0ecf6d795ecf",
+    "split_method": "stratified_group_random"
+  },
+  "readout": {
+    "formula": "p_fraud = (1 - z) / 2",
+    "observable": "parity",
+    "orientation": "p_fraud_eq_1_minus_z_over_2"
+  },
+  "reproducibility": {
+    "aer_density_matrix_crosscheck": {
+      "agrees_within_1e-10": true,
+      "examples": 1024
+    },
+    "param_tolerance": 1e-10,
+    "replay_max_abs_score_diff": 0.0,
+    "retrain_max_abs_param_diff": 0.0
+  },
+  "sanity": {
+    "checks": {
+      "aer_noiseless_agreement": true,
+      "auprc_ci_low_above_threshold": true,
+      "auroc_ci_low_above_threshold": true,
+      "frozen_replay_deterministic": true,
+      "non_constant_predictions": true,
+      "objective_reduced": true,
+      "trains_reproducibly": true
+    },
+    "observed": {
+      "auprc_ci_low": 0.05425,
+      "auroc_ci_low": 0.673645,
+      "distinct_scores": 27465,
+      "relative_loss_reduction": 0.175435,
+      "vqc_val_prevalence": 0.00165656
+    },
+    "passed": true,
+    "pre_registered": {
+      "min_auprc_ci_low_over_prevalence": 10.0,
+      "min_auroc_ci_low": 0.5,
+      "min_distinct_scores": 100,
+      "min_relative_loss_reduction": 0.05
+    }
+  },
+  "software": {
+    "numpy": "2.5.3",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1"
+  },
+  "training": {
+    "bce_epsilon": 1e-07,
+    "class_weighting": "none",
+    "final_loss": 0.604218,
+    "init_seed": 3726853110,
+    "initial_loss": 0.732772,
+    "loss": "binary_cross_entropy",
+    "objective_evaluations": 277,
+    "optimizer": {
+      "init": "uniform_minus_pi_pi",
+      "max_evaluations": 600,
+      "name": "COBYLA",
+      "rhobeg": 1.0,
+      "tol": 0.0001
+    },
+    "optimizer_message": "Return from COBYLA because the trust region radius reaches its lower bound.",
+    "optimizer_status": 0,
+    "simulation": "exact_statevector",
+    "theta0": [
+      -2.182366,
+      2.933299,
+      0.487287,
+      0.053729,
+      -1.807271,
+      -2.87892,
+      0.554767,
+      2.409843
+    ]
+  },
+  "training_diagnostics": {
+    "constant_prevalence_bce": 0.500402,
+    "feature_map_alias_fidelity": {
+      "x0=-0.4 vs x0=-0.4+pi, partners=+pi": 1.0,
+      "x0=-0.4 vs x0=-0.4+pi, partners=-pi": 0.062334,
+      "x0=-0.4 vs x0=-0.4+pi, partners=0": 0.541026
+    },
+    "train_auprc": 0.744882,
+    "train_auroc": 0.822478,
+    "train_bce": 0.604218,
+    "train_distinct_fraud_angle_vectors": 91,
+    "train_frauds_all_features_clipped": 123,
+    "train_legit_all_features_clipped": 0,
+    "train_subset_prevalence": 0.2
+  },
+  "training_subset": {
+    "derived_seed": 8147872256403604278,
+    "n_fraud": 213,
+    "n_legit": 852,
+    "row_ids_sha256": "4e04298df9bcb2974f418f7f826117272cbf4806441e07f30afd23b0b7ccc544",
+    "rows": 1065,
+    "subset_id": "p3a-lpf4",
+    "undersample_master_seed": 3301
+  },
+  "vqc_config_sha256": "7f9ecdbb7e9e47a655c26711b4b5bffa9d9a7bb06eeb0b2a19a0332ecf84b0cc"
+}

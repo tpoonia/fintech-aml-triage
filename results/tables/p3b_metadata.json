@@ -1,0 +1,201 @@
+{
+  "experiment_id": "phase3b_noise",
+  "study_id": "p3b_v1",
+  "preregistration": "docs/PREREG_P3B.md (committed b5a14bb before the experiment)",
+  "status": "completed",
+  "g1": {
+    "verdict": "CONDITIONAL PASS",
+    "pass_qualifying_conditions": [],
+    "conditional_conditions": [
+      "dep-low",
+      "dep-medium",
+      "dep-high",
+      "th-low",
+      "th-medium",
+      "th-high",
+      "comb-low",
+      "comb-medium",
+      "comb-high",
+      "ar-005",
+      "ar-020",
+      "ar-050"
+    ],
+    "family_trends": {
+      "combined": {
+        "delta_auprc_non_increasing": false,
+        "spearman_non_increasing": true,
+        "trend": true
+      },
+      "depolarizing": {
+        "delta_auprc_non_increasing": true,
+        "spearman_non_increasing": true,
+        "trend": true
+      },
+      "synthetic_asymmetric_readout": {
+        "delta_auprc_non_increasing": false,
+        "spearman_non_increasing": true,
+        "trend": true
+      },
+      "thermal": {
+        "delta_auprc_non_increasing": false,
+        "spearman_non_increasing": true,
+        "trend": true
+      }
+    },
+    "excluded_negative_controls": [
+      "ro-sym-low",
+      "ro-sym-medium",
+      "ro-sym-high"
+    ]
+  },
+  "e08_passed": true,
+  "context": {
+    "phase1_partition_row_ids_sha256": {
+      "vqc_val": "68e8f30d537794a7a92eb98b51bd2cf706291c1a66861134873942ef9de4a8e7"
+    },
+    "phase1_preprocessing_artifact_sha256": "ce78309f985b922f25870cf7aecfeffb213025ada2c0bbf95c9a0ecf6d795ecf",
+    "split_method": "stratified_group_random",
+    "partitions_read": [
+      "vqc_val"
+    ],
+    "rows": 28372,
+    "frauds": 47,
+    "artifact_file_sha256_before": {
+      "p3a_r": "82cd4884c1c9ca35bf7b13fee7e9b49cc2fc8ab764675381a1f1b9463e6de50f",
+      "p3a_original": "dbddf934b929bbec226db60822e3d6d6c3f8fe110c7cee6af3b804e64b80d29f"
+    },
+    "artifact_file_sha256_after": {
+      "p3a_r": "82cd4884c1c9ca35bf7b13fee7e9b49cc2fc8ab764675381a1f1b9463e6de50f",
+      "p3a_original": "dbddf934b929bbec226db60822e3d6d6c3f8fe110c7cee6af3b804e64b80d29f"
+    },
+    "experiment_config_hash": "6691abceaab7e9b1884e5f0d5494f1aec2e2c8cf0ea007c637f866bd4ee59d46",
+    "study_config_hash": "7aecb282c2cb49e188690d33a31d4e235202683968cc624a3d1b668d8edaf2b3"
+  },
+  "models": {
+    "p3a_r": {
+      "role": "primary",
+      "artifact": "artifacts/frozen_vqcs/vqc3ar_e3-r2-par.json",
+      "artifact_content_sha256": "1da6939547f9423edb47c30222e95b6346ec947aeed9ec912a5468281ae0855a",
+      "artifact_file_sha256": "82cd4884c1c9ca35bf7b13fee7e9b49cc2fc8ab764675381a1f1b9463e6de50f",
+      "transpiled_circuit": {
+        "qubits": 4,
+        "depth": 35,
+        "one_qubit_gates": 70,
+        "one_qubit_gates_physical": 28,
+        "two_qubit_gates": 18,
+        "total_operations": 88,
+        "operation_counts": {
+          "cx": 18,
+          "rz": 42,
+          "sx": 28
+        },
+        "data_parameters": 4,
+        "trainable_parameters": 12,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "transpile_seed": 1154577741,
+        "note": "rz is virtual (noiseless) on the target basis"
+      },
+      "tau_frozen_clean": 0.3770787869373289,
+      "clean_crosscheck_max_abs_z_vs_exact_engine": "1.887e-15",
+      "clean_crosscheck_tolerance": 1e-10,
+      "negative_control_passed": true,
+      "label_counts": {
+        "ranking_preserving": 3,
+        "ranking_distortion": 12,
+        "calibration_distortion": 14,
+        "threshold_distortion": 4,
+        "discrimination_degradation": 0
+      }
+    },
+    "p3a_original": {
+      "role": "exploratory_contrast",
+      "artifact": "artifacts/frozen_vqcs/vqc3a_top4_ra1.json",
+      "artifact_content_sha256": "9c7fc390aa258d19feb5ee791c047ad1e5782aa4322fb6c960f317ac9979100c",
+      "artifact_file_sha256": "dbddf934b929bbec226db60822e3d6d6c3f8fe110c7cee6af3b804e64b80d29f",
+      "transpiled_circuit": {
+        "qubits": 4,
+        "depth": 29,
+        "one_qubit_gates": 54,
+        "one_qubit_gates_physical": 20,
+        "two_qubit_gates": 15,
+        "total_operations": 69,
+        "operation_counts": {
+          "cx": 15,
+          "rz": 34,
+          "sx": 20
+        },
+        "data_parameters": 4,
+        "trainable_parameters": 8,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "transpile_seed": 1824407106,
+        "note": "rz is virtual (noiseless) on the target basis"
+      },
+      "tau_frozen_clean": 0.8257216553718363,
+      "clean_crosscheck_max_abs_z_vs_exact_engine": "1.332e-15",
+      "clean_crosscheck_tolerance": 1e-10,
+      "negative_control_passed": true,
+      "label_counts": {
+        "ranking_preserving": 4,
+        "ranking_distortion": 11,
+        "calibration_distortion": 1,
+        "threshold_distortion": 15,
+        "discrimination_degradation": 0
+      }
+    }
+  },
+  "noise_conditions": [
+    "dep-low",
+    "dep-medium",
+    "dep-high",
+    "ro-sym-low",
+    "ro-sym-medium",
+    "ro-sym-high",
+    "th-low",
+    "th-medium",
+    "th-high",
+    "comb-low",
+    "comb-medium",
+    "comb-high",
+    "ar-005",
+    "ar-020",
+    "ar-050"
+  ],
+  "representative_conditions": [
+    "ro-sym-high",
+    "dep-high",
+    "th-high",
+    "comb-high",
+    "ar-050"
+  ],
+  "synthetic_profiles_note": "ar-005/ar-020/ar-050 are synthetic asymmetric readout stress-test profiles, not IBM or device calibration data (O20 open)",
+  "finite_shot_note": "O07 pilot only (1,024 shots x 20 replicates); does not freeze the final shot protocol",
+  "bootstrap": {
+    "resamples": 1000,
+    "scheme": "stratified, fixed class counts; shared Phase 2 vqc_val resamples; paired",
+    "confidence": 0.95
+  },
+  "seeds": {
+    "finite_shot": "shots stream, key (p3b-shots, condition, replicate)",
+    "e08": "shots stream, key (p3b-e08, profile, aer|multinomial)"
+  },
+  "exclusions": "no mitigation, no Q-TRACE controller, no retraining; controller partitions not read (access phase phase3b)",
+  "software": {
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1"
+  }
+}

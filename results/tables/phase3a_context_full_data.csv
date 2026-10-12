@@ -1,0 +1,7 @@
+model,representation,n_train,auprc,auprc_ci_low,auprc_ci_high,auroc,source
+logreg,full,127677,0.653842,0.515273,0.805915,0.967444,"phase2_classical_metrics.csv (full vqc_train, class-weighted)"
+rf,full,127677,0.805244,0.696314,0.908967,0.963256,"phase2_classical_metrics.csv (full vqc_train, class-weighted)"
+hgb,full,127677,0.790945,0.684714,0.893542,0.989634,"phase2_classical_metrics.csv (full vqc_train, class-weighted)"
+logreg,top4-fclassif,127677,0.619888,0.483317,0.777609,0.951054,"phase2_classical_metrics.csv (full vqc_train, class-weighted)"
+rf,top4-fclassif,127677,0.676046,0.53281,0.819365,0.910924,"phase2_classical_metrics.csv (full vqc_train, class-weighted)"
+hgb,top4-fclassif,127677,0.714496,0.576037,0.854666,0.946428,"phase2_classical_metrics.csv (full vqc_train, class-weighted)"

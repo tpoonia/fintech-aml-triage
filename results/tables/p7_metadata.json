@@ -1,0 +1,32 @@
+{
+  "stage": "Phase 7 validation comparison (NOT confirmatory; the sealed test decides)",
+  "validation_hypothesis_preview": {
+    "H1_simple_rule_near_oracle": true,
+    "H2_learning_adds_no_meaningful_value": true,
+    "H2_meaningful_by_comparator": {
+      "L_logistic": false,
+      "L_tree3": false,
+      "L_gbt": false,
+      "L_gbt_benefit": false
+    },
+    "H3_rule_beats_fixed_policies": true,
+    "rthr_material_failure": 0.020389093137254902,
+    "rthr_rel_brier_regret": 0.0029809489266306925,
+    "H4_rule_transfers_to_categorical_noise": true,
+    "rthr_material_failure_5b": 0.0943359375
+  },
+  "preferred_shares": {
+    "5c_val": {
+      "A3": 0.7129289215686274,
+      "A2": 0.22763480392156862,
+      "A1": 0.05238970588235294,
+      "A0": 0.0070465686274509805
+    },
+    "5b_val": {
+      "A1": 0.375,
+      "A3": 0.25,
+      "A2": 0.25,
+      "A0": 0.125
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "sealed": true,
+  "location": "results/lockbox/phase5c/mixed_test.parquet (gitignored)",
+  "rows": 326400,
+  "models": 16,
+  "content_sha256": "91b0a5b96412f56c6e2be6a54442f5df5f1ed286e20b60be25bcd9315c94b9c8",
+  "rule": "read only by the single post-freeze final evaluation (protocol \u00a717)"
+}

@@ -1,0 +1,602 @@
+{
+  "experiment_id": "phase4_mitigation",
+  "study_id": "p4_v1",
+  "preregistration": "docs/PREREG_P4.md (committed 9d377d0 before the experiment)",
+  "status": "completed",
+  "g2": {
+    "verdict": "CONDITIONAL PASS",
+    "computed_verdict": "CONDITIONAL PASS",
+    "qualifying_cells_with_rrb": [
+      {
+        "condition": "ro-sym-high",
+        "arm": "s1024",
+        "action": "A1",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "ro-sym-high",
+        "arm": "s1024",
+        "action": "A1",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "ro-sym-high",
+        "arm": "s1024",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "ro-sym-high",
+        "arm": "s1024",
+        "action": "A3",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "ro-sym-high",
+        "arm": "s4096",
+        "action": "A1",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "ro-sym-high",
+        "arm": "s4096",
+        "action": "A1",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "ro-sym-high",
+        "arm": "s4096",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "ro-sym-high",
+        "arm": "s4096",
+        "action": "A3",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "ar-020",
+        "arm": "s1024",
+        "action": "A1",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "ar-020",
+        "arm": "s1024",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "ar-020",
+        "arm": "s4096",
+        "action": "A1",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "ar-020",
+        "arm": "s4096",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "ar-050",
+        "arm": "s1024",
+        "action": "A1",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "ar-050",
+        "arm": "s1024",
+        "action": "A1",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "ar-050",
+        "arm": "s1024",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "ar-050",
+        "arm": "s4096",
+        "action": "A1",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "ar-050",
+        "arm": "s4096",
+        "action": "A1",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "ar-050",
+        "arm": "s4096",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "ar-050",
+        "arm": "s4096",
+        "action": "A3",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "dep-high",
+        "arm": "s1024",
+        "action": "A2",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "dep-high",
+        "arm": "s1024",
+        "action": "A2",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "dep-high",
+        "arm": "s1024",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "dep-high",
+        "arm": "s1024",
+        "action": "A3",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "dep-high",
+        "arm": "s4096",
+        "action": "A2",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "dep-high",
+        "arm": "s4096",
+        "action": "A2",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "dep-high",
+        "arm": "s4096",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "dep-high",
+        "arm": "s4096",
+        "action": "A3",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "th-high",
+        "arm": "s1024",
+        "action": "A2",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "th-high",
+        "arm": "s1024",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "th-high",
+        "arm": "s4096",
+        "action": "A2",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "th-high",
+        "arm": "s4096",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-medium",
+        "arm": "s1024",
+        "action": "A1",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-medium",
+        "arm": "s1024",
+        "action": "A1",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "comb-medium",
+        "arm": "s1024",
+        "action": "A2",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-medium",
+        "arm": "s1024",
+        "action": "A2",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "comb-medium",
+        "arm": "s1024",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-medium",
+        "arm": "s1024",
+        "action": "A3",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "comb-medium",
+        "arm": "s4096",
+        "action": "A1",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-medium",
+        "arm": "s4096",
+        "action": "A1",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "comb-medium",
+        "arm": "s4096",
+        "action": "A2",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-medium",
+        "arm": "s4096",
+        "action": "A2",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "comb-medium",
+        "arm": "s4096",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-medium",
+        "arm": "s4096",
+        "action": "A3",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "comb-high",
+        "arm": "s1024",
+        "action": "A1",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-high",
+        "arm": "s1024",
+        "action": "A1",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "comb-high",
+        "arm": "s1024",
+        "action": "A2",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-high",
+        "arm": "s1024",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-high",
+        "arm": "s1024",
+        "action": "A3",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "comb-high",
+        "arm": "s4096",
+        "action": "A1",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-high",
+        "arm": "s4096",
+        "action": "A1",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "comb-high",
+        "arm": "s4096",
+        "action": "A2",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-high",
+        "arm": "s4096",
+        "action": "A2",
+        "endpoint": "f1"
+      },
+      {
+        "condition": "comb-high",
+        "arm": "s4096",
+        "action": "A3",
+        "endpoint": "brier"
+      },
+      {
+        "condition": "comb-high",
+        "arm": "s4096",
+        "action": "A3",
+        "endpoint": "f1"
+      }
+    ],
+    "auprc_rrb_cells": [],
+    "fail_clause_i_no_rrb": false,
+    "fail_clause_ii_table_d_constant": false,
+    "clean_negative_control_flags": [],
+    "negative_control_cells_with_rrb": []
+  },
+  "hypotheses": {
+    "H4.1": {
+      "cells_with_brier_rrb": 6,
+      "of": 6,
+      "outcome": "supported"
+    },
+    "H4.2": {
+      "exact_negative_control": true,
+      "finite_shot_ci_contains_zero_both_arms": true,
+      "outcome": "supported"
+    },
+    "H4.3": {
+      "auprc_rrb_cells": [],
+      "outcome": "not supported",
+      "prior_expectation": "not supported against RM3 (PREREG_P4 \u00a714b)"
+    },
+    "H4.4": {
+      "table_d_varies": true,
+      "rrb_status_varies": true,
+      "range_of_mean_delta_across_contexts": {
+        "A1_auprc": 0.009923564302464351,
+        "A1_brier": 0.03693674300081699,
+        "A1_f1": 0.23591687294483143,
+        "A2_auprc": 0.02508304466646849,
+        "A2_brier": 0.008186542354681128,
+        "A2_f1": 0.08542912476712258,
+        "A3_auprc": 0.02565758978334357,
+        "A3_brier": 0.0583238110636661,
+        "A3_f1": 0.3429624760801937
+      },
+      "outcome": "supported"
+    },
+    "H4.5": {
+      "costly_cells_without_benefit_or_with_harm": [],
+      "outcome": "not supported"
+    }
+  },
+  "context": {
+    "phase1_partition_row_ids_sha256": {
+      "vqc_val": "68e8f30d537794a7a92eb98b51bd2cf706291c1a66861134873942ef9de4a8e7"
+    },
+    "phase1_preprocessing_artifact_sha256": "ce78309f985b922f25870cf7aecfeffb213025ada2c0bbf95c9a0ecf6d795ecf",
+    "split_method": "stratified_group_random",
+    "partitions_read": [
+      "vqc_val"
+    ],
+    "rows": 28372,
+    "frauds": 47,
+    "artifact_file_sha256_before": "82cd4884c1c9ca35bf7b13fee7e9b49cc2fc8ab764675381a1f1b9463e6de50f",
+    "experiment_config_hash": "bd03220c41da50800dad0fb7c2d67415179a33f98439ac211c847dfc695485ce",
+    "study_config_hash": "6d87a0ca8b3893fb1d2055a04bc33baa32b011a7345edc45bbe4a89b9e5b8c92",
+    "frozen_tau": 0.3770787869373289,
+    "artifact_file_sha256_after": "82cd4884c1c9ca35bf7b13fee7e9b49cc2fc8ab764675381a1f1b9463e6de50f"
+  },
+  "model": {
+    "model_id": "p3a_r",
+    "artifact": "artifacts/frozen_vqcs/vqc3ar_e3-r2-par.json",
+    "artifact_content_sha256": "1da6939547f9423edb47c30222e95b6346ec947aeed9ec912a5468281ae0855a",
+    "transpile_seed": 1154577741
+  },
+  "frozen_tau": 0.3770787869373289,
+  "conditions": [
+    "clean",
+    "ro-sym-high",
+    "ar-020",
+    "ar-050",
+    "dep-high",
+    "th-high",
+    "comb-medium",
+    "comb-high"
+  ],
+  "shot_budgets": [
+    {
+      "arm_id": "s1024",
+      "shots_per_circuit": 1024,
+      "role": "primary"
+    },
+    {
+      "arm_id": "s4096",
+      "shots_per_circuit": 4096,
+      "role": "secondary"
+    }
+  ],
+  "replicates": 20,
+  "circuits": {
+    "lambda_1": {
+      "cx": 18,
+      "noisy_1q": 28,
+      "rz": 42,
+      "depth": 35,
+      "noisy_depth": 21,
+      "qasm3_sha256": "1e30e2aab6f89e46d2a5ac904b73b27b91eb7d2ccf88057c4b1a17e59811a915"
+    },
+    "lambda_3": {
+      "cx": 54,
+      "noisy_1q": 84,
+      "rz": 238,
+      "depth": 133,
+      "noisy_depth": 63,
+      "qasm3_sha256": "b2c357e71dd5837d0f19bc35a0f8faa15d828f881544c8eae34e285f54216a70"
+    },
+    "lambda_5": {
+      "cx": 90,
+      "noisy_1q": 140,
+      "rz": 434,
+      "depth": 231,
+      "noisy_depth": 105,
+      "qasm3_sha256": "3e8fecc7ec613cc526b3deef98fbac0a4fbfdbccc84f88a5b607c41c69ce4f32"
+    },
+    "cal_all_zeros": {
+      "cx": 0,
+      "noisy_1q": 0,
+      "rz": 0,
+      "depth": 0,
+      "noisy_depth": 0,
+      "qasm3_sha256": "2d18d18f9834043539b95055091110c27af94ada54c65cb9f10baf08d9a51a7b"
+    },
+    "cal_all_ones": {
+      "cx": 0,
+      "noisy_1q": 4,
+      "rz": 0,
+      "depth": 1,
+      "noisy_depth": 1,
+      "qasm3_sha256": "08953529d158e227f983892f2280debe8712ecae87654de33d2e3ffadc50011b"
+    }
+  },
+  "exact_calibration_estimates": {
+    "clean": {
+      "p01": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "p10": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "ro-sym-high": {
+      "p01": [
+        0.05000000000000001,
+        0.05000000000000001,
+        0.05000000000000001,
+        0.05000000000000001
+      ],
+      "p10": [
+        0.050000000000000044,
+        0.050000000000000044,
+        0.050000000000000044,
+        0.050000000000000044
+      ]
+    },
+    "ar-020": {
+      "p01": [
+        0.010000000000000002,
+        0.010000000000000002,
+        0.010000000000000002,
+        0.010000000000000002
+      ],
+      "p10": [
+        0.030000000000000027,
+        0.030000000000000027,
+        0.030000000000000027,
+        0.030000000000000027
+      ]
+    },
+    "ar-050": {
+      "p01": [
+        0.024999999999999998,
+        0.024999999999999998,
+        0.024999999999999998,
+        0.024999999999999998
+      ],
+      "p10": [
+        0.07499999999999996,
+        0.07499999999999996,
+        0.07499999999999996,
+        0.07499999999999996
+      ]
+    },
+    "dep-high": {
+      "p01": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "p10": [
+        0.0015000000000000568,
+        0.0015000000000000568,
+        0.0015000000000000568,
+        0.0015000000000000568
+      ]
+    },
+    "th-high": {
+      "p01": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "p10": [
+        0.0006997550571566924,
+        0.0006997550571566924,
+        0.0006997550571566924,
+        0.0006997550571566924
+      ]
+    },
+    "comb-medium": {
+      "p01": [
+        0.020000000000000004,
+        0.020000000000000004,
+        0.020000000000000004,
+        0.020000000000000004
+      ],
+      "p10": [
+        0.02081577323625594,
+        0.02081577323625594,
+        0.02081577323625594,
+        0.02081577323625594
+      ]
+    },
+    "comb-high": {
+      "p01": [
+        0.05000000000000001,
+        0.05000000000000001,
+        0.05000000000000001,
+        0.05000000000000001
+      ],
+      "p10": [
+        0.051978834882113856,
+        0.051978834882113856,
+        0.051978834882113856,
+        0.051978834882113856
+      ]
+    }
+  },
+  "seeds": {
+    "finite_shot": "shots stream, key (p4-shots, condition, arm, replicate, component)",
+    "bootstrap": "shared Phase 2 vqc_val resamples + bootstrap key p4-replicate-draw",
+    "e08": "shots stream, key (p4-e08, profile, factor, aer|multinomial)"
+  },
+  "notes": {
+    "synthetic_profiles": "ar-020/ar-050 are synthetic asymmetric readout stress-test profiles, not IBM or device calibration data (O20 open)",
+    "oracle": "A1-oracle uses the true confusion matrix: diagnostic upper bound only",
+    "exclusions": "no Q-TRACE, no pool, no PEC, no retraining; one frozen threshold"
+  },
+  "config_hashes": {
+    "experiment": "bd03220c41da50800dad0fb7c2d67415179a33f98439ac211c847dfc695485ce",
+    "study": "6d87a0ca8b3893fb1d2055a04bc33baa32b011a7345edc45bbe4a89b9e5b8c92"
+  },
+  "software": {
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1"
+  }
+}

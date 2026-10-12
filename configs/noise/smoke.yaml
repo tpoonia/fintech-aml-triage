@@ -1,0 +1,13 @@
+# Phase 0 environment smoke test ONLY. Not a research condition.
+# Medium [RR] gate/thermal values plus an ASYMMETRIC readout pair to exercise A07 support.
+set_id: smoke
+description: "Smoke-test profile: verifies the Aer stack and noise plumbing; never used for results"
+profiles:
+  - profile_id: smoke-combined-asym
+    family: combined
+    role: smoke
+    p1: 0.001
+    p2: 0.010
+    readout_p01: 0.02
+    readout_p10: 0.05
+    thermal: {t1_us: 100, t2_us: 150}

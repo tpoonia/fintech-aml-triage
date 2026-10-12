@@ -1,0 +1,52 @@
+feature,class,group,availability,status,description
+circuit_depth,static,circuit,pre_execution,deployable,Post-transpile depth of the scale-1 circuit
+noisy_depth,static,circuit,pre_execution,deployable,Depth of the transpiled scale-1 circuit counting noisy gates only (rz excluded)
+n_1q_gates,static,circuit,pre_execution,deployable,Post-transpile count of noisy 1-qubit gates
+n_2q_gates,static,circuit,pre_execution,deployable,Post-transpile count of 2-qubit gates
+trainable_parameters,static,circuit,pre_execution,deployable,Number of trainable ansatz parameters
+ansatz,static,circuit,pre_execution,deployable,Ansatz family (categorical)
+ansatz_reps,static,circuit,pre_execution,deployable,Ansatz repetitions
+readout_observable,static,circuit,pre_execution,deployable,Readout observable (categorical: parity | mean_z)
+encoding_family,static,model,frozen_at_training,deployable,Angle-encoding family (categorical: e3 | e2 | s5)
+feature_set,static,model,frozen_at_training,deployable,Input representation (categorical: top4 | next4 | pca4)
+shots_per_circuit,static,execution,pre_execution,deployable,Shots per circuit for task execution
+clean_val_auprc_at_freeze,static,model,frozen_at_training,deployable,"Clean validation AUPRC measured once, when the model was frozen"
+clean_val_auroc_at_freeze,static,model,frozen_at_training,deployable,Clean vqc_val AUROC measured once at freeze
+clean_val_brier_at_freeze,static,model,frozen_at_training,deployable,Clean vqc_val Brier score measured once at freeze
+clean_val_ece_at_freeze,static,model,frozen_at_training,deployable,Clean vqc_val ECE measured once at freeze
+frozen_tau,static,model,frozen_at_training,deployable,Frozen decision threshold (max-F1 on clean vqc_val at freeze)
+probe_readout_p01_mean,probe,probe,probe,deployable,"Mean over qubits of P(read 1 | prepared 0), estimated from the |0000> calibration circuit (S shots)"
+probe_readout_p10_mean,probe,probe,probe,deployable,"Mean over qubits of P(read 0 | prepared 1), estimated from the |1111> calibration circuit (S shots)"
+probe_readout_error_mean,probe,probe,probe,deployable,Mean of the two estimates above
+probe_readout_asymmetry,probe,probe,probe,deployable,probe_readout_p10_mean - probe_readout_p01_mean
+probe_readout_se,probe,probe,probe,deployable,Binomial standard error of probe_readout_error_mean
+probe_gate_abs_z_lambda1,probe,probe,probe,deployable,Mean |<O>| of the model circuit on the fixed synthetic probe bindings at scale 1 (S shots each)
+probe_gate_abs_z_lambda3,probe,probe,probe,deployable,Same at global-fold scale 3
+probe_gate_contraction,probe,probe,probe,deployable,probe_gate_abs_z_lambda3 / probe_gate_abs_z_lambda1
+probe_gate_slope,probe,probe,probe,deployable,Mean over probe bindings of (<O>_3 - <O>_1) / 2
+probe_gate_abs_slope,probe,probe,probe,deployable,Mean over probe bindings of |<O>_3 - <O>_1| / 2
+probe_gate_shot_variance,probe,probe,probe,deployable,Mean estimated shot variance (1 - <O>_1^2)/S over probe bindings
+noise_family,PROHIBITED,identifier,offline,offline_only,Simulation noise-family label ([RR] example YAML lists it as a context feature)
+noise_profile_id,PROHIBITED,identifier,offline,offline_only,Noise profile identifier
+noise_severity,PROHIBITED,identifier,offline,offline_only,Simulation severity label
+p1,PROHIBITED,noise,offline,offline_only,1-qubit depolarizing parameter (true simulator value)
+p2,PROHIBITED,noise,offline,offline_only,2-qubit depolarizing parameter (true simulator value)
+readout_p01,PROHIBITED,noise,offline,offline_only,P(read 1 | prepared 0) (true simulator value)
+readout_p10,PROHIBITED,noise,offline,offline_only,P(read 0 | prepared 1) (true simulator value)
+t1_us,PROHIBITED,noise,offline,offline_only,Thermal relaxation time T1 (microseconds; true simulator value)
+t2_us,PROHIBITED,noise,offline,offline_only,Dephasing time T2 (microseconds; true simulator value)
+oracle_confusion_matrix,PROHIBITED,identifier,offline,offline_only,True simulator readout confusion matrix
+model_id,PROHIBITED,identifier,offline,offline_only,Frozen VQC identifier (grouping key for meta splits)
+struct_id,PROHIBITED,identifier,offline,offline_only,Phase 5A structure identifier (grouping key for the structure split)
+seed_index,PROHIBITED,identifier,offline,offline_only,Phase 5A training-seed index
+model_seed,PROHIBITED,identifier,offline,offline_only,VQC initialization seed
+shot_seed,PROHIBITED,identifier,offline,offline_only,Shot sampling seed
+transaction_label,PROHIBITED,label,offline,offline_only,Ground-truth fraud label (Class)
+current_batch_accuracy,PROHIBITED,label,offline,offline_only,Accuracy of the current batch from ground truth (the earlier deck's 'current accuracy')
+current_batch_auprc,PROHIBITED,label,offline,offline_only,AUPRC of the current batch from ground truth
+current_batch_brier,PROHIBITED,label,offline,offline_only,Brier score of the current batch from ground truth
+mitigated_scores,PROHIBITED,outcome,offline,offline_only,Scores produced by any mitigation action
+zne_scaled_outputs,PROHIBITED,outcome,offline,offline_only,Outputs of the ZNE action's noise-amplified (scale > 1) executions on the task batch (the fixed pre-action gate probe is separate: probe_gate_*)
+realized_delta,PROHIBITED,outcome,offline,offline_only,Realized counterfactual benefit of an action
+oracle_action,PROHIBITED,outcome,offline,offline_only,Action chosen by the evaluation-only oracle
+preferred_action,PROHIBITED,outcome,offline,offline_only,Cost-aware best action computed from counterfactual outcomes

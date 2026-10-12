@@ -1,0 +1,26 @@
+# Printable documents (scripts, Q&A sheets, guides): Pagella text, Heros sans, 11 pt.
+mainfont: texgyrepagella
+mainfontoptions: [Extension=.otf, UprightFont=*-regular, BoldFont=*-bold, ItalicFont=*-italic, BoldItalicFont=*-bolditalic]
+sansfont: texgyreheros
+sansfontoptions: [Extension=.otf, UprightFont=*-regular, BoldFont=*-bold, ItalicFont=*-italic, BoldItalicFont=*-bolditalic]
+mathfont: texgyrepagella-math.otf
+fontsize: 11pt
+geometry: "margin=0.9in"
+colorlinks: true
+linkcolor: "blue!50!black"
+urlcolor: "blue!50!black"
+header-includes:
+  - \usepackage{booktabs}
+  - \setlength{\tabcolsep}{4.5pt}
+  - \AtBeginDocument{\sloppy}
+  - \AtBeginDocument{\ifdefined\LTcapwidth\setlength{\LTcapwidth}{\textwidth}\fi}
+  - \usepackage{xcolor}
+  - \definecolor{qnavy}{HTML}{1B2A49}
+  - \usepackage{sectsty}
+  - \allsectionsfont{\color{qnavy}\sffamily}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \fancyfoot[L]{\footnotesize\sffamily Q-TRACE semester presentations}
+  - \fancyfoot[R]{\footnotesize\sffamily\thepage}
+  - \renewcommand{\headrulewidth}{0pt}

@@ -1,0 +1,5 @@
+enc_id,clip,half_width,pct_values_clipped_all,pct_values_clipped_fraud,frauds_all_features_clipped,frauds,distinct_fraud_vectors,frauds_sharing_vector,frauds_colliding_with_legit_vector,rows_sharing_vector_fraction,single_qubit_phase_injective,alias_probe_3a_fidelity,probe_rows,probe_material_near_collisions,probe_material_near_collisions_fraud_fraud,probe_material_near_collisions_fraud_legit,probe_material_exact_collisions,eligible_single_qubit_phase_injective,eligible_fewer_shared_fraud_vectors_than_control
+e0,3.0,3.141593,0.012447,0.75,123,213,91,123,123,0.045161,False,1.0,3213,7553,7430,123,7550,False,False
+e1,3.0,0.785398,0.012447,0.75,123,213,91,123,123,0.045161,True,,3213,7678,7554,124,7550,True,False
+e2,5.0,0.785398,0.003107,0.588028,80,213,134,80,80,0.044714,True,,3213,3366,3284,82,3202,True,True
+e3,15.0,0.785398,0.000192,0.096244,2,213,212,2,0,0.043955,True,,3213,1,1,0,1,True,True

@@ -1,0 +1,5 @@
+action_id: readout
+action: readout
+readout:
+  method: tensored               # E11; full 2^n calibration is a variant
+  calibration_shots_per_circuit: null   # Phase 4: equals the arm's per-circuit shots (mitigation_study/p4_v1)

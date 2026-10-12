@@ -1,0 +1,23 @@
+# The only experiment permitted in Phase 0: environment + noise smoke test.
+experiment_id: smoke_env
+protocol_version: "0.2"
+description: 4-qubit density-matrix smoke test of the pinned Qiskit/Aer stack with noise
+reporting: dev
+noise: smoke
+mitigation: [none]
+execution:
+  mode: finite_shot
+  simulator_method: density_matrix
+  shots_per_circuit: 4096
+  replicates: 1
+  basis_gates: [rz, sx, x, cx]
+  optimization_level: 1
+  probe: {enabled: false}
+seeds:                            # split/model/noise/shots/policy from [RR] example YAML
+  split: 1701
+  model: 2307
+  undersample: 3301
+  noise: 4501
+  shots: 9011
+  policy: 7717
+  bootstrap: 8123

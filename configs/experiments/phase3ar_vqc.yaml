@@ -1,0 +1,16 @@
+# Phase 3A-R: pre-registered VQC encoding/architecture repair (study configs/repair/p3ar_v1.yaml).
+experiment_id: phase3ar_vqc
+protocol_version: "0.7"
+description: Pre-registered VQC repair; selection on vqc_train CV only; one-time vqc_val evaluation
+reporting: reported
+dataset: ulb_v1
+baseline: classical_v1
+vqc: vqc3a_top4_ra1
+seeds:
+  split: 1701
+  model: 2307
+  undersample: 3301
+  noise: 4501
+  shots: 9011
+  policy: 7717
+  bootstrap: 8123
