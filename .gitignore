@@ -1,14 +1,6 @@
-__pycache__/
-*.pyc
 .venv/
-venv/
-data/raw/*.csv
-data/processed/*.csv
-models/*.json
-models/*.pkl
+__pycache__/
 .DS_Store
-*.log
-!models/feature_columns.json
-data/*.db
-Claude outputs/
-*.zip
+.Rhistory
+data/processed/aml_explained_alerts.csv
+data/processed/aml_prioritized_alerts.csv
