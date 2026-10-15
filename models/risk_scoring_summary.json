@@ -15,6 +15,6 @@
     "P4": 108
   },
   "average_ml_probability": 0.43886814776866,
-  "average_behavioral_risk": 0.24734359798016334,
+  "average_behavioral_risk": 0.2473435979801634,
   "output_file": "/Users/pooniatushar2000gmail.com/Desktop/AML_Alert_Triage_Engine_UPDATED/data/processed/aml_risk_scored_alerts.csv"
 }

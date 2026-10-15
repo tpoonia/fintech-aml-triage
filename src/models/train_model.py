@@ -9,7 +9,7 @@ import warnings
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.compose import ColumnTransformerpython
+from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
