@@ -5,12 +5,35 @@ An AML (Anti-Money Laundering) Alert Triage Engine is a specialized compliance s
 
 Synthetic end-to-end AML alert triage pipeline.
 
-## One-command run
+## Setup
 
 From the project root:
 
 ```bash
+python -m pip install -r requirements.txt
+```
+
+## Run the full pipeline
+
+This generates the synthetic data, trains both models, scores alerts, creates
+SHAP explanations, and builds the prioritized investigator queue:
+
+```bash
 python run_pipeline.py
+```
+
+## Launch the product
+
+Start the investigator dashboard:
+
+```bash
+streamlit run src/dashboard/app.py
+```
+
+In another terminal, start the API:
+
+```bash
+uvicorn src.api.app:app --reload
 ```
 
 ## Individual steps
@@ -21,6 +44,9 @@ python src/data/generate_transactions.py
 python src/data/generate_alerts.py
 python src/data/build_ml_dataset.py
 python src/models/train_model.py
+python src/scoring/risk_scoring.py
+python src/explainability/explain_alerts.py
+python src/prioritization/prioritize_alerts.py
 ```
 
 ## Outputs
@@ -33,5 +59,11 @@ python src/models/train_model.py
 - `models/aml_random_forest.joblib`
 - `models/test_predictions.csv`
 - `models/metrics.json`
+- `data/processed/aml_risk_scored_alerts.csv`
+- `data/processed/aml_explained_alerts.csv`
+- `data/processed/aml_prioritized_alerts.csv`
 
-The hidden `is_suspicious` ground-truth field is used only to synthesize investigation outcomes and is excluded from model training to reduce target leakage.
+The large explained and prioritized CSVs are generated locally by the pipeline
+and are excluded from Git. The hidden `is_suspicious` ground-truth field is used
+only to synthesize investigation outcomes and is excluded from model training
+to reduce target leakage.

@@ -7,6 +7,9 @@ steps = [
     'src/data/generate_alerts.py',
     'src/data/build_ml_dataset.py',
     'src/models/train_model.py',
+    'src/scoring/risk_scoring.py',
+    'src/explainability/explain_alerts.py',
+    'src/prioritization/prioritize_alerts.py',
 ]
 for step in steps:
     print('\n' + '='*70 + f'\nRUNNING {step}\n' + '='*70)

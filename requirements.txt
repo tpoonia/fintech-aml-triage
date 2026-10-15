@@ -2,3 +2,7 @@ numpy
 pandas
 scikit-learn
 joblib
+shap
+streamlit
+fastapi
+uvicorn
