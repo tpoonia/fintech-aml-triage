@@ -1,0 +1,45 @@
+# Phase 2 classical fraud sanity baselines (scikit-learn only; no XGBoost).
+# Purpose: learnable-signal check, metric validation, O02 evidence, Oct 13 benchmark.
+# Fixed, documented hyperparameters: no tuning beyond the vqc_val decision threshold.
+baseline_id: classical_v1
+fit_partition: vqc_train          # the only legal values (E26): controller partitions untouched
+eval_partition: vqc_val
+representations:
+  - {rep_id: full, kind: full}                                         # all 30 preprocessed features
+  - {rep_id: pca4, kind: pca, n_components: 4, standardize: false}     # unsupervised PCA-4
+  - {rep_id: pca4-std, kind: pca, n_components: 4, standardize: true}  # PCA-4 after standardization
+  - {rep_id: top4-fclassif, kind: select_k_best, n_components: 4, score_func: f_classif}
+models:
+  - model_id: logreg
+    kind: logistic_regression        # StandardScaler + L2 logistic regression (lbfgs)
+    params: {C: 1.0, max_iter: 5000}
+  - model_id: rf
+    kind: random_forest
+    params: {n_estimators: 300, max_features: sqrt, min_samples_leaf: 1}
+  - model_id: hgb
+    kind: hist_gradient_boosting
+    params: {max_iter: 200, learning_rate: 0.1, early_stopping: false}
+regimes:
+  - {regime_id: a-full, kind: full_partition, class_weight: balanced}
+  # Regime B: VQC-scale subsets from vqc_train (all training frauds + k legit per fraud).
+  # Candidates only; O17 (final size/ratio) stays open.
+  - {regime_id: b-lpf1, kind: subset, legit_per_fraud: 1, draws: 3}
+  - {regime_id: b-lpf4, kind: subset, legit_per_fraud: 4, draws: 3}
+  - {regime_id: b-lpf9, kind: subset, legit_per_fraud: 9, draws: 3}
+threshold:
+  criterion: max_f1                # chosen on vqc_val; ties -> highest threshold
+  tie_break: highest_threshold
+  rule: score_ge_threshold         # predict fraud iff score >= threshold
+  crossfit_folds: 2                # honesty check: threshold chosen on one vqc_val fold, applied to the other
+precision_targets: [0.8, 0.5]
+top_k: [100]
+bootstrap:
+  scheme: stratified_fixed_class_counts
+  n_resamples: 1000
+  confidence: 0.95
+  interval: percentile
+calibration:
+  n_bins: 10
+  strategy: uniform                # ECE primary: 10 equal-width bins, sklearn calibration_curve binning
+  sensitivity_strategy: quantile
+pr_recall_grid_points: 51

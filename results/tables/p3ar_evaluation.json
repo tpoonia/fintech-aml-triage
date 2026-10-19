@@ -1,0 +1,54 @@
+{
+  "bce_val": {
+    "hgb": 0.079037,
+    "logreg": 0.053487,
+    "p3a_original": 0.675224,
+    "p3a_r": 0.090089,
+    "rf": 0.058926
+  },
+  "evaluation": {
+    "fraud": 47,
+    "partition": "vqc_val",
+    "rows": 28372
+  },
+  "evaluation_note": "one-time vqc_val evaluation of the frozen Phase 3A-R selection",
+  "experiment_id": "phase3ar_vqc",
+  "frozen_artifact_sha256": "1da6939547f9423edb47c30222e95b6346ec947aeed9ec912a5468281ae0855a",
+  "p3a_original_artifact_sha256": "9c7fc390aa258d19feb5ee791c047ad1e5782aa4322fb6c960f317ac9979100c",
+  "phase1_verification": {
+    "partitions_read": [
+      "vqc_train",
+      "vqc_val"
+    ],
+    "phase1_partition_row_ids_sha256": {
+      "vqc_train": "670882c4aac161f35b0d3375cb8950bef2de0c2b5a2127cfd90a257c2051dff1",
+      "vqc_val": "68e8f30d537794a7a92eb98b51bd2cf706291c1a66861134873942ef9de4a8e7"
+    },
+    "phase1_preprocessing_artifact_sha256": "ce78309f985b922f25870cf7aecfeffb213025ada2c0bbf95c9a0ecf6d795ecf",
+    "split_method": "stratified_group_random"
+  },
+  "sanity": {
+    "checks": {
+      "auprc_ci_low_above_threshold": true,
+      "auroc_ci_low_above_threshold": true,
+      "non_constant_predictions": true,
+      "objective_reduced": true,
+      "trains_reproducibly": true
+    },
+    "observed": {
+      "auprc_ci_low": 0.362918,
+      "auroc_ci_low": 0.916121,
+      "distinct_scores": 27494,
+      "relative_loss_reduction": 0.587125,
+      "vqc_val_prevalence": 0.00165656
+    },
+    "passed": true,
+    "pre_registered": {
+      "min_auprc_ci_low_over_prevalence": 10.0,
+      "min_auroc_ci_low": 0.5,
+      "min_distinct_scores": 100,
+      "min_relative_loss_reduction": 0.05
+    }
+  },
+  "selected_vqc": "vqc3ar_e3-r2-par"
+}

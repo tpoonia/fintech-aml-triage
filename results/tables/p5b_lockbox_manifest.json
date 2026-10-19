@@ -1,0 +1,8 @@
+{
+  "sealed": true,
+  "location": "results/lockbox/phase5b/counterfactual_test.parquet (gitignored)",
+  "rows": 30720,
+  "models": 16,
+  "content_sha256": "c9ecc0911b0f1cfaf7e2622ccf7f1efddf0f3f492ae4baa6177714e84ea43fb1",
+  "rule": "read only by the single post-freeze evaluation script (protocol \u00a717)"
+}

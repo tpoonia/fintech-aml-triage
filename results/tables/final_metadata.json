@@ -1,0 +1,41 @@
+{
+  "protocol": "docs/PREREG_FINAL.md",
+  "unlock_record": {
+    "unlocked_utc": "2026-10-08T21:28:24+00:00",
+    "commit": "5e09c858bd7fc775296eb8c0d96b51985e15b32b",
+    "protocol": "docs/PREREG_FINAL.md",
+    "protocol_sha256": "1a070c2f72e0b4c43329a256682beb52287883ef9284fab572512f560a2b7954",
+    "purpose": "single registered final evaluation"
+  },
+  "hypotheses": {
+    "H1_simple_rule_near_oracle": true,
+    "H2_learning_adds_no_meaningful_value": true,
+    "H2_meaningful_by_comparator": {
+      "L_logistic": false,
+      "L_tree3": false,
+      "L_gbt": false,
+      "L_gbt_benefit": false
+    },
+    "H3_rule_beats_fixed_policies": true,
+    "rthr_material_failure": 0.020036764705882355,
+    "rthr_rel_brier_regret": -0.0002973850865534042,
+    "H4_rule_transfers_to_categorical_noise": true,
+    "rthr_material_failure_5b": 0.0876953125
+  },
+  "preferred_shares": {
+    "5c_test": {
+      "A3": 0.5995710784313726,
+      "A2": 0.34160539215686275,
+      "A1": 0.04442401960784314,
+      "A0": 0.014399509803921568
+    },
+    "5b_test": {
+      "A1": 0.3125,
+      "A2": 0.25390625,
+      "A3": 0.24609375,
+      "A0": 0.1875
+    }
+  },
+  "learned_fingerprints_verified_on_5c_val": true,
+  "sealed_content_verified": true
+}

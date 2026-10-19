@@ -1,0 +1,17 @@
+# Phase 4: mitigation characterization of the frozen P3A-R VQC (study configs/mitigation_study/p4_v1.yaml).
+experiment_id: phase4_mitigation
+protocol_version: "0.9"
+description: Pre-registered mitigation characterization (readout, ZNE, combined vs none and resource-matched none); no Q-TRACE
+reporting: reported
+dataset: ulb_v1
+baseline: classical_v1
+vqc: vqc3a_top4_ra1
+mitigation: [none, readout, zne, combined]
+seeds:
+  split: 1701
+  model: 2307
+  undersample: 3301
+  noise: 4501
+  shots: 9011
+  policy: 7717
+  bootstrap: 8123

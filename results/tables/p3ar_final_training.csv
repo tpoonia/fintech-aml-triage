@@ -1,0 +1,4 @@
+restart,init_seed,evaluations,status,message,initial_train_bce,final_train_bce,kept
+0,1442925776,1000,3,Return from COBYLA because the objective function has been evaluated MAXFUN times.,0.560953,0.271627,False
+1,2144142082,1000,3,Return from COBYLA because the objective function has been evaluated MAXFUN times.,0.66688,0.271403,False
+2,239448633,1000,3,Return from COBYLA because the objective function has been evaluated MAXFUN times.,0.637966,0.2634,True

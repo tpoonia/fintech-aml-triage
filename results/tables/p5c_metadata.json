@@ -1,0 +1,238 @@
+{
+  "study_id": "p5c_v1",
+  "g3c": {
+    "verdict": "FAIL",
+    "fail_conditions": {
+      "dominance": false,
+      "rule_sufficient": false,
+      "negligible_regret": true,
+      "replicate_noise": false
+    },
+    "pass_criteria": {
+      "P1_multiple_actions": true,
+      "P2_rule_not_near_perfect": false,
+      "P3_model_noise_interaction": false,
+      "P4_beyond_replicate_noise": false,
+      "P5_meaningful_gap": false,
+      "P6_sample_support": true
+    },
+    "metrics": {
+      "max_share_train": 0.6680453431372549,
+      "max_share_val": 0.7129289215686274,
+      "actions_useful_both": 2,
+      "useful_actions": "A2|A3",
+      "best_rule": "R_thr",
+      "best_rule_failure_val": 0.09644607843137255,
+      "best_rule_material_failure_val": 0.020389093137254902,
+      "best_rule_failure_train": 0.14973192401960783,
+      "best_universal": "A3",
+      "best_universal_failure_val": 0.28707107843137253,
+      "noise_only_failure_val": 0.05821078431372549,
+      "noise_only_failure_train": 0.11014093137254902,
+      "noise_only_structures_val": 3,
+      "noise_only_structures_train": 3,
+      "split_half_agreement_train": 0.9784007352941176,
+      "split_half_agreement_val": 0.9797794117647058,
+      "label_instability_val": 0.008855698529411765,
+      "label_instability_train": 0.009627757352941177,
+      "action_support_ok": true,
+      "best_rule_max_structure_failure_share_val": 0.3186149936467598
+    }
+  },
+  "rules": {
+    "R_cat": {
+      "s1024": {
+        "t_r": 0.005,
+        "t_g": 0.9,
+        "cells": {
+          "0": "A2",
+          "1": "A2",
+          "2": "A1",
+          "3": "A3"
+        }
+      },
+      "s256": {
+        "t_r": 0.005,
+        "t_g": 0.9,
+        "cells": {
+          "0": "A2",
+          "1": "A2",
+          "2": "A3",
+          "3": "A3"
+        }
+      },
+      "s4096": {
+        "t_r": 0.005,
+        "t_g": 0.9,
+        "cells": {
+          "0": "A1",
+          "1": "A2",
+          "2": "A1",
+          "3": "A3"
+        }
+      }
+    },
+    "R_thr": {
+      "s1024": {
+        "t_r": 0.003662109375,
+        "t_g": 0.9671104372395862,
+        "cells": {
+          "0": "A1",
+          "1": "A2",
+          "2": "A1",
+          "3": "A3"
+        }
+      },
+      "s256": {
+        "t_r": 0.00439453125,
+        "t_g": 0.9829579217471829,
+        "cells": {
+          "0": "A0",
+          "1": "A2",
+          "2": "A1",
+          "3": "A3"
+        }
+      },
+      "s4096": {
+        "t_r": 0.003692626953125,
+        "t_g": 0.97802564922058,
+        "cells": {
+          "0": "A1",
+          "1": "A2",
+          "2": "A1",
+          "3": "A3"
+        }
+      }
+    },
+    "R_obs": {
+      "mean_z|s1024": {
+        "t_r": 0.041149902343750044,
+        "t_g": 0.9752742534656395,
+        "cells": {
+          "0": "A0",
+          "1": "A2",
+          "2": "A1",
+          "3": "A3"
+        }
+      },
+      "parity|s1024": {
+        "t_r": 0.003662109375,
+        "t_g": 0.9656790802880684,
+        "cells": {
+          "0": "A1",
+          "1": "A2",
+          "2": "A1",
+          "3": "A3"
+        }
+      },
+      "mean_z|s256": {
+        "t_r": 0.04150390625,
+        "t_g": 0.9846292443622541,
+        "cells": {
+          "0": "A0",
+          "1": "A2",
+          "2": "A3",
+          "3": "A3"
+        }
+      },
+      "parity|s256": {
+        "t_r": 0.00390625,
+        "t_g": 0.9826442964414981,
+        "cells": {
+          "0": "A0",
+          "1": "A2",
+          "2": "A1",
+          "3": "A3"
+        }
+      },
+      "mean_z|s4096": {
+        "t_r": 0.040985107421875,
+        "t_g": 0.984955644251328,
+        "cells": {
+          "0": "A0",
+          "1": "A2",
+          "2": "A2",
+          "3": "A3"
+        }
+      },
+      "parity|s4096": {
+        "t_r": 0.003692626953125,
+        "t_g": 0.9768171673695344,
+        "cells": {
+          "0": "A1",
+          "1": "A2",
+          "2": "A1",
+          "3": "A3"
+        }
+      }
+    }
+  },
+  "best_rule_val": "R_thr",
+  "best_universal_train": "A3",
+  "preferred_shares": {
+    "train": {
+      "A0": 0.010723039215686275,
+      "A1": 0.048100490196078434,
+      "A2": 0.2731311274509804,
+      "A3": 0.6680453431372549,
+      "A4": 0.0
+    },
+    "val": {
+      "A0": 0.0070465686274509805,
+      "A1": 0.05238970588235294,
+      "A2": 0.22763480392156862,
+      "A3": 0.7129289215686274,
+      "A4": 0.0
+    }
+  },
+  "noise_only": {
+    "train": {
+      "overall": 0.11014093137254902,
+      "per_structure": {
+        "next4-e3-esu2-parity": 0.024509803921568627,
+        "next4-e3-ra2-parity": 0.029411764705882353,
+        "pca4-e3-ra1-parity": 0.024509803921568627,
+        "pca4-e3-ra2-parity": 0.030637254901960783,
+        "top4-e2-ra2-parity": 0.01715686274509804,
+        "top4-e3-esu1-mean_z": 0.5943627450980392,
+        "top4-e3-esu2-parity": 0.05024509803921569,
+        "top4-e3-ra1-parity": 0.11029411764705882
+      }
+    },
+    "val": {
+      "overall": 0.05821078431372549,
+      "per_structure": {
+        "next4-e3-esu1-parity": 0.05024509803921569,
+        "pca4-e3-esu1-parity": 0.09558823529411764,
+        "top4-e3-ra2-parity": 0.05759803921568627,
+        "top4-s5-ra2-parity": 0.029411764705882353
+      }
+    }
+  },
+  "stability": {
+    "train": {
+      "split_half_agreement": 0.9784007352941176,
+      "label_instability": 0.009627757352941177
+    },
+    "val": {
+      "split_half_agreement": 0.9797794117647058,
+      "label_instability": 0.008855698529411765
+    }
+  },
+  "structure_association": {
+    "train": {
+      "conditional_mi": 0.18693835107638357,
+      "p": 0.0004997501249375312
+    },
+    "val": {
+      "conditional_mi": 0.038422346002937535,
+      "p": 0.0004997501249375312
+    }
+  },
+  "notes": {
+    "test_split": "sealed in the lockbox; not analysed in Phase 5C",
+    "preferred_action": "cost-aware Oracle (descriptive): cheapest action within 10% of the minimum context-mean Brier",
+    "noise_only": "offline upper bound using the TRUE noise point; never a policy",
+    "design": "anchor-severity interpolation of the Phase 3B [RR] anchors; the readout asymmetry component is a synthetic stress-test assumption (O20)"
+  }
+}

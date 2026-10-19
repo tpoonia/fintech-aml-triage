@@ -1,0 +1,453 @@
+{
+  "per_model": {
+    "p5a-next4-e3-ra1-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.2212453270876722e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 3.3306690738754696e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.544196236747761e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-ra1-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 1.5543122344752192e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.6653345369377348e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.7751919645945264e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-ra1-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 1.2212453270876722e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.220446049250313e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.198030811863873e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-ra1-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 1.3322676295501878e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.5543122344752192e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.8228968601838886e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-esu2-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.3322676295501878e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.887379141862766e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.5301622736128024e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-esu2-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 9.992007221626409e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.6645352591003757e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.2565777291780904e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-esu2-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 1.4432899320127035e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.7763568394002505e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.1051550219984847e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-esu2-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 1.1102230246251565e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.4147350785597155e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.40168431617327e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-esu1-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.1102230246251565e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.7763568394002505e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.9833587817117433e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-esu1-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 1.1102230246251565e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.7763568394002505e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.632890429455804e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-esu1-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 1.7763568394002505e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.4988010832439613e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.883612181843077e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-esu1-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 2.1094237467877974e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.6653345369377348e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.257119830264333e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-ra2-mean_z-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.4432899320127035e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.220446049250313e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 6.375633934642064e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-ra2-mean_z-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 1.2212453270876722e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 3.1086244689504383e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 5.673629968616645e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-ra2-mean_z-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 1.5543122344752192e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.886579864025407e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 5.456789534119544e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-ra2-mean_z-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 1.2212453270876722e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.7755575615628914e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 5.577949126894799e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-esu2-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.2212453270876722e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.1094237467877974e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.645087703896266e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-esu2-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 9.992007221626409e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.3314683517128287e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.0852737859253807e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-esu2-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 8.881784197001252e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.887379141862766e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.6404798446632025e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-esu2-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 9.992007221626409e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.192690473634684e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.402226417259513e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-ra2-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.7763568394002505e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 3.83026943495679e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.9855271860567143e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-ra2-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 9.992007221626409e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.886579864025407e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.5892512920132624e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-ra2-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 9.992007221626409e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.6367796834847468e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.0509449133742095e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-ra2-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 1.3322676295501878e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.7763568394002505e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.612561638721701e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-ra1-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.5543122344752192e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.4424906541753444e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.8912015970504754e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-ra1-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 1.1102230246251565e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.4432899320127035e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.4567075764269095e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-ra1-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 8.881784197001252e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.609823385706477e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.432584078089107e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-ra1-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 1.1102230246251565e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.9984014443252818e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.001790218643997e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-ra2-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.6653345369377348e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.1934897514720433e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.177525517011892e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-ra2-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 1.9984014443252818e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.7763568394002505e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.185020385794047e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-ra2-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 1.1102230246251565e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.8318679906315083e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.0032400177848473e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-ra2-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 8.881784197001252e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.4988010832439613e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.0422712959943254e-16,
+      "passed": true
+    },
+    "p5a-top4-e2-ra2-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.9984014443252818e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.1094237467877974e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 6.182120787512346e-16,
+      "passed": true
+    },
+    "p5a-top4-e2-ra2-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 1.4432899320127035e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.942091015256665e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.777536873057375e-16,
+      "passed": true
+    },
+    "p5a-top4-e2-ra2-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 1.7763568394002505e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.4980018054066022e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.734710887244198e-16,
+      "passed": true
+    },
+    "p5a-top4-e2-ra2-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 1.7763568394002505e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.887379141862766e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.680229728076801e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-esu1-mean_z-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.2212453270876722e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 3.774758283725532e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 5.642459156157686e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-esu1-mean_z-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 1.4432899320127035e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 3.3306690738754696e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 5.509508864756651e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-esu1-mean_z-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 1.6653345369377348e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 3.552713678800501e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 5.535936292710986e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-esu1-mean_z-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 1.1102230246251565e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 3.1086244689504383e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 7.324869877312068e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-esu2-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.1102230246251565e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.7208456881689926e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.0158848468863084e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-esu2-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 1.3322676295501878e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 5.329070518200751e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.570996359198887e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-esu2-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 9.992007221626409e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.9984014443252818e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.6288246713089833e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-esu2-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 1.6653345369377348e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.3869795029440866e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.9562537273996057e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-ra1-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.5543122344752192e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.609823385706477e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.454268121538817e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-ra1-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 1.5543122344752192e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.2212453270876722e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.340426893427839e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-ra1-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 1.887379141862766e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.6653345369377348e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.464202445209065e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-ra1-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 1.5543122344752192e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.9984014443252818e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.7968760080442365e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-esu1-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.2212453270876722e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.3877787807814457e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.157196726277789e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-esu1-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 1.2212453270876722e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.7755575615628914e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 6.170736664701248e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-esu1-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 1.4432899320127035e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.3314683517128287e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 5.086805542758865e-16,
+      "passed": true
+    },
+    "p5a-next4-e3-esu1-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 1.4432899320127035e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.887379141862766e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 5.529295554404512e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-esu1-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.2212453270876722e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 3.774758283725532e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.7264028668326787e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-esu1-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 9.992007221626409e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.4432899320127035e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.16387844343058e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-esu1-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 8.881784197001252e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 4.107825191113079e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.748805515486509e-16,
+      "passed": true
+    },
+    "p5a-pca4-e3-esu1-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 1.1102230246251565e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.609823385706477e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.0115480381963664e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-ra2-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.887379141862766e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.5543122344752192e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.914688447876792e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-ra2-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 1.4432899320127035e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.2212453270876722e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.3946370020521144e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-ra2-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 8.881784197001252e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.2351231148954867e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 3.423910460709223e-16,
+      "passed": true
+    },
+    "p5a-top4-e3-ra2-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 8.881784197001252e-16,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.4432899320127035e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.857361258006621e-16,
+      "passed": true
+    },
+    "p5a-top4-s5-ra2-parity-s0": {
+      "aer_clean_vs_engine_max_abs_dz": 1.3322676295501878e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.4980018054066022e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 5.405832032012725e-16,
+      "passed": true
+    },
+    "p5a-top4-s5-ra2-parity-s1": {
+      "aer_clean_vs_engine_max_abs_dz": 1.9984014443252818e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.6653345369377348e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.495644308211144e-16,
+      "passed": true
+    },
+    "p5a-top4-s5-ra2-parity-s2": {
+      "aer_clean_vs_engine_max_abs_dz": 1.3322676295501878e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 1.8318679906315083e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 4.671691635968478e-16,
+      "passed": true
+    },
+    "p5a-top4-s5-ra2-parity-s3": {
+      "aer_clean_vs_engine_max_abs_dz": 1.1102230246251565e-15,
+      "clean_folded_vs_unfolded_max_abs_dp": 2.886579864025407e-15,
+      "noise_exposure_decreasing": true,
+      "exact_a1_symmetric_readout_recovers_clean": 5.139660398667534e-16,
+      "passed": true
+    }
+  },
+  "all_passed": true
+}

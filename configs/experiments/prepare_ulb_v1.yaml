@@ -1,0 +1,16 @@
+# Phase 1: verified acquisition -> schema validation -> duplicate audit ->
+# deduplication -> five-way stratified split -> leakage-safe preprocessing.
+# Only the `split` seed influences any output of this experiment.
+experiment_id: prepare_ulb_v1
+protocol_version: "0.3"
+description: ULB data preparation (Phase 1)
+reporting: reported
+dataset: ulb_v1
+seeds:                            # split/model/noise/shots/policy from [RR] example YAML
+  split: 1701
+  model: 2307
+  undersample: 3301
+  noise: 4501
+  shots: 9011
+  policy: 7717
+  bootstrap: 8123

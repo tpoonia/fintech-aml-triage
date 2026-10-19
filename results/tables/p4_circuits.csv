@@ -1,0 +1,6 @@
+circuit,cx,noisy_1q,rz,depth,noisy_depth,qasm3_sha256,operation_counts
+lambda_1,18,28,42,35,21,1e30e2aab6f89e46d2a5ac904b73b27b91eb7d2ccf88057c4b1a17e59811a915,"{""cx"": 18, ""rz"": 42, ""sx"": 28}"
+lambda_3,54,84,238,133,63,b2c357e71dd5837d0f19bc35a0f8faa15d828f881544c8eae34e285f54216a70,"{""cx"": 54, ""rz"": 238, ""sx"": 84}"
+lambda_5,90,140,434,231,105,3e8fecc7ec613cc526b3deef98fbac0a4fbfdbccc84f88a5b607c41c69ce4f32,"{""cx"": 90, ""rz"": 434, ""sx"": 140}"
+cal_all_zeros,0,0,0,0,0,2d18d18f9834043539b95055091110c27af94ada54c65cb9f10baf08d9a51a7b,{}
+cal_all_ones,0,4,0,1,1,08953529d158e227f983892f2280debe8712ecae87654de33d2e3ffadc50011b,"{""x"": 4}"

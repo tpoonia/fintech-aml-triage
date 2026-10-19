@@ -1,0 +1,61 @@
+# Phase 3B: PRE-REGISTERED controlled-noise characterization (docs/PREREG_P3B.md).
+# Committed and pushed BEFORE the real experiment. No mitigation, no Q-TRACE, frozen models only.
+study_id: p3b_v1
+partition: vqc_val                       # only partition read (access phase "phase3b"); ctrl_* locked
+models:
+  - model_id: p3a_r                      # PRIMARY: frozen Phase 3A-R e3-r2-par (byte-identical)
+    kind: p3a_r
+    role: primary
+    artifact: artifacts/frozen_vqcs/vqc3ar_e3-r2-par.json
+    artifact_sha256: 1da6939547f9423edb47c30222e95b6346ec947aeed9ec912a5468281ae0855a
+    transpile_seed: 1154577741           # as recorded in results/tables/p3ar_selection.json
+  - model_id: p3a_original               # EXPLORATORY PILOT-MODEL CONTRAST (known encoding defects)
+    kind: p3a_original
+    role: exploratory_contrast
+    artifact: artifacts/frozen_vqcs/vqc3a_top4_ra1.json
+    artifact_sha256: 9c7fc390aa258d19feb5ee791c047ad1e5782aa4322fb6c960f317ac9979100c
+    transpile_seed: 1824407106           # as recorded in results/tables/phase3a_metadata.json
+noise_sets: [anchors_rr_v1, synthetic_asym_v1]   # 12 [RR] anchors (values unchanged) + 3 synthetic
+basis_gates: [rz, sx, x, cx]             # rz virtual and noiseless
+optimization_level: 1
+one_qubit_noisy_gates: [sx, x]           # depolarizing_error(p1, 1) then thermal(T1, T2, 35 ns)
+two_qubit_noisy_gates: [cx]              # depolarizing_error(p2, 2) then thermal(.., 300 ns) (x) thermal
+gate_error_composition: depolarizing_then_thermal
+readout_application: classical_confusion_on_exact_distribution   # [[1-p01, p01], [p10, 1-p10]] per qubit
+threshold_rule: max_f1_on_exact_clean_scores   # frozen clean threshold; never re-tuned per condition
+top_k: [47, 100, 284]                    # 47 = vqc_val frauds; 100 = review budget; 284 = top 1%
+ece_bins: 10                             # equal-width; scikit-learn calibration_curve binning
+bootstrap_resamples: 1000                # stratified, fixed class counts; shared Phase 2 vqc_val seed
+a13:                                     # pilot-indicative label rules (NOT publication thresholds)
+  spearman_monotonic: 0.999
+  kendall_monotonic: 0.995
+  topk_overlap_min: 0.95
+  topk_for_overlap_rule: 47
+  calibration_spearman_min: 0.99
+  brier_relative_change: 0.10
+  ece_abs_change: 0.01
+  threshold_crossing_fraction: 0.01
+  fraud_crossing_rate: 0.05
+e08:                                     # cached-distribution sampler vs direct Aer shots (E08)
+  n_rows: 256                            # first 256 vqc_val rows in row_id order
+  profiles: [clean, ar-050, th-high, comb-high]
+  shots: 1024
+  seed_key: p3b-e08
+  residual_mean_abs_max: 0.25
+  residual_var_range: [0.7, 1.3]
+  chi2_p_min: 0.001
+  min_expected_count: 5.0
+  mean_score_se_multiple: 4.0
+  tvd_ratio_range: [0.9, 1.1]
+  ks_p_min: 0.001
+finite_shot:                             # O07 PILOT ONLY (PI): not the final shot protocol
+  shots: 1024
+  replicates: 20
+  seed_key: p3b-shots
+  models: [p3a_r]
+g1:
+  pass_labels: [discrimination_degradation, ranking_distortion]
+  conditional_labels: [calibration_distortion, threshold_distortion]
+  excluded_roles: [negative_control]
+  require_severity_trend: true
+representative_conditions: [ro-sym-high, dep-high, th-high, comb-high, ar-050]

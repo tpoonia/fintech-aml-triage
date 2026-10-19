@@ -1,0 +1,203 @@
+# Q-TRACE feature registry (PROJECT_SPEC rules R2/R3; A01, A12).
+#
+# status: deployable   -> may be a Q-TRACE input for the listed controllers
+#         offline_only -> may be stored for offline analysis; NEVER a Q-TRACE input
+# availability: pre_execution | frozen_at_training | probe | history | offline
+#
+# Adding or changing an entry requires a DECISIONS.md entry; tests snapshot the
+# deployable set so changes are always deliberate.
+version: "0.4"   # 0.4 (Phase 5C): continuous-design truth (point, plot, region, severities) offline-only; 0.3 (Phase 5B, A15): true simulator noise parameters offline-only; probe + static features added
+features:
+  # ---- noise (device/simulator parameters; known before execution) -------------
+  - name: p1
+    group: noise
+    availability: offline
+    status: offline_only
+    description: 1-qubit depolarizing parameter (true simulator value)
+    source: "[RR] §What Q-TRACE sees"
+    constraint: "A15 (PI, Phase 5B): the TRUE simulator value is offline-only; Q-TRACE sees only probe estimates (probe_readout_*, probe_gate_*)"
+  - name: p2
+    group: noise
+    availability: offline
+    status: offline_only
+    description: 2-qubit depolarizing parameter (true simulator value)
+    source: "[RR] §What Q-TRACE sees"
+    constraint: "A15 (PI, Phase 5B): the TRUE simulator value is offline-only; Q-TRACE sees only probe estimates (probe_readout_*, probe_gate_*)"
+  - name: readout_p01
+    group: noise
+    availability: offline
+    status: offline_only
+    description: P(read 1 | prepared 0) (true simulator value)
+    source: "[RR] §What Q-TRACE sees (p_readout), split into p01/p10"
+    constraint: "A15: offline-only; the controller sees probe_readout_p01_mean instead"
+    decisions: [A07, A15]
+  - name: readout_p10
+    group: noise
+    availability: offline
+    status: offline_only
+    description: P(read 0 | prepared 1) (true simulator value)
+    source: "[RR] §What Q-TRACE sees (p_readout), split into p01/p10"
+    constraint: "A15: offline-only; the controller sees probe_readout_p10_mean instead"
+    decisions: [A07, A15]
+  - name: t1_us
+    group: noise
+    availability: offline
+    status: offline_only
+    description: Thermal relaxation time T1 (microseconds; true simulator value)
+    source: "[RR] §What Q-TRACE sees"
+    constraint: "A15: offline-only"
+    decisions: [A15]
+  - name: t2_us
+    group: noise
+    availability: offline
+    status: offline_only
+    description: Dephasing time T2 (microseconds; true simulator value)
+    source: "[RR] §What Q-TRACE sees"
+    constraint: "A15: offline-only"
+    decisions: [A15]
+  # ---- circuit / architecture ----------------------------------------------------
+  - name: n_qubits
+    group: circuit
+    availability: pre_execution
+    status: deployable
+    controllers: [qtrace_s, qtrace_a]
+    description: Number of qubits (constant in the 4-qubit core design)
+    source: "[RR] §What Q-TRACE sees"
+  - name: circuit_depth
+    group: circuit
+    availability: pre_execution
+    status: deployable
+    controllers: [qtrace_s, qtrace_a]
+    description: Post-transpile depth of the scale-1 circuit
+    source: "[RR] §What Q-TRACE sees"
+  - name: n_1q_gates
+    group: circuit
+    availability: pre_execution
+    status: deployable
+    controllers: [qtrace_s, qtrace_a]
+    description: Post-transpile count of noisy 1-qubit gates
+    source: "[RR] §What Q-TRACE sees"
+  - name: n_2q_gates
+    group: circuit
+    availability: pre_execution
+    status: deployable
+    controllers: [qtrace_s, qtrace_a]
+    description: Post-transpile count of 2-qubit gates
+    source: "[RR] §What Q-TRACE sees"
+  - name: ansatz
+    group: circuit
+    availability: pre_execution
+    status: deployable
+    controllers: [qtrace_s, qtrace_a]
+    description: Ansatz family (categorical)
+    source: "[RR] §What Q-TRACE sees"
+  - name: ansatz_reps
+    group: circuit
+    availability: pre_execution
+    status: deployable
+    controllers: [qtrace_s, qtrace_a]
+    description: Ansatz repetitions
+    source: "[RR] §What Q-TRACE sees"
+  # ---- execution -----------------------------------------------------------------
+  - name: shots_per_circuit
+    group: execution
+    availability: pre_execution
+    status: deployable
+    controllers: [qtrace_s, qtrace_a]
+    description: Shots per circuit for task execution
+    source: "[RR] §What Q-TRACE sees"
+  # ---- probe (A01: probe-before-decision; label-free; cost charged to Q-TRACE) ---
+  - name: probe_prediction_entropy
+    group: probe
+    availability: probe
+    status: deployable
+    controllers: [qtrace_s, qtrace_a]
+    description: Entropy of the VQC fraud scores on the current batch's probe execution
+    source: "[RR] §What Q-TRACE sees (prediction entropy)"
+    constraint: Computed only from the current probe outputs; never uses labels
+    decisions: [A01]
+  - name: probe_shot_variance
+    group: probe
+    availability: probe
+    status: deployable
+    controllers: [qtrace_s, qtrace_a]
+    description: Shot-noise variance of the probe estimates
+    source: "[RR] §What Q-TRACE sees (shot variance)"
+    constraint: Computed only from the current probe outputs; never uses labels
+    decisions: [A01]
+  # ---- model (frozen at training time) ----------------------------------------------
+  - name: clean_val_auprc_at_freeze
+    group: model
+    availability: frozen_at_training
+    status: deployable
+    controllers: [qtrace_s, qtrace_a]
+    description: Clean validation AUPRC measured once, when the model was frozen
+    source: "[RR] §What Q-TRACE sees (historical validation score)"
+    constraint: >-
+      Measured at freeze time on the vqc_val partition; never recomputed
+      under the current noise context or on any controller-test panel
+    decisions: [A12]
+  # ---- Phase 5B additions (A15): static circuit/model descriptors (pre-execution) ------
+  - {name: noisy_depth, group: circuit, availability: pre_execution, status: deployable, controllers: [qtrace_s, qtrace_a], description: Depth of the transpiled scale-1 circuit counting noisy gates only (rz excluded), source: Phase 5B, decisions: [A15]}
+  - {name: trainable_parameters, group: circuit, availability: pre_execution, status: deployable, controllers: [qtrace_s, qtrace_a], description: Number of trainable ansatz parameters, source: Phase 5B, decisions: [A15]}
+  - {name: readout_observable, group: circuit, availability: pre_execution, status: deployable, controllers: [qtrace_s, qtrace_a], description: "Readout observable (categorical: parity | mean_z)", source: Phase 5B, decisions: [A15]}
+  - {name: encoding_family, group: model, availability: frozen_at_training, status: deployable, controllers: [qtrace_s, qtrace_a], description: "Angle-encoding family (categorical: e3 | e2 | s5)", source: Phase 5B, decisions: [A15]}
+  - {name: feature_set, group: model, availability: frozen_at_training, status: deployable, controllers: [qtrace_s, qtrace_a], description: "Input representation (categorical: top4 | next4 | pca4)", source: Phase 5B, decisions: [A15]}
+  - {name: clean_val_auroc_at_freeze, group: model, availability: frozen_at_training, status: deployable, controllers: [qtrace_s, qtrace_a], description: Clean vqc_val AUROC measured once at freeze, source: Phase 5A, constraint: Never recomputed under noise or on controller panels, decisions: [A12, A15]}
+  - {name: clean_val_brier_at_freeze, group: model, availability: frozen_at_training, status: deployable, controllers: [qtrace_s, qtrace_a], description: Clean vqc_val Brier score measured once at freeze, source: Phase 5A, constraint: Never recomputed under noise or on controller panels, decisions: [A12, A15]}
+  - {name: clean_val_ece_at_freeze, group: model, availability: frozen_at_training, status: deployable, controllers: [qtrace_s, qtrace_a], description: Clean vqc_val ECE measured once at freeze, source: Phase 5A, constraint: Never recomputed under noise or on controller panels, decisions: [A12, A15]}
+  - {name: frozen_tau, group: model, availability: frozen_at_training, status: deployable, controllers: [qtrace_s, qtrace_a], description: Frozen decision threshold (max-F1 on clean vqc_val at freeze), source: Phase 5A, constraint: "Never retuned under noise, by action or on controller panels", decisions: [A11, A15]}
+  # ---- Phase 5B probes (A01, O19, A15): label-free; executed before action selection; cost charged
+  - {name: probe_readout_p01_mean, group: probe, availability: probe, status: deployable, controllers: [qtrace_s, qtrace_a], description: "Mean over qubits of P(read 1 | prepared 0), estimated from the |0000> calibration circuit (S shots)", source: Phase 5B readout probe, constraint: Calibration counts only; never simulator parameters, decisions: [A01, O19, A15]}
+  - {name: probe_readout_p10_mean, group: probe, availability: probe, status: deployable, controllers: [qtrace_s, qtrace_a], description: "Mean over qubits of P(read 0 | prepared 1), estimated from the |1111> calibration circuit (S shots)", source: Phase 5B readout probe, constraint: Calibration counts only; never simulator parameters, decisions: [A01, O19, A15]}
+  - {name: probe_readout_error_mean, group: probe, availability: probe, status: deployable, controllers: [qtrace_s, qtrace_a], description: Mean of the two estimates above, source: Phase 5B readout probe, decisions: [A01, O19, A15]}
+  - {name: probe_readout_asymmetry, group: probe, availability: probe, status: deployable, controllers: [qtrace_s, qtrace_a], description: probe_readout_p10_mean - probe_readout_p01_mean, source: Phase 5B readout probe, decisions: [A01, O19, A15]}
+  - {name: probe_readout_se, group: probe, availability: probe, status: deployable, controllers: [qtrace_s, qtrace_a], description: Binomial standard error of probe_readout_error_mean, source: Phase 5B readout probe, decisions: [A01, O19, A15]}
+  - {name: probe_gate_abs_z_lambda1, group: probe, availability: probe, status: deployable, controllers: [qtrace_s, qtrace_a], description: "Mean |<O>| of the model circuit on the fixed synthetic probe bindings at scale 1 (S shots each)", source: Phase 5B gate probe, constraint: Fixed data-free bindings; never task transactions or labels, decisions: [A01, O19, A15]}
+  - {name: probe_gate_abs_z_lambda3, group: probe, availability: probe, status: deployable, controllers: [qtrace_s, qtrace_a], description: Same at global-fold scale 3, source: Phase 5B gate probe, constraint: Fixed data-free bindings; never task transactions or labels, decisions: [A01, O19, A15]}
+  - {name: probe_gate_contraction, group: probe, availability: probe, status: deployable, controllers: [qtrace_s, qtrace_a], description: probe_gate_abs_z_lambda3 / probe_gate_abs_z_lambda1, source: Phase 5B gate probe, decisions: [A01, O19, A15]}
+  - {name: probe_gate_slope, group: probe, availability: probe, status: deployable, controllers: [qtrace_s, qtrace_a], description: "Mean over probe bindings of (<O>_3 - <O>_1) / 2", source: Phase 5B gate probe, decisions: [A01, O19, A15]}
+  - {name: probe_gate_abs_slope, group: probe, availability: probe, status: deployable, controllers: [qtrace_s, qtrace_a], description: "Mean over probe bindings of |<O>_3 - <O>_1| / 2", source: Phase 5B gate probe, decisions: [A01, O19, A15]}
+  - {name: probe_gate_shot_variance, group: probe, availability: probe, status: deployable, controllers: [qtrace_s, qtrace_a], description: "Mean estimated shot variance (1 - <O>_1^2)/S over probe bindings", source: Phase 5B gate probe, decisions: [A01, O19, A15]}
+  # ---- labelled history (Q-TRACE-A only) ----------------------------------------
+  - name: recent_labelled_batch_performance
+    group: history
+    availability: history
+    status: deployable
+    controllers: [qtrace_a]
+    description: Performance on past batches whose labels have already arrived
+    source: "[RR] §What Q-TRACE sees"
+    constraint: Strict temporal order; never the current batch
+    decisions: [F19]
+  # ---- offline only: identifiers (A12) --------------------------------------------
+  - {name: model_id, group: identifier, availability: offline, status: offline_only, description: Frozen VQC identifier (grouping key for meta splits), source: A12, decisions: [A12]}
+  - {name: model_seed, group: identifier, availability: offline, status: offline_only, description: VQC initialization seed, source: A12, decisions: [A12]}
+  - {name: noise_seed, group: identifier, availability: offline, status: offline_only, description: Noise sampling seed, source: A12, decisions: [A12]}
+  - {name: shot_seed, group: identifier, availability: offline, status: offline_only, description: Shot sampling seed, source: A12, decisions: [A12]}
+  - {name: noise_profile_id, group: identifier, availability: offline, status: offline_only, description: Noise profile identifier, source: A12, decisions: [A12]}
+  - {name: noise_family, group: identifier, availability: offline, status: offline_only, description: "Simulation noise-family label ([RR] example YAML lists it as a context feature)", source: "[RR] §Example experiment YAML; A12", decisions: [A12]}
+  - {name: noise_severity, group: identifier, availability: offline, status: offline_only, description: Simulation severity label, source: A12, decisions: [A12]}
+  # ---- offline only: Phase 5C continuous-design truth (A15 extended) ---------------
+  - {name: noise_point_id, group: identifier, availability: offline, status: offline_only, description: "Phase 5C design point identifier (a lookup of the true noise configuration)", source: "PREREG_P5C §6", decisions: [A15]}
+  - {name: gate_plot_id, group: identifier, availability: offline, status: offline_only, description: "Phase 5C gate-noise plot identifier (true gate configuration)", source: "PREREG_P5C §6", decisions: [A15]}
+  - {name: noise_region, group: identifier, availability: offline, status: offline_only, description: "Phase 5C descriptive region label from TRUE severities (near_clean/readout/gate/mixed)", source: "PREREG_P5C §6", decisions: [A15]}
+  - {name: severity_readout, group: noise, availability: offline, status: offline_only, description: "TRUE readout anchor severity s_ro of the design point", source: "PREREG_P5C §4", decisions: [A15]}
+  - {name: severity_depolarizing, group: noise, availability: offline, status: offline_only, description: "TRUE depolarizing anchor severity s_dep of the design point", source: "PREREG_P5C §4", decisions: [A15]}
+  - {name: severity_thermal, group: noise, availability: offline, status: offline_only, description: "TRUE thermal anchor severity s_th of the design point", source: "PREREG_P5C §4", decisions: [A15]}
+  - {name: readout_asymmetry_true, group: noise, availability: offline, status: offline_only, description: "TRUE readout asymmetry alpha of the design point (synthetic component)", source: "PREREG_P5C §4", decisions: [A15]}
+  - {name: readout_mean_true, group: noise, availability: offline, status: offline_only, description: "TRUE mean readout error of the design point", source: "PREREG_P5C §4", decisions: [A15]}
+  # ---- offline only: ground truth (A12) -------------------------------------------
+  - {name: transaction_label, group: label, availability: offline, status: offline_only, description: Ground-truth fraud label (Class), source: A12, decisions: [A12]}
+  - {name: current_batch_accuracy, group: label, availability: offline, status: offline_only, description: "Accuracy of the current batch from ground truth (the earlier deck's 'current accuracy')", source: "[RR] §What Q-TRACE sees; A12", decisions: [A12]}
+  - {name: current_batch_auprc, group: label, availability: offline, status: offline_only, description: AUPRC of the current batch from ground truth, source: A12, decisions: [A12]}
+  # ---- offline only: post-mitigation outcomes (A12) --------------------------------
+  - {name: mitigated_scores, group: outcome, availability: offline, status: offline_only, description: Scores produced by any mitigation action, source: A12, decisions: [A12]}
+  - {name: zne_scaled_outputs, group: outcome, availability: offline, status: offline_only, description: "Outputs of the ZNE action's noise-amplified (scale > 1) executions on the task batch (the fixed pre-action gate probe is separate: probe_gate_*)", source: A12, decisions: [A12, A15]}
+  - {name: realized_delta, group: outcome, availability: offline, status: offline_only, description: Realized counterfactual benefit of an action, source: A12, decisions: [A12]}
+  - {name: oracle_action, group: outcome, availability: offline, status: offline_only, description: Action chosen by the evaluation-only oracle, source: A08, decisions: [A08, A12]}
+  # ---- offline only: Phase 5B identifiers and outcomes (A12, A15) ----------------------
+  - {name: struct_id, group: identifier, availability: offline, status: offline_only, description: Phase 5A structure identifier (grouping key for the structure split), source: A15, decisions: [A12, A15]}
+  - {name: seed_index, group: identifier, availability: offline, status: offline_only, description: Phase 5A training-seed index, source: A15, decisions: [A12, A15]}
+  - {name: preferred_action, group: outcome, availability: offline, status: offline_only, description: Cost-aware best action computed from counterfactual outcomes, source: A15, decisions: [A08, A12, A15]}
+  - {name: current_batch_brier, group: label, availability: offline, status: offline_only, description: Brier score of the current batch from ground truth, source: A15, decisions: [A12, A15]}
+  - {name: oracle_confusion_matrix, group: identifier, availability: offline, status: offline_only, description: True simulator readout confusion matrix, source: A15, decisions: [A12, A15]}

@@ -1,0 +1,107 @@
+# Phase 5A: PRE-REGISTERED independent VQC model pool (docs/PREREG_P5A.md).
+# Committed and pushed BEFORE any pool model is trained. vqc_train fits, vqc_val qualifies;
+# controller partitions locked. No noise, no mitigation, no Q-TRACE in this phase.
+study_id: p5a_v1
+fit_partition: vqc_train
+qualify_partition: vqc_val
+n_qubits: 4
+feature_map: {type: zz_feature_map, reps: 1, entanglement: full}   # fixed (as P3A-R)
+feature_sets:                      # all fitted on ALL of vqc_train (30 processed columns)
+  - {feat_id: top4, kind: anova_ranks, ranks: [1, 4], expected_features: [V17, V14, V12, V10]}
+  - {feat_id: next4, kind: anova_ranks, ranks: [5, 8], expected_features: [V16, V3, V7, V11]}
+  - {feat_id: pca4, kind: pca, standardize: false}   # unsupervised PCA-4 (EVR 0.12/0.09/0.08/0.06)
+encodings:                         # alias-safe: theta in [-pi/4, pi/4]; median/IQR fitted on vqc_train
+  - {enc_id: e3, kind: clip_linear, scale: 15, half_width: 0.7853981633974483}   # P3A-R encoding
+  - {enc_id: e2, kind: clip_linear, scale: 5, half_width: 0.7853981633974483}
+  - {enc_id: s5, kind: tanh, scale: 5, half_width: 0.7853981633974483}          # smooth, no clipping
+ansatze:                           # linear entanglement; 4 qubits
+  - {ans_id: ra1, family: real_amplitudes, reps: 1}
+  - {ans_id: ra2, family: real_amplitudes, reps: 2}
+  - {ans_id: esu1, family: efficient_su2, reps: 1}
+  - {ans_id: esu2, family: efficient_su2, reps: 2}
+  - {ans_id: ra0, family: real_amplitudes, reps: 0}   # diagnostic shallow control only
+structures:                        # 16 structures x 4 seeds = 64 candidates (single wave)
+  # main grid: features x ansatz-depth, e3 encoding, parity readout (12)
+  - {struct_id: top4-e3-ra1-parity, features: top4, encoding: e3, ansatz: ra1, readout: parity}
+  - {struct_id: top4-e3-ra2-parity, features: top4, encoding: e3, ansatz: ra2, readout: parity}
+  - {struct_id: top4-e3-esu1-parity, features: top4, encoding: e3, ansatz: esu1, readout: parity}
+  - {struct_id: top4-e3-esu2-parity, features: top4, encoding: e3, ansatz: esu2, readout: parity}
+  - {struct_id: next4-e3-ra1-parity, features: next4, encoding: e3, ansatz: ra1, readout: parity}
+  - {struct_id: next4-e3-ra2-parity, features: next4, encoding: e3, ansatz: ra2, readout: parity}
+  - {struct_id: next4-e3-esu1-parity, features: next4, encoding: e3, ansatz: esu1, readout: parity}
+  - {struct_id: next4-e3-esu2-parity, features: next4, encoding: e3, ansatz: esu2, readout: parity}
+  - {struct_id: pca4-e3-ra1-parity, features: pca4, encoding: e3, ansatz: ra1, readout: parity}
+  - {struct_id: pca4-e3-ra2-parity, features: pca4, encoding: e3, ansatz: ra2, readout: parity}
+  - {struct_id: pca4-e3-esu1-parity, features: pca4, encoding: e3, ansatz: esu1, readout: parity}
+  - {struct_id: pca4-e3-esu2-parity, features: pca4, encoding: e3, ansatz: esu2, readout: parity}
+  # encoding variants (2)
+  - {struct_id: top4-e2-ra2-parity, features: top4, encoding: e2, ansatz: ra2, readout: parity}
+  - {struct_id: top4-s5-ra2-parity, features: top4, encoding: s5, ansatz: ra2, readout: parity}
+  # readout variants (2): mean single-qubit Z, p = (1 - mean Z)/2
+  - {struct_id: top4-e3-ra2-mean_z, features: top4, encoding: e3, ansatz: ra2, readout: mean_z}
+  - {struct_id: top4-e3-esu1-mean_z, features: top4, encoding: e3, ansatz: esu1, readout: mean_z}
+seeds_per_structure: 4             # seed index k = 0..3: own training-subset draw + own inits
+subset_legit_per_fraud: 4          # all vqc_train frauds + 4 legit per fraud (P3A-R regime)
+subset_id_prefix: p5a-lpf4         # subset_id = p5a-lpf4-s{k}; same draw for every structure at k
+optimizer: {name: COBYLA, max_evaluations: 1000, rhobeg: 1.0, tol: 1.0e-4, init: uniform_minus_pi_pi}
+restarts: 3                        # keep the lowest final training BCE (P3A-R rule)
+restart_rule: lowest_final_training_bce
+bce_epsilon: 1.0e-7
+basis_gates: [rz, sx, x, cx]
+optimization_level: 1
+seed_keys: {subset: p5a-lpf4, init: p5a-init, transpile: p5a-transpile}
+qualification:                     # broad clean-validity criteria; NEVER noise/mitigation outcomes
+  min_auprc_ci_low_over_prevalence: 10.0
+  min_auroc_ci_low: 0.5
+  min_relative_loss_reduction: 0.05
+  min_distinct_scores: 100
+  max_shared_fraud_vector_fraction: 0.5
+  aer_crosscheck_rows: 256
+  aer_crosscheck_tol: 1.0e-10
+  require_bitwise_retrain: true
+  near_duplicate_spearman: 0.9999
+threshold_rule: max_f1_on_clean_vqc_val   # per-model frozen tau (optimistic on vqc_val; documented)
+bootstrap_resamples: 1000          # shared Phase 2 vqc_val resamples
+anchor:                            # historical anchor, replayed only; never retrained; not counted
+  model_id: p3a_r
+  kind: p3a_r
+  role: primary
+  artifact: artifacts/frozen_vqcs/vqc3ar_e3-r2-par.json
+  artifact_sha256: 1da6939547f9423edb47c30222e95b6346ec947aeed9ec912a5468281ae0855a
+  transpile_seed: 1154577741
+controls:                          # diagnostic controls: never in the primary pool
+  - control_id: ctrl-p3a-original
+    kind: existing_artifact
+    artifact: artifacts/frozen_vqcs/vqc3a_top4_ra1.json
+    artifact_sha256: 9c7fc390aa258d19feb5ee791c047ad1e5782aa4322fb6c960f317ac9979100c
+    transpile_seed: 1824407106
+    reason: alias-prone encoding (clip 3, [-pi, pi]); known Phase 3A defects
+  - control_id: ctrl-shallow
+    kind: structure
+    structure: {struct_id: top4-e3-ra0-parity, features: top4, encoding: e3, ansatz: ra0, readout: parity}
+    seed_index: 0
+    reason: intentionally shallow ansatz (single rotation layer)
+g3a:
+  min_qualified: 40
+  min_models_per_level: 3
+  pass_max_median_between_structure_spearman: 0.95
+  fail_min_median_between_structure_spearman: 0.99
+  identical_spearman: 0.999
+  pass_max_identical_pair_fraction: 0.05
+  fail_min_identical_pair_fraction: 0.5
+  max_family_share: 0.75
+  max_seed_share: 0.40
+  max_structure_share: 0.15
+  pass_max_projected_wall_hours: 48
+  fail_min_projected_wall_hours: 168
+power:
+  alpha: 0.05
+  power: 0.80
+  model_counts: [20, 30, 40, 50, 60]
+  replicate_counts: [5, 10, 20]
+  meta_test_fraction: 0.25
+benchmark:                         # simulation-time only (no metrics): synthetic bindings
+  rows: 256
+  noise_profile: comb-high
+  noise_factors: [1, 3, 5]
+  cores: 15

@@ -1,0 +1,27 @@
+# Phase 7 validation comparison + one-time final test (docs/PREREG_FINAL.md).
+# Committed and pushed BEFORE the learned comparators are fitted and BEFORE the sealed test is
+# read. Nothing here may change after the Phase 7 freeze.
+protocol: docs/PREREG_FINAL.md
+primary_policy: R_thr                    # frozen Phase 5C rule (p5c_metadata.json, fitted on 5C train)
+rules_source: results/tables/p5c_metadata.json
+comparators:
+  universal: [always_A0, always_A1, always_A2, always_A3, always_A4]
+  rules: [R_cat, R_obs]
+  learned: [L_logistic, L_tree3, L_gbt, L_gbt_benefit]   # specs fixed in qtrace.controller.final_eval
+  upper_bound: oracle
+learned_training: 5c_train_replicates_only
+tolerance: 0.10                          # registered Oracle tolerance (p5c_v1)
+environments:
+  primary: {name: 5c_test, sealed_file: results/lockbox/phase5c/mixed_test.parquet, manifest: results/tables/p5c_lockbox_manifest.json, costs: results/tables/p5c_costs.csv}
+  secondary: {name: 5b_test, sealed_file: results/lockbox/phase5b/counterfactual_test.parquet, manifest: results/tables/p5b_lockbox_manifest.json, costs: results/tables/p5b_costs.csv}
+hypotheses:
+  h1_max_material: 0.05                  # H1: R_thr material failure <= 0.05 on 5C test ...
+  h1_max_rel_brier_regret: 0.02          # ... and mean relative Brier regret <= 0.02
+  h2_min_material_gain: 0.02             # H2: a learned comparator is meaningfully better if its material
+                                         #     failure is lower by >= 0.02 with CI excluding 0 ...
+  h2_min_shot_saving: 0.05               # ... or it saves >= 5% of total shots per inference ...
+  h2_material_slack: 0.005               # ... without raising material failure by more than 0.005
+  h4_max_material: 0.10                  # H4: R_thr material failure on 5B test <= 0.10
+cluster_bootstrap: 2000
+bootstrap_seed_key: final-bootstrap
+frozen_record: results/tables/p7_frozen_policies.json

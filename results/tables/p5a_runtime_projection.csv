@@ -1,0 +1,60 @@
+item,value
+"training per model (3 restarts), mean s",8.046
+"training per model, max s",13.047
+"vqc_val inference per model, mean s",0.01
+"pool training wall s (parallel, incl. retraining check)",74.174
+feature-map states wall s,18.475
+"Aer DM ms/row, next4-e3-esu1-parity, lambda 1 (comb-high)",0.362
+"Aer DM ms/row, next4-e3-esu1-parity, lambda 3 (comb-high)",1.22
+"Aer DM ms/row, next4-e3-esu1-parity, lambda 5 (comb-high)",2.145
+"Aer DM ms/row, next4-e3-esu2-parity, lambda 1 (comb-high)",0.461
+"Aer DM ms/row, next4-e3-esu2-parity, lambda 3 (comb-high)",1.517
+"Aer DM ms/row, next4-e3-esu2-parity, lambda 5 (comb-high)",2.412
+"Aer DM ms/row, next4-e3-ra1-parity, lambda 1 (comb-high)",0.359
+"Aer DM ms/row, next4-e3-ra1-parity, lambda 3 (comb-high)",1.118
+"Aer DM ms/row, next4-e3-ra1-parity, lambda 5 (comb-high)",2.509
+"Aer DM ms/row, next4-e3-ra2-parity, lambda 1 (comb-high)",0.421
+"Aer DM ms/row, next4-e3-ra2-parity, lambda 3 (comb-high)",1.475
+"Aer DM ms/row, next4-e3-ra2-parity, lambda 5 (comb-high)",2.293
+"Aer DM ms/row, pca4-e3-esu1-parity, lambda 1 (comb-high)",0.377
+"Aer DM ms/row, pca4-e3-esu1-parity, lambda 3 (comb-high)",1.122
+"Aer DM ms/row, pca4-e3-esu1-parity, lambda 5 (comb-high)",2.14
+"Aer DM ms/row, pca4-e3-esu2-parity, lambda 1 (comb-high)",0.457
+"Aer DM ms/row, pca4-e3-esu2-parity, lambda 3 (comb-high)",1.525
+"Aer DM ms/row, pca4-e3-esu2-parity, lambda 5 (comb-high)",2.607
+"Aer DM ms/row, pca4-e3-ra1-parity, lambda 1 (comb-high)",0.355
+"Aer DM ms/row, pca4-e3-ra1-parity, lambda 3 (comb-high)",1.175
+"Aer DM ms/row, pca4-e3-ra1-parity, lambda 5 (comb-high)",2.125
+"Aer DM ms/row, pca4-e3-ra2-parity, lambda 1 (comb-high)",0.44
+"Aer DM ms/row, pca4-e3-ra2-parity, lambda 3 (comb-high)",1.419
+"Aer DM ms/row, pca4-e3-ra2-parity, lambda 5 (comb-high)",2.383
+"Aer DM ms/row, top4-e2-ra2-parity, lambda 1 (comb-high)",0.506
+"Aer DM ms/row, top4-e2-ra2-parity, lambda 3 (comb-high)",1.435
+"Aer DM ms/row, top4-e2-ra2-parity, lambda 5 (comb-high)",2.286
+"Aer DM ms/row, top4-e3-esu1-mean_z, lambda 1 (comb-high)",0.418
+"Aer DM ms/row, top4-e3-esu1-mean_z, lambda 3 (comb-high)",1.252
+"Aer DM ms/row, top4-e3-esu1-mean_z, lambda 5 (comb-high)",2.134
+"Aer DM ms/row, top4-e3-esu1-parity, lambda 1 (comb-high)",0.412
+"Aer DM ms/row, top4-e3-esu1-parity, lambda 3 (comb-high)",1.193
+"Aer DM ms/row, top4-e3-esu1-parity, lambda 5 (comb-high)",2.12
+"Aer DM ms/row, top4-e3-esu2-parity, lambda 1 (comb-high)",0.484
+"Aer DM ms/row, top4-e3-esu2-parity, lambda 3 (comb-high)",1.61
+"Aer DM ms/row, top4-e3-esu2-parity, lambda 5 (comb-high)",2.229
+"Aer DM ms/row, top4-e3-ra1-parity, lambda 1 (comb-high)",0.398
+"Aer DM ms/row, top4-e3-ra1-parity, lambda 3 (comb-high)",1.137
+"Aer DM ms/row, top4-e3-ra1-parity, lambda 5 (comb-high)",2.231
+"Aer DM ms/row, top4-e3-ra2-mean_z, lambda 1 (comb-high)",0.451
+"Aer DM ms/row, top4-e3-ra2-mean_z, lambda 3 (comb-high)",1.514
+"Aer DM ms/row, top4-e3-ra2-mean_z, lambda 5 (comb-high)",2.264
+"Aer DM ms/row, top4-e3-ra2-parity, lambda 1 (comb-high)",0.456
+"Aer DM ms/row, top4-e3-ra2-parity, lambda 3 (comb-high)",1.585
+"Aer DM ms/row, top4-e3-ra2-parity, lambda 5 (comb-high)",2.12
+"Aer DM ms/row, top4-s5-ra2-parity, lambda 1 (comb-high)",0.378
+"Aer DM ms/row, top4-s5-ra2-parity, lambda 3 (comb-high)",0.981
+"Aer DM ms/row, top4-s5-ra2-parity, lambda 5 (comb-high)",1.567
+projection phase4_design_full: pool CPU hours,39.481
+projection phase4_design_full: wall hours on 15 cores,2.632
+projection no_two_stage_bootstrap: pool CPU hours,14.631
+projection no_two_stage_bootstrap: wall hours on 15 cores,0.975
+projection ten_replicates: pool CPU hours,24.751
+projection ten_replicates: wall hours on 15 cores,1.65

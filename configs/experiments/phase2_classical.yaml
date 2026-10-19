@@ -1,0 +1,15 @@
+# Phase 2: classical fraud sanity baselines on vqc_train (fit) / vqc_val (select + report).
+experiment_id: phase2_classical
+protocol_version: "0.4"
+description: Classical fraud sanity baselines and 4-feature representation evidence (O02)
+reporting: reported
+dataset: ulb_v1
+baseline: classical_v1
+seeds:                            # same masters as Phase 1; Phase 2 uses model, undersample, bootstrap
+  split: 1701
+  model: 2307
+  undersample: 3301
+  noise: 4501
+  shots: 9011
+  policy: 7717
+  bootstrap: 8123

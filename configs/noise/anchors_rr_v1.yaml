@@ -1,0 +1,21 @@
+# The 12 core anchor profiles from [RR §Noise models]. p1/p2 are Qiskit
+# depolarizing_error parameters. Gate times 35 ns / 300 ns per the [RR] appendix.
+# Combined profiles use matched severities (implied, not stated, by [RR]).
+# Readout-only profiles are symmetric and serve as NEGATIVE CONTROLS for ranking
+# metrics (A07): a symmetric flip is an exact monotone rescale of Z-type scores.
+# Asymmetric readout anchors are added in Phase 4 once their values are decided (O20).
+set_id: anchors_rr_v1
+description: "[RR] 12-profile anchor grid: depolarizing, readout, thermal, combined x low/medium/high"
+profiles:
+  - {profile_id: dep-low, family: depolarizing, severity: low, p1: 0.0005, p2: 0.005}
+  - {profile_id: dep-medium, family: depolarizing, severity: medium, p1: 0.001, p2: 0.010}
+  - {profile_id: dep-high, family: depolarizing, severity: high, p1: 0.003, p2: 0.020}
+  - {profile_id: ro-sym-low, family: readout, severity: low, role: negative_control, readout_p01: 0.005, readout_p10: 0.005}
+  - {profile_id: ro-sym-medium, family: readout, severity: medium, role: negative_control, readout_p01: 0.020, readout_p10: 0.020}
+  - {profile_id: ro-sym-high, family: readout, severity: high, role: negative_control, readout_p01: 0.050, readout_p10: 0.050}
+  - {profile_id: th-low, family: thermal, severity: low, thermal: {t1_us: 200, t2_us: 250}}
+  - {profile_id: th-medium, family: thermal, severity: medium, thermal: {t1_us: 100, t2_us: 150}}
+  - {profile_id: th-high, family: thermal, severity: high, thermal: {t1_us: 50, t2_us: 70}}
+  - {profile_id: comb-low, family: combined, severity: low, p1: 0.0005, p2: 0.005, readout_p01: 0.005, readout_p10: 0.005, thermal: {t1_us: 200, t2_us: 250}}
+  - {profile_id: comb-medium, family: combined, severity: medium, p1: 0.001, p2: 0.010, readout_p01: 0.020, readout_p10: 0.020, thermal: {t1_us: 100, t2_us: 150}}
+  - {profile_id: comb-high, family: combined, severity: high, p1: 0.003, p2: 0.020, readout_p01: 0.050, readout_p10: 0.050, thermal: {t1_us: 50, t2_us: 70}}

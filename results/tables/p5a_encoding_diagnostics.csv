@@ -1,0 +1,6 @@
+features,encoding,kind,scale,half_width,alias_safe,shared_fraud_vector_fraction,fraud_values_beyond_scale,output_columns
+next4,e3,clip_linear,15.0,0.785398163,True,0.0,0.019953052,V16|V3|V7|V11
+pca4,e3,clip_linear,15.0,0.785398163,True,0.0,0.0,pca4_pc1|pca4_pc2|pca4_pc3|pca4_pc4
+top4,e2,clip_linear,5.0,0.785398163,True,0.375586854,0.588028169,V17|V14|V12|V10
+top4,e3,clip_linear,15.0,0.785398163,True,0.009389671,0.096244131,V17|V14|V12|V10
+top4,s5,tanh,5.0,0.785398163,True,0.0,0.588028169,V17|V14|V12|V10

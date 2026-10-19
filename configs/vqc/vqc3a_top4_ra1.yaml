@@ -1,0 +1,54 @@
+# Phase 3A: the first clean 4-qubit fraud VQC (PI decisions, Phase 2 approval).
+# Clean = exact statevector expectations; no shots, no noise, no hardware.
+vqc_id: vqc3a_top4_ra1
+fit_partition: vqc_train          # only legal values (E26)
+eval_partition: vqc_val
+representation:                   # O02 (PROVISIONAL for 3A): supervised top-4 by ANOVA F
+  rep_id: top4-fclassif
+  kind: select_k_best
+  n_components: 4
+  score_func: f_classif
+expected_features: [V17, V14, V12, V10]   # must be reproduced exactly from vqc_train
+encoding:                         # O03 (PI): robust symmetric angles, clip +/-3 IQR -> [-pi, pi]
+  kind: robust_symmetric
+  fit_partition: vqc_train
+  quantile_range: [25.0, 75.0]
+  clip: 3.0
+subset:                           # O17 (3A only): all 213 vqc_train frauds + 4 legit per fraud
+  subset_id: p3a-lpf4
+  legit_per_fraud: 4
+  expected_rows: 1065
+n_qubits: 4
+feature_map:                      # [RR] ZZFeatureMap, reps 1. Entanglement unspecified in [RR];
+  type: zz_feature_map            # "full" is the Qiskit library default (E31).
+  reps: 1
+  entanglement: full
+ansatz:                           # [RR] RealAmplitudes, reps 1, linear entanglement ([RR] example YAML)
+  arch_id: ra-r1
+  ansatz: real_amplitudes
+  reps: 1
+  entanglement: linear
+readout:                          # O01 (PI): four-qubit parity; orientation fixed before evaluation
+  observable: parity
+  orientation: p_fraud_eq_1_minus_z_over_2
+training:
+  loss: binary_cross_entropy
+  bce_epsilon: 1.0e-7
+  class_weighting: none
+  simulation: exact_statevector
+optimizer:                        # COBYLA approved for the pilot only
+  name: COBYLA
+  max_evaluations: 600
+  rhobeg: 1.0
+  tol: 1.0e-4
+  init: uniform_minus_pi_pi
+basis_gates: [rz, sx, x, cx]
+optimization_level: 1
+reproducibility_param_tolerance: 1.0e-10   # same platform: retraining must match to this tolerance
+sanity:                           # pre-registered pass conditions (fixed before seeing vqc_val results)
+  min_auprc_ci_low_over_prevalence: 10.0   # AUPRC 95% CI lower bound > 10 x vqc_val prevalence
+  min_auroc_ci_low: 0.5                    # AUROC 95% CI lower bound > 0.5 (better than random ranking)
+  min_relative_loss_reduction: 0.05        # final BCE at least 5% below initial BCE
+  min_distinct_scores: 100                 # non-constant predictions on vqc_val
+aer_crosscheck_examples: 1024     # frozen VQC replayed on Aer density_matrix (noiseless) for agreement + timing
+comparison_baseline: classical_v1  # LR / RF / HGB hyperparameters reused for the equal-data comparison

@@ -1,0 +1,16 @@
+# Phase 5A: independent VQC model pool (study configs/model_pool/p5a_v1.yaml).
+experiment_id: phase5a_pool
+protocol_version: "0.10"
+description: Pre-registered independent VQC pool (vqc_train fit, vqc_val qualification); no noise, no Q-TRACE
+reporting: reported
+dataset: ulb_v1
+baseline: classical_v1
+vqc: vqc3a_top4_ra1
+seeds:
+  split: 1701
+  model: 2307
+  undersample: 3301
+  noise: 4501
+  shots: 9011
+  policy: 7717
+  bootstrap: 8123
