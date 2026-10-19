@@ -2,5 +2,8 @@
 __pycache__/
 .DS_Store
 .Rhistory
-data/processed/aml_explained_alerts.csv
-data/processed/aml_prioritized_alerts.csv
+
+# Generated AML datasets/results
+data/raw/*.csv
+data/processed/*.csv
+models/test_predictions.csv
