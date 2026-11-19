@@ -60,6 +60,78 @@ def derive_target(alerts: pd.DataFrame) -> pd.Series:
     return target
 
 
+def add_prior_customer_features(alerts: pd.DataFrame, transactions: pd.DataFrame) -> pd.DataFrame:
+    """Attach customer aggregates using only transactions before each alert."""
+    required = {"customer_id", "timestamp", "amount", "counterparty_id", "country", "direction"}
+    missing = required - set(transactions.columns)
+    if missing:
+        raise ValueError(f"transactions are missing columns: {sorted(missing)}")
+
+    tx = transactions.copy()
+    tx["timestamp"] = pd.to_datetime(tx["timestamp"], errors="coerce")
+    tx = tx.dropna(subset=["timestamp"]).sort_values(["customer_id", "timestamp"], kind="mergesort")
+    groups = {}
+    for customer_id, group in tx.groupby("customer_id", sort=False):
+        amounts = pd.to_numeric(group["amount"], errors="coerce").fillna(0).to_numpy(float)
+        timestamps = group["timestamp"].to_numpy(dtype="datetime64[ns]")
+
+        def first_seen_positions(values):
+            seen = set()
+            positions = []
+            for position, value in enumerate(values):
+                if pd.notna(value) and value not in seen:
+                    seen.add(value)
+                    positions.append(position)
+            return np.asarray(positions, dtype=int)
+
+        groups[customer_id] = {
+            "timestamps": timestamps,
+            "amounts": amounts,
+            "prefix_sum": np.cumsum(amounts),
+            "prefix_sum_sq": np.cumsum(amounts * amounts),
+            "prefix_min": np.minimum.accumulate(amounts),
+            "prefix_max": np.maximum.accumulate(amounts),
+            "counterparty_first": first_seen_positions(group["counterparty_id"].to_numpy()),
+            "country_first": first_seen_positions(group["country"].to_numpy()),
+            "outgoing_prefix": np.cumsum(group["direction"].eq("outgoing").to_numpy(int)),
+        }
+
+    feature_rows = []
+    for customer_id, alert_time in zip(alerts["customer_id"], alerts["alert_timestamp"]):
+        features = {
+            "customer_transaction_count": 0,
+            "customer_avg_transaction_amount": np.nan,
+            "customer_std_transaction_amount": np.nan,
+            "customer_max_transaction_amount": np.nan,
+            "customer_min_transaction_amount": np.nan,
+            "customer_total_transaction_amount": 0.0,
+            "unique_counterparties": 0,
+            "unique_countries": 0,
+            "outgoing_ratio": np.nan,
+        }
+        group = groups.get(customer_id)
+        if group is not None and pd.notna(alert_time):
+            cutoff = np.datetime64(pd.Timestamp(alert_time), "ns")
+            count = int(np.searchsorted(group["timestamps"], cutoff, side="left"))
+            features["customer_transaction_count"] = count
+            if count:
+                total = float(group["prefix_sum"][count - 1])
+                features["customer_total_transaction_amount"] = total
+                features["customer_avg_transaction_amount"] = total / count
+                features["customer_min_transaction_amount"] = float(group["prefix_min"][count - 1])
+                features["customer_max_transaction_amount"] = float(group["prefix_max"][count - 1])
+                if count > 1:
+                    variance = (group["prefix_sum_sq"][count - 1] - total * total / count) / (count - 1)
+                    features["customer_std_transaction_amount"] = float(np.sqrt(max(variance, 0.0)))
+                features["outgoing_ratio"] = float(group["outgoing_prefix"][count - 1] / count)
+            features["unique_counterparties"] = int(np.searchsorted(group["counterparty_first"], count))
+            features["unique_countries"] = int(np.searchsorted(group["country_first"], count))
+        feature_rows.append(features)
+
+    features = pd.DataFrame(feature_rows, index=alerts.index)
+    return pd.concat([alerts.copy(), features], axis=1)
+
+
 def build_dataset():
     ensure_inputs()
     print('Loading datasets...')
@@ -76,32 +148,18 @@ def build_dataset():
         raise ValueError(f'alerts.csv is missing columns: {sorted(missing)}')
 
     tx['timestamp'] = pd.to_datetime(tx['timestamp'], errors='coerce')
+    tx = tx.dropna(subset=['timestamp']).copy()
     alerts['alert_timestamp'] = pd.to_datetime(alerts['alert_timestamp'], errors='coerce')
     alerts = alerts.dropna(subset=['alert_timestamp','customer_id']).copy()
     alerts['_alert_ts'] = alerts['alert_timestamp']
 
-    # Transaction-level aggregates by customer: fast vectorized groupby, no row-wise DataFrame filtering.
+    # Customer aggregates are calculated as of each alert, excluding same-time and future transactions.
     print('Building customer behavioral features...')
-    g = tx.groupby('customer_id', sort=False)
-    agg = g['amount'].agg(
-        customer_transaction_count='count',
-        customer_avg_transaction_amount='mean',
-        customer_std_transaction_amount='std',
-        customer_max_transaction_amount='max',
-        customer_min_transaction_amount='min',
-        customer_total_transaction_amount='sum',
-    ).reset_index()
-    cp = g['counterparty_id'].nunique().rename('unique_counterparties').reset_index()
-    countries = g['country'].nunique().rename('unique_countries').reset_index()
-    outgoing = tx.assign(_out=(tx['direction'].eq('outgoing')).astype(int)).groupby('customer_id')['_out'].mean().rename('outgoing_ratio').reset_index()
-    last_date = tx.groupby('customer_id')['timestamp'].max().rename('last_transaction_timestamp').reset_index()
-
-    behavior = agg.merge(cp, on='customer_id', how='left').merge(countries, on='customer_id', how='left').merge(outgoing, on='customer_id', how='left').merge(last_date, on='customer_id', how='left')
-    alerts = alerts.merge(behavior, on='customer_id', how='left')
+    alerts = add_prior_customer_features(alerts, tx)
 
     # Features around each alert using the alert timestamp.
     # Per-customer NumPy searchsorted keeps this fast even for large datasets.
-    tx_groups = {cid: grp.sort_values('timestamp') for cid, grp in tx.groupby('customer_id', sort=False)}
+    tx_groups = {cid: grp.sort_values('timestamp', kind='mergesort') for cid, grp in tx.groupby('customer_id', sort=False)}
     last7_counts, last7_avg, prior_avg, prior_count = [], [], [], []
     for cid, ts_value in zip(alerts['customer_id'].to_numpy(), alerts['_alert_ts'].to_numpy()):
         grp = tx_groups.get(cid)
@@ -110,13 +168,13 @@ def build_dataset():
         t = grp['timestamp'].to_numpy(dtype='datetime64[ns]')
         amounts = grp['amount'].to_numpy(float)
         ts_np = np.datetime64(ts_value, 'ns')
-        i = int(np.searchsorted(t, ts_np, side='right'))
+        i = int(np.searchsorted(t, ts_np, side='left'))
         s7 = int(np.searchsorted(t, ts_np - np.timedelta64(7, 'D'), side='left'))
         prior_vals = amounts[:i]
         vals7 = amounts[s7:i]
         last7_counts.append(i - s7)
         last7_avg.append(float(vals7.mean()) if len(vals7) else 0.0)
-        prior_avg.append(float(prior_vals.mean()) if len(prior_vals) else float(amounts.mean()))
+        prior_avg.append(float(prior_vals.mean()) if len(prior_vals) else 0.0)
         prior_count.append(i)
     alerts['transactions_last_7_days'] = last7_counts
     alerts['avg_amount_last_7_days'] = last7_avg

@@ -1,20 +1,61 @@
 {
-  "dataset_rows": 155927,
-  "mean_risk_score": 38.14064914992272,
-  "median_risk_score": 36.0,
+  "dataset_rows": 3115,
+  "mean_risk_score": 30.708828250401282,
+  "median_risk_score": 28.0,
   "risk_level_distribution": {
-    "MEDIUM": 145433,
-    "HIGH": 7701,
-    "CRITICAL": 2685,
-    "LOW": 108
+    "MEDIUM": 1754,
+    "LOW": 1027,
+    "HIGH": 284,
+    "CRITICAL": 50
   },
   "priority_distribution": {
-    "P3": 145433,
-    "P2": 7701,
-    "P1": 2685,
-    "P4": 108
+    "P3": 1754,
+    "P4": 1027,
+    "P2": 284,
+    "P1": 50
   },
-  "average_ml_probability": 0.43886814776866,
-  "average_behavioral_risk": 0.2473435979801634,
-  "output_file": "/Users/pooniatushar2000gmail.com/Desktop/AML_Alert_Triage_Engine_UPDATED/data/processed/aml_risk_scored_alerts.csv"
+  "average_ml_probability": 0.3476252510917194,
+  "average_behavioral_risk": 0.21249944095347367,
+  "score_thresholds": {
+    "CRITICAL": 73,
+    "HIGH": 47,
+    "MEDIUM": 25
+  },
+  "level_to_priority": {
+    "CRITICAL": "P1",
+    "HIGH": "P2",
+    "MEDIUM": "P3",
+    "LOW": "P4"
+  },
+  "heldout_tier_metrics": {
+    "P1": {
+      "alerts": 0,
+      "share": 0.0,
+      "truly_suspicious": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "P2": {
+      "alerts": 7,
+      "share": 0.009762900976290097,
+      "truly_suspicious": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "P3": {
+      "alerts": 561,
+      "share": 0.7824267782426778,
+      "truly_suspicious": 5,
+      "precision": 0.008912655971479501,
+      "recall": 1.0
+    },
+    "P4": {
+      "alerts": 149,
+      "share": 0.20781032078103207,
+      "truly_suspicious": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    }
+  },
+  "output_file": "data/processed/aml_risk_scored_alerts.csv"
 }

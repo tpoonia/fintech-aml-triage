@@ -16,6 +16,7 @@ Purpose:
 
 from pathlib import Path
 import json
+import sys
 import warnings
 
 import joblib
@@ -30,44 +31,24 @@ warnings.filterwarnings("ignore")
 # ---------------------------------------------------------------------
 
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from src.triage_config import (
+    LEVEL_TO_PRIORITY,
+    SCORE_THRESHOLDS,
+    priority_for_level as priority,
+    risk_level_for_score as risk_level,
+)
 
 DATA_PATH = ROOT / "data" / "processed" / "ml_alert_dataset.csv"
 MODEL_PATH = ROOT / "models" / "aml_random_forest.joblib"
 OUTPUT_PATH = ROOT / "data" / "processed" / "aml_risk_scored_alerts.csv"
 SUMMARY_PATH = ROOT / "models" / "risk_scoring_summary.json"
+TEST_PREDICTIONS_PATH = ROOT / "models" / "test_predictions.csv"
 
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 SUMMARY_PATH.parent.mkdir(parents=True, exist_ok=True)
-
-
-# ---------------------------------------------------------------------
-# Risk-level definitions
-# ---------------------------------------------------------------------
-
-def risk_level(score: int) -> str:
-    """Map a 0-100 risk score to an operational risk category."""
-
-    if score >= 75:
-        return "CRITICAL"
-
-    if score >= 50:
-        return "HIGH"
-
-    if score >= 25:
-        return "MEDIUM"
-
-    return "LOW"
-
-
-def priority(level: str) -> str:
-    """Map risk level to investigator priority."""
-
-    return {
-        "CRITICAL": "P1",
-        "HIGH": "P2",
-        "MEDIUM": "P3",
-        "LOW": "P4",
-    }[level]
 
 
 # ---------------------------------------------------------------------
@@ -471,7 +452,7 @@ def main() -> None:
         if row["ml_probability"] >= 0.75:
 
             reasons.append(
-                "high ML suspicious-activity probability"
+                "high model-estimated alert probability"
             )
 
 
@@ -533,6 +514,24 @@ def main() -> None:
     )
 
 
+    heldout_tier_metrics = {}
+    if TEST_PREDICTIONS_PATH.exists():
+        test = pd.read_csv(TEST_PREDICTIONS_PATH)
+        if {"alert_id", "is_suspicious"}.issubset(test.columns):
+            truth = test[["alert_id", "is_suspicious"]].dropna().drop_duplicates("alert_id")
+            heldout = df[["alert_id", "risk_level", "priority"]].merge(truth, on="alert_id", how="inner")
+            total_positive = int(heldout["is_suspicious"].sum())
+            for tier in ("P1", "P2", "P3", "P4"):
+                rows = heldout[heldout["priority"] == tier]
+                true_positive = int(rows["is_suspicious"].sum())
+                heldout_tier_metrics[tier] = {
+                    "alerts": int(len(rows)),
+                    "share": float(len(rows) / len(heldout)) if len(heldout) else 0.0,
+                    "truly_suspicious": true_positive,
+                    "precision": float(rows["is_suspicious"].mean()) if len(rows) else 0.0,
+                    "recall": float(true_positive / total_positive) if total_positive else 0.0,
+                }
+
     summary = {
 
         "dataset_rows": int(
@@ -575,9 +574,10 @@ def main() -> None:
             df["behavioral_risk"].mean()
         ),
 
-        "output_file": str(
-            OUTPUT_PATH
-        ),
+        "score_thresholds": SCORE_THRESHOLDS,
+        "level_to_priority": LEVEL_TO_PRIORITY,
+        "heldout_tier_metrics": heldout_tier_metrics,
+        "output_file": OUTPUT_PATH.relative_to(ROOT).as_posix(),
     }
 
 

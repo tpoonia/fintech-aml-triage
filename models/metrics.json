@@ -1,8 +1,8 @@
 {
-  "dataset_rows": 155927,
+  "dataset_rows": 3115,
   "target_distribution": {
-    "0": 133183,
-    "1": 22744
+    "0": 2704,
+    "1": 411
   },
   "numeric_features": [
     "transaction_amount",
@@ -32,38 +32,48 @@
     "customer_country",
     "risk_profile"
   ],
+  "excluded_from_features": [
+    "investigation_outcome",
+    "is_suspicious"
+  ],
+  "split": "GroupShuffleSplit by customer_id",
+  "train_rows": 2398,
+  "test_rows": 717,
+  "train_customers": 127,
+  "test_customers": 32,
+  "customer_overlap": 0,
   "results": {
     "logistic_regression": {
-      "precision": 0.2384924312635156,
-      "recall": 0.5091228841503627,
-      "f1": 0.32482468443197754,
-      "roc_auc": 0.6527344050999757,
-      "pr_auc": 0.36073320862975905,
+      "precision": 0.13166144200626959,
+      "recall": 0.5,
+      "f1": 0.20843672456575682,
+      "roc_auc": 0.5603513127209809,
+      "pr_auc": 0.1555975866179817,
       "confusion_matrix": [
         [
-          19242,
-          7395
+          356,
+          277
         ],
         [
-          2233,
-          2316
+          42,
+          42
         ]
       ]
     },
     "random_forest": {
-      "precision": 0.590960881124193,
-      "recall": 0.34205319850516597,
-      "f1": 0.43330548593706486,
-      "roc_auc": 0.6645356825152747,
-      "pr_auc": 0.41230381312690384,
+      "precision": 0.125,
+      "recall": 0.011904761904761904,
+      "f1": 0.021739130434782608,
+      "roc_auc": 0.5224178138870081,
+      "pr_auc": 0.130974195150458,
       "confusion_matrix": [
         [
-          25560,
-          1077
+          626,
+          7
         ],
         [
-          2993,
-          1556
+          83,
+          1
         ]
       ]
     }
