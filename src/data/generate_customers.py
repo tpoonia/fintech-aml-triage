@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import numpy as np
 import pandas as pd
 
@@ -62,7 +63,10 @@ def generate_customers(n_customers: int = 10_000, seed: int = 42) -> pd.DataFram
 
 
 if __name__ == '__main__':
-    customers = generate_customers()
+    customers = generate_customers(
+        n_customers=int(os.environ.get('AML_N_CUSTOMERS', '10000')),
+        seed=int(os.environ.get('AML_SEED', '42')),
+    )
     customers.to_csv(RAW / 'customers.csv', index=False)
     print(f'Saved {len(customers):,} customers -> {RAW / "customers.csv"}')
     print(customers['customer_type'].value_counts())

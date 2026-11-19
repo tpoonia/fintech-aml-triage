@@ -19,6 +19,7 @@ Outputs:
 
 from pathlib import Path
 import json
+import os
 import warnings
 
 import joblib
@@ -46,6 +47,7 @@ IMPORTANCE_PATH = PROJECT_ROOT / "models" / "xai_feature_importance.csv"
 # ---------------------------------------------------------------------
 
 TARGET_COLUMN = "target"
+MAX_LOCAL_SHAP_ROWS = max(1, int(os.environ.get("AML_SHAP_MAX_ROWS", "5000")))
 
 # These are columns that identify the alert/customer or are descriptive
 # rather than model features.
@@ -57,6 +59,7 @@ NON_FEATURE_COLUMNS = {
     "triggered_rule",
     "transaction_id",
     "investigation_outcome",
+    "is_suspicious",
     "risk_level",
     "priority",
     "priority_order",
@@ -432,7 +435,22 @@ def shap_explanations(
             "classifier/regressor."
         )
 
-    shap_X, shap_feature_names = transform_for_shap(X, preprocessor)
+    total_rows = len(X)
+    if total_rows > MAX_LOCAL_SHAP_ROWS:
+        top_count = max(1, MAX_LOCAL_SHAP_ROWS // 5)
+        top_index = df.nlargest(top_count, "risk_score").index
+        remaining = df.drop(index=top_index)
+        random_count = MAX_LOCAL_SHAP_ROWS - len(top_index)
+        random_index = remaining.sample(
+            n=min(random_count, len(remaining)), random_state=42
+        ).index
+        selected_index = top_index.union(random_index).sort_values()
+        explain_X = X.loc[selected_index]
+    else:
+        selected_index = df.index
+        explain_X = X
+
+    shap_X, shap_feature_names = transform_for_shap(explain_X, preprocessor)
 
     print(f"SHAP feature matrix shape: {shap_X.shape}")
 
@@ -512,10 +530,13 @@ def shap_explanations(
 
         explanations.append("; ".join(parts))
 
-    return (
-        pd.Series(explanations, index=df.index),
-        importance,
+    result = pd.Series(
+        "Local SHAP not sampled; review the behavioral signals and global importance.",
+        index=df.index,
+        dtype=object,
     )
+    result.loc[selected_index] = explanations
+    return result, importance
 
 
 # ---------------------------------------------------------------------
@@ -636,9 +657,11 @@ def main():
     summary = {
         "stage": "explainable_ai",
         "alerts_explained": int(len(df)),
+        "local_shap_rows": int(shap_reason.ne("Local SHAP not sampled; review the behavioral signals and global importance.").sum()),
+        "max_local_shap_rows": MAX_LOCAL_SHAP_ROWS,
         "feature_count": int(len(feature_columns)),
-        "output_file": str(OUTPUT_PATH),
-        "feature_importance_file": str(IMPORTANCE_PATH),
+        "output_file": OUTPUT_PATH.relative_to(PROJECT_ROOT).as_posix(),
+        "feature_importance_file": IMPORTANCE_PATH.relative_to(PROJECT_ROOT).as_posix(),
     }
 
     summary_path = PROJECT_ROOT / "models" / "xai_summary.json"

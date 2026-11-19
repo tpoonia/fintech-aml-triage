@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import numpy as np
 import pandas as pd
 
@@ -17,7 +18,7 @@ def generate_alerts(transactions: pd.DataFrame, customers: pd.DataFrame, seed: i
     rng = np.random.default_rng(seed)
     tx = transactions.copy()
     tx['timestamp'] = pd.to_datetime(tx['timestamp'], errors='coerce')
-    tx = tx.dropna(subset=['timestamp']).sort_values(['customer_id','timestamp']).reset_index(drop=True)
+    tx = tx.dropna(subset=['timestamp']).sort_values(['customer_id','timestamp'], kind='mergesort').reset_index(drop=True)
     c = customers.set_index('customer_id')
     alerts = []
     aid = 1
@@ -111,7 +112,11 @@ if __name__ == '__main__':
     if not cp.exists() or not tp.exists():
         raise FileNotFoundError('Run generate_customers.py and generate_transactions.py first.')
     customers = pd.read_csv(cp); transactions = pd.read_csv(tp)
-    alerts = generate_alerts(transactions, customers)
+    alerts = generate_alerts(
+        transactions,
+        customers,
+        seed=int(os.environ.get('AML_SEED', '42')),
+    )
     alerts.to_csv(PROCESSED / 'alerts.csv', index=False)
     print(f'Saved {len(alerts):,} alerts -> {PROCESSED / "alerts.csv"}')
     print('\nInvestigation outcomes:')

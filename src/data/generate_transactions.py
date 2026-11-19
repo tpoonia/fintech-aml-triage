@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import numpy as np
 import pandas as pd
 
@@ -68,7 +69,7 @@ def generate_transactions(customers: pd.DataFrame, n_transactions: int = 200_000
         'country': country,
         'counterparty_id': cp,
         'direction': direction,
-    }).sort_values('timestamp').reset_index(drop=True)
+    }).sort_values('timestamp', kind='mergesort').reset_index(drop=True)
 
     # Add a compact suspicious burst: this makes velocity/rapid movement visible to rule logic.
     suspicious_customers = c.loc[c['is_suspicious'].eq(1), 'customer_id'].to_numpy()
@@ -95,7 +96,7 @@ def generate_transactions(customers: pd.DataFrame, n_transactions: int = 200_000
         ex.insert(0, 'transaction_id', [f'T{tx_id_start+i:07d}' for i in range(len(ex))])
         ex['currency'] = ex['country'].map(COUNTRY_CURRENCY).fillna('USD')
         ex = ex[['transaction_id','customer_id','timestamp','amount','transaction_type','currency','country','counterparty_id','direction']]
-        df = pd.concat([df, ex], ignore_index=True).sort_values('timestamp').reset_index(drop=True)
+        df = pd.concat([df, ex], ignore_index=True).sort_values('timestamp', kind='mergesort').reset_index(drop=True)
     return df
 
 
@@ -104,7 +105,11 @@ if __name__ == '__main__':
     if not customers_path.exists():
         raise FileNotFoundError(f'Missing {customers_path}. Run generate_customers.py first.')
     customers = pd.read_csv(customers_path)
-    tx = generate_transactions(customers)
+    tx = generate_transactions(
+        customers,
+        n_transactions=int(os.environ.get('AML_N_TRANSACTIONS', '200000')),
+        seed=int(os.environ.get('AML_SEED', '42')),
+    )
     # Save updated customer rates as part of the raw dataset.
     customers[['customer_id','customer_type','country','account_age_days','monthly_income','risk_profile','monthly_tx_rate','is_suspicious','typology']].to_csv(customers_path, index=False)
     tx.to_csv(RAW / 'transactions.csv', index=False)
