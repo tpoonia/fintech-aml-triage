@@ -1,0 +1,42 @@
+services:
+  demo-data:
+    build: .
+    command: ["python", "ensure_demo_data.py"]
+    volumes:
+      - aml-data:/app/data
+      - aml-models:/app/models
+
+  api:
+    build: .
+    environment:
+      SERVICE: api
+      PORT: "8000"
+      AML_CORS_ORIGINS: "http://localhost:8501"
+      AML_ALERTS_DATA_PATH: /app/data/processed/aml_prioritized_alerts.csv
+    depends_on:
+      demo-data:
+        condition: service_completed_successfully
+    volumes:
+      - aml-data:/app/data
+      - aml-models:/app/models
+    ports:
+      - "8000:8000"
+
+  dashboard:
+    build: .
+    environment:
+      SERVICE: dashboard
+      PORT: "8501"
+      AML_ALERTS_DATA_PATH: /app/data/processed/aml_prioritized_alerts.csv
+    depends_on:
+      demo-data:
+        condition: service_completed_successfully
+    volumes:
+      - aml-data:/app/data
+      - aml-models:/app/models
+    ports:
+      - "8501:8501"
+
+volumes:
+  aml-data:
+  aml-models:
