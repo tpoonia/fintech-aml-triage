@@ -1,9 +1,10 @@
-.venv/
+.venv*/
 __pycache__/
 .DS_Store
 .Rhistory
 
 # Generated AML datasets/results
-data/raw/*.csv
-data/processed/*.csv
-models/test_predictions.csv
+/data/raw/*.csv
+/data/processed/*.csv
+/models/*.joblib
+/models/*.csv
