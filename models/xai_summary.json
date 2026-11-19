@@ -1,8 +1,8 @@
 {
   "stage": "explainable_ai",
   "alerts_explained": 3115,
-  "local_shap_rows": 3115,
-  "max_local_shap_rows": 5000,
+  "local_shap_rows": 1500,
+  "max_local_shap_rows": 1500,
   "feature_count": 24,
   "output_file": "data/processed/aml_explained_alerts.csv",
   "feature_importance_file": "models/xai_feature_importance.csv"

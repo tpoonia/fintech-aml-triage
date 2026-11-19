@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_demo_pipeline_outputs_and_all_dashboard_tabs(monkeypatch):
     result = subprocess.run(
-        [sys.executable, "run_pipeline.py", "--demo"],
+        [sys.executable, "run_pipeline.py", "--demo", "--n-customers", "200"],
         cwd=ROOT,
         check=True,
         capture_output=True,

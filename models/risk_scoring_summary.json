@@ -1,20 +1,20 @@
 {
   "dataset_rows": 3115,
-  "mean_risk_score": 30.708828250401282,
-  "median_risk_score": 28.0,
+  "mean_risk_score": 30.71107544141252,
+  "median_risk_score": 29.0,
   "risk_level_distribution": {
-    "MEDIUM": 1754,
-    "LOW": 1027,
-    "HIGH": 284,
-    "CRITICAL": 50
+    "MEDIUM": 1749,
+    "LOW": 1032,
+    "HIGH": 283,
+    "CRITICAL": 51
   },
   "priority_distribution": {
-    "P3": 1754,
-    "P4": 1027,
-    "P2": 284,
-    "P1": 50
+    "P3": 1749,
+    "P4": 1032,
+    "P2": 283,
+    "P1": 51
   },
-  "average_ml_probability": 0.3476252510917194,
+  "average_ml_probability": 0.34759870895944406,
   "average_behavioral_risk": 0.21249944095347367,
   "score_thresholds": {
     "CRITICAL": 73,
@@ -43,15 +43,15 @@
       "recall": 0.0
     },
     "P3": {
-      "alerts": 561,
-      "share": 0.7824267782426778,
+      "alerts": 556,
+      "share": 0.7754532775453278,
       "truly_suspicious": 5,
-      "precision": 0.008912655971479501,
+      "precision": 0.008992805755395683,
       "recall": 1.0
     },
     "P4": {
-      "alerts": 149,
-      "share": 0.20781032078103207,
+      "alerts": 154,
+      "share": 0.21478382147838215,
       "truly_suspicious": 0,
       "precision": 0.0,
       "recall": 0.0

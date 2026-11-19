@@ -31,9 +31,20 @@ python -m pip install -r requirements.txt
 
 All dependencies are pinned to versions exercised by the pipeline and tests.
 
+## Investigator dashboard
+
+The Streamlit dashboard uses a dark operations theme and a few purposeful 3D and animated views. Each one shows real alert data:
+
+- **Alert galaxy (hero):** every alert is a particle; distance from the glowing core is inverse to risk score, color is the P1–P4 tier, and P1 alerts pulse. KPIs count up on load.
+- **3D risk explorer (Risk Intelligence):** alerts plotted by ML probability, behavioral risk and log transaction amount. Drag to rotate, scroll to zoom, hover for alert details, toggle tiers. Follows the sidebar filters.
+- **Risk gauge (Investigation Desk):** animated needle on the shared tier thresholds plus signal bars for the selected alert.
+- **Pipeline flow and held-out tier precision (Model & XAI).**
+
+Motion respects `prefers-reduced-motion`, rendering pauses when a view is off screen, and views fall back to static content without WebGL. Three.js and GSAP are vendored under `src/dashboard/static/vendor/` and served with Streamlit static serving (`enableStaticServing` in `.streamlit/config.toml`), with a jsDelivr fallback.
+
 ## Run the pipeline
 
-Build the small demo dataset (200 customers, 4,000 base transactions, about 3,000 alerts; typically under 20 seconds):
+Build the hosted-demo dataset (1,500 customers, 30,000 base transactions, about 23,000 alerts; about 50 seconds). It is large enough for a meaningful customer-disjoint holdout, and SHAP is bounded to 1,500 local explanations in this mode:
 
 ```bash
 python run_pipeline.py --demo
@@ -62,7 +73,7 @@ For Parquet, set `AML_ALERTS_DATA_PATH=data/processed/aml_prioritized_alerts.par
 
 ## Start the applications
 
-The dashboard can create demo data on first use. To prepare it from a fresh clone with one command:
+The dashboard builds the demo data automatically on first launch (set `AML_AUTO_BUILD_DEMO=0` to disable this). To prepare it from a fresh clone with one command:
 
 ```bash
 python ensure_demo_data.py
@@ -143,6 +154,8 @@ src/explainability/             SHAP and behavioral explanations
 src/prioritization/              Investigator queue construction
 src/api/app.py                  Cached FastAPI service
 src/dashboard/app.py            Streamlit investigator workspace
+src/dashboard/visuals.py        3D/animated components (three.js + GSAP, rendered with st.iframe)
+src/dashboard/static/vendor/    Vendored three.js r158 (MIT) and GSAP 3.12 served via static serving
 tests/                          Deterministic unit, API, and demo smoke tests
 models/*.json                   Small evaluation and stage summaries
 ```

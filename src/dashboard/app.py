@@ -26,6 +26,7 @@ import os
 import subprocess
 import sys
 
+import altair as alt
 import pandas as pd
 import streamlit as st
 
@@ -38,6 +39,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 from src.triage_config import LEVEL_TO_PRIORITY, PRIORITY_DEFINITIONS, SCORE_THRESHOLDS
+from src.dashboard import visuals
 
 _configured_data_path = os.environ.get("AML_ALERTS_DATA_PATH")
 DATA_PATH = Path(_configured_data_path).expanduser() if _configured_data_path else PROJECT_ROOT / "data" / "processed" / "aml_prioritized_alerts.csv"
@@ -47,6 +49,9 @@ XAI_PATH = PROJECT_ROOT / "models" / "xai_feature_importance.csv"
 XAI_SUMMARY_PATH = PROJECT_ROOT / "models" / "xai_summary.json"
 RISK_PATH = PROJECT_ROOT / "data" / "processed" / "aml_risk_scored_alerts.csv"
 EXPLAINED_PATH = PROJECT_ROOT / "data" / "processed" / "aml_explained_alerts.csv"
+METRICS_PATH = PROJECT_ROOT / "models" / "metrics.json"
+RISK_SUMMARY_PATH = PROJECT_ROOT / "models" / "risk_scoring_summary.json"
+AUTO_BUILD_DEMO = os.environ.get("AML_AUTO_BUILD_DEMO", "1").lower() not in {"0", "false", "no"}
 
 st.set_page_config(
     page_title="AML Alert Triage Engine",
@@ -63,89 +68,57 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    .stApp { background: #f6f8fb; }
+    :root{--bg:#070b16;--panel:#0e1526;--line:rgba(148,163,184,.14);--text:#e6edf7;--muted:#8b9ab4;
+          --p1:#ff4d6d;--p2:#ff9f43;--p3:#f7c948;--p4:#2dd4bf;--accent:#38bdf8}
+    .stApp { background: radial-gradient(1200px 600px at 85% -10%, rgba(56,189,248,.08), transparent 60%), var(--bg); }
     .block-container { max-width: 1540px; padding-top: 1.1rem; padding-bottom: 3rem; }
+    [data-testid="stSidebar"] { background: #0a1020; border-right: 1px solid var(--line); }
+    [data-testid="stSidebar"] .stCaption { color: var(--muted) !important; }
+    [data-testid="stHeader"] { background: transparent; }
+    iframe { border: 0; }
 
-    [data-testid="stSidebar"] {
-        background: #101827;
-    }
-    [data-testid="stSidebar"] * { color: #e8edf5 !important; }
-    [data-testid="stSidebar"] .stCaption { color: #aeb9ca !important; }
+    .stTabs [data-baseweb="tab-list"] { gap: 4px; border-bottom: 1px solid var(--line); }
+    .stTabs [data-baseweb="tab"] { padding: 10px 16px; border-radius: 10px 10px 0 0; color: var(--muted); }
+    .stTabs [aria-selected="true"] { color: var(--text); background: rgba(56,189,248,.08); }
 
-    .hero {
-        background: linear-gradient(135deg, #111827 0%, #1d2a3f 100%);
-        border-radius: 20px;
-        padding: 26px 30px;
-        color: white;
-        margin-bottom: 18px;
-        box-shadow: 0 12px 35px rgba(15,23,42,.14);
-    }
-    .hero-row { display:flex; justify-content:space-between; gap:20px; align-items:center; }
-    .hero-title { font-size: 2.35rem; font-weight: 800; letter-spacing:-.04em; margin:0; }
-    .hero-sub { color:#cbd5e1; font-size:1rem; margin-top:7px; }
-    .live-pill {
-        border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08);
-        border-radius:999px; padding:8px 13px; white-space:nowrap; font-size:.82rem;
-    }
+    .section { font-size:1.4rem; font-weight:800; color:var(--text); margin:22px 0 4px; letter-spacing:-.02em; }
+    .section-sub { color:var(--muted); margin-bottom:14px; }
 
-    .section { font-size:1.45rem; font-weight:800; color:#172033; margin:20px 0 10px; }
-    .section-sub { color:#667085; margin-top:-5px; margin-bottom:12px; }
+    .kpi { background:var(--panel); border:1px solid var(--line); border-radius:15px; padding:16px 18px; min-height:108px; }
+    .kpi-label { color:var(--muted); font-size:.76rem; font-weight:650; text-transform:uppercase; letter-spacing:.06em; }
+    .kpi-value { color:var(--text); font-size:1.75rem; font-weight:800; margin-top:6px; font-variant-numeric:tabular-nums; }
+    .kpi-note { color:#71809b; font-size:.76rem; margin-top:4px; }
 
-    .kpi {
-        background:white; border:1px solid #e6eaf0; border-radius:15px;
-        padding:17px 18px; min-height:116px; box-shadow:0 5px 16px rgba(16,24,40,.045);
-    }
-    .kpi-label { color:#667085; font-size:.82rem; font-weight:650; text-transform:uppercase; letter-spacing:.04em; }
-    .kpi-value { color:#172033; font-size:1.85rem; font-weight:800; margin-top:7px; }
-    .kpi-note { color:#7b8494; font-size:.76rem; margin-top:5px; }
+    .badge { display:inline-block; padding:3px 10px; border-radius:999px; font-size:.73rem; font-weight:800;
+             letter-spacing:.02em; background:rgba(148,163,184,.14); color:#cbd5e1; }
+    .badge-critical, .badge-p1 { background:rgba(255,77,109,.14); color:var(--p1); border:1px solid rgba(255,77,109,.4); }
+    .badge-high, .badge-p2 { background:rgba(255,159,67,.14); color:var(--p2); border:1px solid rgba(255,159,67,.4); }
+    .badge-medium, .badge-p3 { background:rgba(247,201,72,.12); color:var(--p3); border:1px solid rgba(247,201,72,.35); }
+    .badge-low, .badge-p4 { background:rgba(45,212,191,.12); color:var(--p4); border:1px solid rgba(45,212,191,.35); }
 
-    .panel {
-        background:white; border:1px solid #e6eaf0; border-radius:15px;
-        padding:18px; box-shadow:0 5px 16px rgba(16,24,40,.04); margin-bottom:12px;
-    }
+    .alert-header { background:linear-gradient(135deg,#0e1730,#0a1020); border:1px solid var(--line); border-radius:18px;
+                    padding:18px 20px; margin-bottom:12px; }
+    .alert-id { font-size:1.45rem; font-weight:800; color:var(--text); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .muted { color:var(--muted); }
 
-    .risk-critical { color:#b42318; font-weight:800; }
-    .risk-high { color:#d04a00; font-weight:800; }
-    .risk-medium { color:#9a6700; font-weight:800; }
-    .risk-low { color:#147d4e; font-weight:800; }
+    .signal { border:1px solid var(--line); border-radius:12px; padding:12px; background:var(--panel); min-height:84px;
+              transition:border-color .2s, transform .2s; }
+    .signal:hover { border-color:rgba(56,189,248,.45); transform:translateY(-2px); }
+    .signal-label { font-size:.7rem; color:var(--muted); text-transform:uppercase; font-weight:700; letter-spacing:.05em; }
+    .signal-value { font-size:1.02rem; color:var(--text); font-weight:800; margin-top:4px; word-break:break-word; }
 
-    .badge {
-        display:inline-block; padding:4px 9px; border-radius:999px;
-        font-size:.73rem; font-weight:800; letter-spacing:.02em;
-        background:#eef2f7; color:#344054;
-    }
-    .badge-critical { background:#fee4e2; color:#b42318; }
-    .badge-high { background:#fff0e6; color:#b54708; }
-    .badge-medium { background:#fff7d6; color:#9a6700; }
-    .badge-low { background:#e8f7ef; color:#147d4e; }
-    .badge-p1 { background:#fee4e2; color:#b42318; }
-    .badge-p2 { background:#fff0e6; color:#b54708; }
-    .badge-p3 { background:#fff7d6; color:#9a6700; }
-    .badge-p4 { background:#e8f7ef; color:#147d4e; }
+    .callout { background:rgba(56,189,248,.06); border:1px solid rgba(56,189,248,.25); border-left:4px solid var(--accent);
+               padding:13px 15px; border-radius:10px; color:#cbd5e1; }
+    .disclaimer { display:flex; gap:10px; align-items:center; background:rgba(247,201,72,.06);
+                  border:1px solid rgba(247,201,72,.25); color:#e9d8a6; padding:10px 14px; border-radius:12px;
+                  font-size:.88rem; margin:12px 0 4px; }
+    .tiers { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 2px; }
+    .tier-chip { font-size:.78rem; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:4px 10px; }
+    .tier-chip b { margin-right:4px; }
 
-    .alert-header {
-        background:#ffffff; border:1px solid #e4e8ef; border-radius:16px;
-        padding:18px; margin-bottom:12px;
-    }
-    .alert-id { font-size:1.35rem; font-weight:800; color:#172033; }
-    .muted { color:#667085; }
-
-    .signal {
-        border:1px solid #e6eaf0; border-radius:12px; padding:12px;
-        background:#fafbfc; min-height:88px;
-    }
-    .signal-label { font-size:.72rem; color:#667085; text-transform:uppercase; font-weight:700; }
-    .signal-value { font-size:1.05rem; color:#172033; font-weight:800; margin-top:4px; }
-
-    .callout {
-        background:#f8fafc; border-left:4px solid #475467; padding:13px 15px;
-        border-radius:9px; color:#344054;
-    }
-
-    div[data-testid="stMetric"] {
-        background:white; border:1px solid #e6eaf0; border-radius:14px;
-        padding:12px 15px; box-shadow:0 4px 14px rgba(16,24,40,.035);
-    }
+    div[data-testid="stMetric"] { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:12px 15px; }
+    div[data-testid="stDataFrame"] { border:1px solid var(--line); border-radius:12px; }
+    @media (prefers-reduced-motion: reduce) { .signal { transition:none; } .signal:hover { transform:none; } }
     </style>
     """,
     unsafe_allow_html=True,
@@ -249,6 +222,95 @@ def top_counts(data, column, n=10):
     return data[column].fillna("UNKNOWN").astype(str).value_counts().head(n)
 
 
+def load_json(path: Path) -> dict:
+    try:
+        return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    except Exception:
+        return {}
+
+
+TIER_SCALE = alt.Scale(domain=visuals.TIER_ORDER, range=[visuals.TIER_COLORS[t] for t in visuals.TIER_ORDER])
+LEVEL_TO_TIER = {"CRITICAL": "P1", "HIGH": "P2", "MEDIUM": "P3", "LOW": "P4"}
+
+
+def style_chart(chart, height=300):
+    """Shared dark chart styling so every Altair chart matches the dashboard theme."""
+
+    return (
+        chart.properties(height=height, background="transparent")
+        .configure_view(strokeWidth=0)
+        .configure_axis(
+            labelColor="#8b9ab4", titleColor="#8b9ab4", gridColor="rgba(148,163,184,.10)",
+            domainColor="rgba(148,163,184,.25)", tickColor="rgba(148,163,184,.25)", labelFontSize=11, titleFontSize=11,
+        )
+        .configure_legend(labelColor="#cbd5e1", titleColor="#8b9ab4")
+    )
+
+
+def bar_chart(series: pd.Series, label: str, color="#38bdf8", height=300, horizontal=True):
+    data = series.rename("value").reset_index()
+    data.columns = ["category", "value"]
+    if horizontal:
+        enc = alt.Chart(data).mark_bar(cornerRadiusEnd=5, color=color).encode(
+            y=alt.Y("category:N", sort="-x", title=None, axis=alt.Axis(labelLimit=260)),
+            x=alt.X("value:Q", title=label),
+            tooltip=[alt.Tooltip("category:N", title="Category"), alt.Tooltip("value:Q", title=label, format=",.2f")],
+        )
+    else:
+        enc = alt.Chart(data).mark_bar(cornerRadiusEnd=5, color=color).encode(
+            x=alt.X("category:N", sort=None, title=None, axis=alt.Axis(labelAngle=0)),
+            y=alt.Y("value:Q", title=label),
+            tooltip=[alt.Tooltip("category:N", title="Category"), alt.Tooltip("value:Q", title=label, format=",.2f")],
+        )
+    st.altair_chart(style_chart(enc, height), width="stretch")
+
+
+def tier_bar_chart(counts: pd.Series, height=260):
+    data = counts.rename("alerts").reset_index()
+    data.columns = ["tier", "alerts"]
+    data["label"] = data["tier"].map(lambda t: f"{t} · {visuals.TIER_LABELS.get(t, t)}")
+    data["share"] = data["alerts"] / max(1, data["alerts"].sum())
+    chart = alt.Chart(data).mark_bar(cornerRadiusEnd=6, height=26).encode(
+        y=alt.Y("label:N", sort=None, title=None),
+        x=alt.X("alerts:Q", title="Alerts (log scale)", scale=alt.Scale(type="symlog"),
+                axis=alt.Axis(values=[0, 10, 100, 1000, 10000], format="~s", grid=False)),
+        color=alt.Color("tier:N", scale=TIER_SCALE, legend=None),
+        tooltip=[alt.Tooltip("label:N", title="Tier"), alt.Tooltip("alerts:Q", format=","),
+                 alt.Tooltip("share:Q", title="Share", format=".1%")],
+    )
+    text = chart.mark_text(align="left", dx=6, color="#cbd5e1").encode(text=alt.Text("alerts:Q", format=","))
+    st.altair_chart(style_chart(chart + text, height), width="stretch")
+    st.caption("Log scale so the small P1 and P2 tiers stay visible next to P3.")
+
+
+def risk_histogram(data: pd.DataFrame, height=300):
+    frame = pd.DataFrame({
+        "risk_score": pd.to_numeric(data["risk_score"], errors="coerce"),
+        "tier": data["priority"].astype(str) if "priority" in data else "P3",
+    }).dropna()
+    bars = alt.Chart(frame).mark_bar(opacity=.9, cornerRadiusTopLeft=2, cornerRadiusTopRight=2).encode(
+        x=alt.X("risk_score:Q", bin=alt.Bin(step=2), title="Risk score"),
+        y=alt.Y("count():Q", title="Alerts", scale=alt.Scale(type="symlog")),
+        color=alt.Color("tier:N", scale=TIER_SCALE, title="Tier"),
+        tooltip=[alt.Tooltip("tier:N"), alt.Tooltip("count():Q", title="Alerts", format=",")],
+    )
+    rules = pd.DataFrame([{"x": v, "label": f"{LEVEL_TO_TIER[k]} ≥ {v}"} for k, v in SCORE_THRESHOLDS.items()])
+    rule = alt.Chart(rules).mark_rule(strokeDash=[4, 4], color="#cbd5e1", opacity=.5).encode(x="x:Q")
+    lbl = alt.Chart(rules).mark_text(align="left", dx=4, color="#cbd5e1", fontSize=10).encode(
+        x="x:Q", y=alt.value(6), text="label:N")
+    st.altair_chart(style_chart(bars + rule + lbl, height), width="stretch")
+
+
+TABLE_CONFIG = {
+    "risk_score": st.column_config.ProgressColumn("Risk score", min_value=0, max_value=100, format="%.0f"),
+    "ml_probability": st.column_config.ProgressColumn("ML probability", min_value=0, max_value=1, format="percent"),
+    "priority_score": st.column_config.ProgressColumn("Priority score", min_value=0, max_value=100, format="%.1f"),
+    "transaction_amount": st.column_config.NumberColumn("Amount", format="dollar"),
+    "alert_id": st.column_config.TextColumn("Alert"),
+    "customer_id": st.column_config.TextColumn("Customer"),
+}
+
+
 def get_explanation(row):
     candidates = [
         "investigator_explanation",
@@ -283,7 +345,44 @@ def timestamp_age_hours(value):
 # LOAD DATA
 # =====================================================================
 
+@st.cache_resource(show_spinner=False)
+def build_demo_data() -> bool:
+    """Build the seeded demo queue once per server process (shared by all sessions)."""
+
+    subprocess.run(
+        [sys.executable, str(PROJECT_ROOT / "ensure_demo_data.py")],
+        cwd=PROJECT_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return True
+
+
 df = load_csv(DATA_PATH)
+
+if df is None and AUTO_BUILD_DEMO:
+    st.markdown(
+        '<div class="section">Preparing the AML demo</div>'
+        '<div class="section-sub">First launch: generating synthetic customers, transactions and alerts, then training, '
+        'scoring and explaining the models. This takes about a minute and only happens once per server.</div>',
+        unsafe_allow_html=True,
+    )
+    with st.status("Building the synthetic demo dataset…", expanded=True) as status:
+        st.write("Generating 1,500 synthetic customers and their transactions")
+        st.write("Training Logistic Regression and Random Forest on a customer-disjoint split")
+        st.write("Scoring, explaining (SHAP) and prioritizing every alert")
+        try:
+            build_demo_data()
+            status.update(label="Demo dataset ready", state="complete")
+        except subprocess.CalledProcessError as exc:
+            build_demo_data.clear()
+            status.update(label="Demo build failed", state="error")
+            st.error("The demo pipeline failed. Details are below.")
+            st.code((exc.stderr or str(exc))[-3000:])
+            st.stop()
+    st.cache_data.clear()
+    st.rerun()
 
 if df is None:
     st.error(f"Prioritized alert data is missing: {DATA_PATH}")
@@ -326,28 +425,53 @@ if "selected_alert" not in st.session_state:
 # HEADER
 # =====================================================================
 
-st.markdown(
-    f'''
-    <div class="hero">
-      <div class="hero-row">
-        <div>
-          <div class="hero-title">🛡️ AML Alert Triage Engine</div>
-          <div class="hero-sub">AI-assisted risk scoring • explainability • investigator prioritization • case workflow</div>
-        </div>
-        <div class="live-pill">● LOCAL ANALYTICS • {len(df):,} ALERTS</div>
-      </div>
-    </div>
-    ''',
-    unsafe_allow_html=True,
+DATA_VERSION = (str(DATA_PATH), DATA_PATH.stat().st_mtime if DATA_PATH.exists() else 0)
+
+
+@st.cache_data(show_spinner=False)
+def cached_galaxy(version):
+    return visuals.galaxy_payload(load_csv(Path(version[0])))
+
+
+@st.cache_data(show_spinner=False)
+def cached_bounds(version):
+    return visuals.explorer_bounds(load_csv(Path(version[0])))
+
+
+METRICS = load_json(METRICS_PATH)
+RISK_SUMMARY = load_json(RISK_SUMMARY_PATH)
+_rf = METRICS.get("results", {}).get("random_forest", {})
+_p1_holdout = RISK_SUMMARY.get("heldout_tier_metrics", {}).get("P1", {})
+_tier_counts = df["priority"].astype(str).value_counts().to_dict() if "priority" in df.columns else {}
+
+hero_kpis = [
+    {"label": "Alerts scored", "value": len(df), "note": "synthetic population"},
+    {"label": "P1 · critical", "value": _tier_counts.get("P1", 0), "note": "review first"},
+    {"label": "P2 · high", "value": _tier_counts.get("P2", 0), "note": "elevated queue"},
+]
+if _p1_holdout.get("alerts"):
+    hero_kpis.append({"label": "P1 hit rate", "value": round(100 * _p1_holdout.get("precision", 0), 1),
+                      "decimals": 0, "suffix": "%", "note": "truly suspicious, held-out"})
+if _rf.get("pr_auc") is not None:
+    hero_kpis.append({"label": "Model PR-AUC", "value": round(_rf["pr_auc"], 3), "decimals": 2,
+                      "note": "random forest, held-out"})
+
+st.iframe(
+    visuals.galaxy_hero(cached_galaxy(DATA_VERSION), hero_kpis, _tier_counts, len(df), height=470),
+    height=472,
 )
-st.info("Decision support only: scores and explanations prioritize review; human investigation and judgment are required.")
-st.caption(
-    "Shared tiers: "
-    + " · ".join(
-        f"{LEVEL_TO_PRIORITY[level]} {level} ≥{score} — {PRIORITY_DEFINITIONS[LEVEL_TO_PRIORITY[level]]}"
+st.markdown(
+    '<div class="disclaimer">⚖️ <span><b>Decision support only.</b> Scores and explanations decide the order of review. '
+    'Whether activity is suspicious is decided by a human investigator.</span></div>'
+    '<div class="tiers">'
+    + "".join(
+        f'<span class="tier-chip"><b style="color:{visuals.TIER_COLORS[LEVEL_TO_PRIORITY[level]]}">'
+        f'{LEVEL_TO_PRIORITY[level]}</b>{level.title()} · score ≥ {score}</span>'
         for level, score in SCORE_THRESHOLDS.items()
     )
-    + f" · P4 LOW <{SCORE_THRESHOLDS['MEDIUM']}"
+    + f'<span class="tier-chip"><b style="color:{visuals.TIER_COLORS["P4"]}">P4</b>Low · score &lt; {SCORE_THRESHOLDS["MEDIUM"]}</span>'
+    + "</div>",
+    unsafe_allow_html=True,
 )
 
 
@@ -499,51 +623,41 @@ with tabs[0]:
     st.markdown('<div class="section">Command Center</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-sub">Executive view of the alert population and the current investigator workload.</div>', unsafe_allow_html=True)
 
-    cols = st.columns(6)
+    cols = st.columns(4)
     for col, label, value, note in [
-        (cols[0], "Total alerts", f"{total:,}", "Prioritized dataset"),
-        (cols[1], "In current queue", f"{matched:,}", "After active filters"),
-        (cols[2], "Critical", f"{critical:,}", "Highest risk level"),
-        (cols[3], "High", f"{high:,}", "High-risk population"),
-        (cols[4], "P1 alerts", f"{p1:,}", "Top priority"),
-        (cols[5], "Average risk", f"{avg_risk:.2f}", "Risk score mean"),
+        (cols[0], "In current queue", f"{matched:,}", "after sidebar filters"),
+        (cols[1], "Critical + high", f"{critical + high:,}", "P1 and P2 workload"),
+        (cols[2], "Average risk", f"{avg_risk:.1f}", "risk score mean (0–100)"),
+        (cols[3], "Avg ML probability", pct(avg_ml), "model output mean"),
     ]:
         with col:
             kpi(label, value, note)
 
     st.write("")
-    left, right = st.columns([1.05, .95])
-
+    left, right = st.columns([1, 1.25])
     with left:
-        st.markdown('<div class="panel">', unsafe_allow_html=True)
-        st.subheader("Risk profile")
-        if "risk_level" in df.columns:
-            risk_counts = top_counts(df, "risk_level", 10).reindex(["CRITICAL", "HIGH", "MEDIUM", "LOW"], fill_value=0)
-            st.bar_chart(risk_counts.rename("alerts"), height=280)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with right:
-        st.markdown('<div class="panel">', unsafe_allow_html=True)
         st.subheader("Priority workload")
         if "priority" in df.columns:
-            priority_counts = top_counts(df, "priority", 10).reindex(["P1", "P2", "P3", "P4"], fill_value=0)
-            st.bar_chart(priority_counts.rename("alerts"), height=280)
-        st.markdown('</div>', unsafe_allow_html=True)
+            tier_bar_chart(top_counts(df, "priority", 10).reindex(visuals.TIER_ORDER, fill_value=0))
+    with right:
+        st.subheader("Risk score distribution")
+        if {"risk_score", "priority"} <= set(df.columns):
+            risk_histogram(df, height=260)
+            st.caption("Dashed lines mark the shared tier thresholds used by scoring, the queue, the API and this dashboard.")
 
     left, right = st.columns(2)
     with left:
-        st.markdown('<div class="panel">', unsafe_allow_html=True)
         st.subheader("Alert type mix")
         if "alert_type" in df.columns:
-            st.bar_chart(top_counts(df, "alert_type", 12).rename("alerts"), height=300)
-        st.markdown('</div>', unsafe_allow_html=True)
-
+            types = top_counts(df, "alert_type", 8)
+            types.index = types.index.str.replace("_", " ").str.replace("+", " + ").str.lower()
+            bar_chart(types, "Alerts", color="#38bdf8", height=280)
     with right:
-        st.markdown('<div class="panel">', unsafe_allow_html=True)
         st.subheader("Investigation outcomes")
         if "investigation_outcome" in df.columns:
-            st.bar_chart(top_counts(df, "investigation_outcome", 12).rename("alerts"), height=300)
-        st.markdown('</div>', unsafe_allow_html=True)
+            outcomes = top_counts(df, "investigation_outcome", 8)
+            outcomes.index = outcomes.index.str.replace("_", " ").str.title()
+            bar_chart(outcomes, "Alerts", color="#a78bfa", height=280)
 
     st.markdown('<div class="section">Priority watchlist</div>', unsafe_allow_html=True)
     watch_cols = available(df, [
@@ -552,7 +666,7 @@ with tabs[0]:
     ])
     if watch_cols and "risk_score" in df.columns:
         watch = df.sort_values("risk_score", ascending=False)[watch_cols].head(12)
-        st.dataframe(watch, width="stretch", hide_index=True, height=400)
+        st.dataframe(watch, width="stretch", hide_index=True, height=400, column_config=TABLE_CONFIG)
 
 
 # =====================================================================
@@ -586,7 +700,7 @@ with tabs[1]:
         queue = filtered[queue_cols].head(500).copy()
 
         st.caption(f"Showing {len(queue):,} of {len(filtered):,} matching alerts. Select an alert below to open the investigation desk.")
-        st.dataframe(queue, width="stretch", hide_index=True, height=500)
+        st.dataframe(queue, width="stretch", hide_index=True, height=500, column_config=TABLE_CONFIG)
 
         alert_col = "alert_id" if "alert_id" in filtered.columns else filtered.columns[0]
         choices = filtered[alert_col].astype(str).head(500).tolist()
@@ -640,6 +754,27 @@ with tabs[2]:
             unsafe_allow_html=True,
         )
 
+        def _num(field, default=0.0):
+            try:
+                value = float(row.get(field, default))
+                return default if pd.isna(value) else value
+            except (TypeError, ValueError):
+                return default
+
+        gauge_signals = [
+            ("ML probability", _num("ml_probability") * 100, pct(row.get("ml_probability"))),
+            ("Behavioral risk", _num("behavioral_risk") * 100, number(row.get("behavioral_risk"), 2)),
+            ("Amount deviation", _num("amount_deviation_signal"), number(row.get("amount_deviation_signal"), 0)),
+            ("Recent activity", _num("recent_activity_signal"), number(row.get("recent_activity_signal"), 0)),
+            ("Velocity", _num("velocity_signal"), number(row.get("velocity_signal"), 0)),
+            ("Counterparties", _num("counterparty_signal"), number(row.get("counterparty_signal"), 0)),
+        ]
+        st.iframe(
+            visuals.risk_gauge(selected_id, _num("risk_score"), priority, SCORE_THRESHOLDS, gauge_signals),
+            height=274,
+        )
+        st.caption("Signal bars are on a 0–100 scale relative to the whole alert population (ML probability and behavioral risk shown as %).")
+
         s1, s2, s3, s4, s5, s6 = st.columns(6)
         with s1: signal("Risk score", risk_score)
         with s2: signal("ML probability", ml_probability)
@@ -682,9 +817,13 @@ with tabs[2]:
             explanation, source_col = get_explanation(row)
             if source_col:
                 st.caption(f"Explanation source field: `{source_col}`")
-            st.markdown('<div class="callout">', unsafe_allow_html=True)
-            st.write(explanation)
-            st.markdown('</div>', unsafe_allow_html=True)
+            parts = [html.escape(part.strip()) for part in explanation.replace(" | ", ";").split(";") if part.strip()]
+            st.markdown(
+                '<div class="callout"><ul style="margin:0;padding-left:18px">'
+                + "".join(f"<li>{part}</li>" for part in parts)
+                + "</ul></div>",
+                unsafe_allow_html=True,
+            )
 
             st.markdown("#### Model-facing signals")
             model_signals = available(row.to_frame().T, [
@@ -787,23 +926,30 @@ with tabs[3]:
     with c: st.metric("Mean ML probability", pct(df["ml_probability"].mean()) if "ml_probability" in df.columns else "N/A")
     with d: st.metric("Mean behavioral risk", number(df["behavioral_risk"].mean()) if "behavioral_risk" in df.columns else "N/A")
 
+    st.markdown('<div class="section">3D risk explorer</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-sub">Each point is an alert placed by what the model and behavior signals say about it. '
+        'Rotate the cube to see how P1/P2 alerts separate from routine ones; hover any point for its details. '
+        'Follows the sidebar filters.</div>',
+        unsafe_allow_html=True,
+    )
+    if filtered.empty:
+        st.info("No alerts match the current filters.")
+    elif {"ml_probability", "behavioral_risk", "transaction_amount", "priority", "risk_score", "alert_id"} <= set(filtered.columns):
+        st.iframe(visuals.risk_explorer(visuals.explorer_payload(filtered, cached_bounds(DATA_VERSION))), height=602)
+
     left, right = st.columns(2)
     with left:
-        st.markdown('<div class="panel">', unsafe_allow_html=True)
-        st.subheader("Risk score bands")
-        if "risk_score" in df.columns:
-            bands = pd.cut(df["risk_score"].fillna(0), [-1, 20, 40, 60, 80, float("inf")], labels=["0–20", "21–40", "41–60", "61–80", "81+"]).value_counts().sort_index()
-            st.bar_chart(bands.rename("alerts"), height=300)
-        st.markdown('</div>', unsafe_allow_html=True)
-
+        st.subheader("Risk score by tier")
+        if {"risk_score", "priority"} <= set(df.columns):
+            risk_histogram(df, height=300)
     with right:
-        st.markdown('<div class="panel">', unsafe_allow_html=True)
         st.subheader("ML probability bands")
         if "ml_probability" in df.columns:
             prob = df["ml_probability"].fillna(0)
             bands = pd.cut(prob, [-.001, .25, .5, .75, 1.001], labels=["0–25%", "25–50%", "50–75%", "75–100%"]).value_counts().sort_index()
-            st.bar_chart(bands.rename("alerts"), height=300)
-        st.markdown('</div>', unsafe_allow_html=True)
+            bands.index = bands.index.astype(str)
+            bar_chart(bands, "Alerts", color="#a78bfa", height=300, horizontal=False)
 
     st.markdown('<div class="section">Behavioral signal dashboard</div>', unsafe_allow_html=True)
     signal_cols = available(df, [
@@ -824,13 +970,14 @@ with tabs[3]:
     with left:
         st.subheader("Average risk by alert type")
         if "alert_type" in df.columns and "risk_score" in df.columns:
-            by_type = df.groupby("alert_type")["risk_score"].mean().sort_values(ascending=False).head(15)
-            st.bar_chart(by_type.rename("average risk"), height=350)
+            by_type = df.groupby("alert_type")["risk_score"].mean().sort_values(ascending=False).head(10)
+            by_type.index = by_type.index.str.replace("_", " ").str.replace("+", " + ").str.lower()
+            bar_chart(by_type, "Average risk score", color="#ff9f43", height=330)
     with right:
         st.subheader("Average transaction amount by risk level")
         if "risk_level" in df.columns and "transaction_amount" in df.columns:
             by_risk = df.groupby("risk_level")["transaction_amount"].mean().reindex(["CRITICAL", "HIGH", "MEDIUM", "LOW"]).dropna()
-            st.bar_chart(by_risk.rename("average transaction"), height=350)
+            bar_chart(by_risk, "Average amount ($)", color="#2dd4bf", height=330, horizontal=False)
 
     st.subheader("Top triggered rules")
     if "triggered_rule" in df.columns:
@@ -846,69 +993,88 @@ with tabs[4]:
     st.markdown('<div class="section">Model & Explainability</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-sub">Review the model pipeline, held-out performance, feature importance, and explanatory artifacts.</div>', unsafe_allow_html=True)
 
-    files = [
-        ("Risk scoring output", RISK_PATH),
-        ("Explainability output", EXPLAINED_PATH),
-        ("Prioritized output", DATA_PATH),
-        ("XAI feature importance", XAI_PATH),
-        ("XAI summary", XAI_SUMMARY_PATH),
-    ]
+    st.iframe(
+        visuals.pipeline_flow([
+            ("Customers", "synthetic profiles"),
+            ("Transactions", "seeded generator"),
+            ("Rule alerts", "monitoring rules"),
+            ("Features", "pre-alert only"),
+            ("Models", "LR + random forest"),
+            ("Risk tiers", "shared P1–P4"),
+            ("SHAP", "explanations"),
+            ("Queue", "API + dashboard"),
+        ]),
+        height=132,
+    )
 
-    status_table = pd.DataFrame({
-        "Artifact": [x[0] for x in files],
-        "Status": ["Available" if x[1].exists() else "Missing" for x in files],
-        "Path": [display_path(x[1]) for x in files],
-    })
-    st.dataframe(status_table, width="stretch", hide_index=True)
+    results = METRICS.get("results", {})
+    if results:
+        st.subheader("Held-out model performance")
+        st.caption(
+            f"Customer-disjoint split ({METRICS.get('split', 'grouped split')}): "
+            f"{METRICS.get('train_rows', 0):,} training alerts, {METRICS.get('test_rows', 0):,} test alerts, "
+            f"{METRICS.get('customer_overlap', 0)} customers in both."
+        )
+        cols = st.columns(len(results) * 2)
+        names = {"logistic_regression": "Logistic regression", "random_forest": "Random forest"}
+        for i, (model_name, m) in enumerate(results.items()):
+            with cols[i * 2]:
+                kpi(f"{names.get(model_name, model_name)} · PR-AUC", f"{m.get('pr_auc', 0):.3f}",
+                    f"ROC-AUC {m.get('roc_auc', 0):.3f}")
+            with cols[i * 2 + 1]:
+                kpi(f"{names.get(model_name, model_name)} · precision", pct(m.get("precision", 0)),
+                    f"recall {pct(m.get('recall', 0))}")
 
-    st.divider()
+    tiers = RISK_SUMMARY.get("heldout_tier_metrics", {})
+    left, right = st.columns([1, 1.2])
+    with left:
+        if tiers:
+            st.subheader("How often each tier was right")
+            tier_frame = pd.DataFrame([
+                {"tier": t, "precision": v.get("precision", 0), "alerts": v.get("alerts", 0)}
+                for t, v in tiers.items()
+            ])
+            chart = alt.Chart(tier_frame).mark_bar(cornerRadiusEnd=6, height=26).encode(
+                y=alt.Y("tier:N", sort=visuals.TIER_ORDER, title=None),
+                x=alt.X("precision:Q", title="Share truly suspicious (held-out)", axis=alt.Axis(format="%"),
+                        scale=alt.Scale(domain=[0, 1])),
+                color=alt.Color("tier:N", scale=TIER_SCALE, legend=None),
+                tooltip=[alt.Tooltip("tier:N"), alt.Tooltip("precision:Q", format=".1%"),
+                         alt.Tooltip("alerts:Q", title="Held-out alerts", format=",")],
+            )
+            label = chart.mark_text(align="left", dx=6, color="#cbd5e1").encode(text=alt.Text("precision:Q", format=".0%"))
+            st.altair_chart(style_chart(chart + label, 220), width="stretch")
+            st.caption("Ground truth is the synthetic `is_suspicious` flag, which the model never sees during training.")
+    with right:
+        if XAI_PATH.exists():
+            try:
+                xai = pd.read_csv(XAI_PATH)
+                numeric = [c for c in xai.columns if pd.api.types.is_numeric_dtype(xai[c])]
+                if numeric:
+                    st.subheader("What drives the model (mean |SHAP|)")
+                    imp = xai.sort_values(numeric[-1], ascending=False).head(12).set_index(xai.columns[0])[numeric[-1]]
+                    imp.index = imp.index.str.replace(r"^(num|cat)__", "", regex=True).str.replace("_", " ")
+                    bar_chart(imp, "Mean |SHAP|", color="#38bdf8", height=330)
+            except Exception as exc:
+                st.warning(f"Could not read XAI feature importance: {exc}")
+        else:
+            st.info("xai_feature_importance.csv is not present yet.")
 
-    if XAI_PATH.exists():
-        try:
-            xai = pd.read_csv(XAI_PATH)
-            st.subheader("Global feature importance")
-            st.dataframe(xai.head(25), width="stretch", hide_index=True)
-
-            numeric = [c for c in xai.columns if pd.api.types.is_numeric_dtype(xai[c])]
-            if numeric and len(xai.columns) >= 2:
-                importance_col = numeric[-1]
-                feature_col = xai.columns[0]
-                chart = xai.sort_values(importance_col, ascending=False).head(15).set_index(feature_col)[importance_col]
-                st.bar_chart(chart.rename("mean absolute SHAP"), height=420)
-        except Exception as exc:
-            st.warning(f"Could not read XAI feature importance: {exc}")
-    else:
-        st.info("xai_feature_importance.csv is not present yet.")
-
-    if XAI_SUMMARY_PATH.exists():
-        st.subheader("XAI run summary")
-        try:
-            summary = json.loads(XAI_SUMMARY_PATH.read_text(encoding="utf-8"))
-            st.json(summary)
-        except Exception as exc:
-            st.warning(f"Could not read xai_summary.json: {exc}")
-
-    st.divider()
-    st.subheader("What the architecture demonstrates")
-    architecture = pd.DataFrame({
-        "Layer": [
-            "Data generation / ingestion",
-            "Feature engineering",
-            "ML risk scoring",
-            "Explainable AI",
-            "Alert prioritization",
-            "Investigator interface",
-        ],
-        "Evidence in project": [
-            "Synthetic AML customers, transactions, behavior and alerts",
-            "Behavioral + transaction + customer features",
-            "Logistic Regression + Random Forest artifacts",
-            "SHAP-based explanation artifact",
-            "Risk/priority queue output",
-            "Interactive Streamlit investigation workspace",
-        ],
-    })
-    st.dataframe(architecture, width="stretch", hide_index=True)
+    with st.expander("Pipeline artifacts and XAI run summary"):
+        files = [
+            ("Risk scoring output", RISK_PATH),
+            ("Explainability output", EXPLAINED_PATH),
+            ("Prioritized output", DATA_PATH),
+            ("XAI feature importance", XAI_PATH),
+            ("XAI summary", XAI_SUMMARY_PATH),
+        ]
+        st.dataframe(pd.DataFrame({
+            "Artifact": [x[0] for x in files],
+            "Status": ["Available" if x[1].exists() else "Missing" for x in files],
+            "Path": [display_path(x[1]) for x in files],
+        }), width="stretch", hide_index=True)
+        if XAI_SUMMARY_PATH.exists():
+            st.json(load_json(XAI_SUMMARY_PATH))
 
 
 # =====================================================================

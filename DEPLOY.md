@@ -10,7 +10,7 @@ From a fresh clone with Python 3.12 and the requirements installed:
 python ensure_demo_data.py
 ```
 
-The command exits without work when the configured queue already exists. Otherwise it runs the seeded demo pipeline and creates the dashboard/API queue. The dashboard also offers a **Generate demo dataset** button when the queue is missing.
+The command exits without work when the configured queue already exists. Otherwise it runs the seeded demo pipeline and creates the dashboard/API queue. The dashboard also builds the demo queue automatically on first launch, once per server process, behind a progress screen. Set `AML_AUTO_BUILD_DEMO=0` to show a manual **Generate demo dataset** button instead.
 
 ## Environment variables
 
@@ -18,7 +18,8 @@ The command exits without work when the configured queue already exists. Otherwi
 |---|---|---|
 | `AML_ALERTS_DATA_PATH` | `data/processed/aml_prioritized_alerts.csv` | Queue file for the API and dashboard; `.parquet` is supported |
 | `AML_CORS_ORIGINS` | `http://localhost:8501` | Comma-separated API origins allowed by CORS |
-| `AML_SHAP_MAX_ROWS` | `5000` | Maximum rows receiving local SHAP values; top-risk rows are included with a seeded sample |
+| `AML_AUTO_BUILD_DEMO` | `1` | Dashboard builds the demo queue automatically when it is missing |
+| `AML_SHAP_MAX_ROWS` | `5000` (`1500` with `--demo`) | Maximum rows receiving local SHAP values; top-risk rows are included with a seeded sample |
 | `AML_N_CUSTOMERS` | `10000` | Generator size when stages are run directly |
 | `AML_N_TRANSACTIONS` | `200000` | Number of base transactions when stages are run directly |
 | `AML_SEED` | `42` | Random seed shared by generators, split, and model training |
@@ -43,7 +44,8 @@ Open `http://localhost:8501` for Streamlit and `http://localhost:8000/docs` for 
 1. Connect the repository and select `src/dashboard/app.py` as the app entry point.
 2. Use Python 3.12 and install from `requirements.txt`.
 3. Leave `AML_ALERTS_DATA_PATH` unset for the default CSV location, or set it to the location of a mounted queue.
-4. On first launch, click **Generate demo dataset**. The deterministic demo run takes about 16 seconds on the measured local Python 3.12 environment.
+4. On first launch the app builds the demo data itself (about 50 seconds). Streamlit Community Cloud's file system is ephemeral, so this repeats after each restart or redeploy.
+5. Keep `.streamlit/config.toml` in the repository: `enableStaticServing = true` serves the vendored three.js and GSAP files the 3D views load.
 
 Streamlit Community Cloud hosts the dashboard; it does not expose the FastAPI service. If the API is needed, host it separately and set `AML_CORS_ORIGINS` to the dashboard origin.
 
@@ -59,4 +61,4 @@ Each container runs `ensure_demo_data.py` before starting its service. The API e
 
 ## Free-tier resource check
 
-The measured demo contains 200 customers and 3,115 alerts. It completed the full generation, training, scoring, SHAP, and queue pipeline in 15.69 seconds with a measured peak child-process RSS of 236.5 MB. The 155,927-alert full run completed in 138.75 seconds with a measured peak RSS of 753.8 MB. The full-run SHAP bottleneck is bounded to 5,000 local explanations by default; remaining alerts retain behavioral context and the global SHAP importance artifact. Both measured runs fit below a roughly 1 GB RAM budget on this environment; verify provider-specific limits after selecting a host.
+The measured demo contains 1,500 customers and 23,367 alerts. It completed the full generation, training, scoring, SHAP (bounded to 1,500 rows), and queue pipeline in about 48 seconds with a measured peak child-process RSS of 326 MB. The 155,927-alert full run completed in 138.75 seconds with a measured peak RSS of 753.8 MB. The full-run SHAP bottleneck is bounded to 5,000 local explanations by default; remaining alerts retain behavioral context and the global SHAP importance artifact. Both measured runs fit below a roughly 1 GB RAM budget on this environment; verify provider-specific limits after selecting a host.

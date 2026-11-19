@@ -18,11 +18,18 @@ STEPS = (
     "src/explainability/explain_alerts.py",
     "src/prioritization/prioritize_alerts.py",
 )
+# Large enough for a meaningful customer-disjoint holdout, small enough for a hosted cold start.
+DEMO_CUSTOMERS = 1_500
+DEMO_SHAP_MAX_ROWS = "1500"
 
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--demo", action="store_true", help="Use a small dataset for a quick product demo.")
+    parser.add_argument(
+        "--demo",
+        action="store_true",
+        help="Use the hosted-demo size (1,500 customers, bounded SHAP) for a quick product demo.",
+    )
     parser.add_argument("--n-customers", type=int, help="Number of synthetic customers (default: 10,000).")
     parser.add_argument("--n-transactions", type=int, help="Number of base transactions (default: 20 per customer).")
     parser.add_argument("--seed", type=int, default=42, help="Reproducible random seed (default: 42).")
@@ -34,7 +41,7 @@ def parse_args(argv=None):
     )
     args = parser.parse_args(argv)
     if args.n_customers is None:
-        args.n_customers = 200 if args.demo else 10_000
+        args.n_customers = DEMO_CUSTOMERS if args.demo else 10_000
     if args.n_transactions is None:
         args.n_transactions = args.n_customers * 20
     if args.n_customers < 20 or args.n_transactions < 1:
@@ -51,6 +58,8 @@ def main(argv=None):
         AML_SEED=str(args.seed),
         AML_QUEUE_FORMAT=args.output_format,
     )
+    if args.demo:
+        env.setdefault("AML_SHAP_MAX_ROWS", DEMO_SHAP_MAX_ROWS)
     started = time.monotonic()
     print(
         f"AML pipeline starting: customers={args.n_customers:,}, "
