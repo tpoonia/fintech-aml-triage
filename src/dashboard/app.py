@@ -22,6 +22,9 @@ from pathlib import Path
 from datetime import datetime
 import json
 import html
+import os
+import subprocess
+import sys
 
 import pandas as pd
 import streamlit as st
@@ -32,7 +35,14 @@ import streamlit as st
 # =====================================================================
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DATA_PATH = PROJECT_ROOT / "data" / "processed" / "aml_prioritized_alerts.csv"
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+from src.triage_config import LEVEL_TO_PRIORITY, PRIORITY_DEFINITIONS, SCORE_THRESHOLDS
+
+_configured_data_path = os.environ.get("AML_ALERTS_DATA_PATH")
+DATA_PATH = Path(_configured_data_path).expanduser() if _configured_data_path else PROJECT_ROOT / "data" / "processed" / "aml_prioritized_alerts.csv"
+if not DATA_PATH.is_absolute():
+    DATA_PATH = PROJECT_ROOT / DATA_PATH
 XAI_PATH = PROJECT_ROOT / "models" / "xai_feature_importance.csv"
 XAI_SUMMARY_PATH = PROJECT_ROOT / "models" / "xai_summary.json"
 RISK_PATH = PROJECT_ROOT / "data" / "processed" / "aml_risk_scored_alerts.csv"
@@ -151,6 +161,8 @@ st.markdown(
 def load_csv(path: Path):
     if not path.exists():
         return None
+    if path.suffix.lower() == ".parquet":
+        return pd.read_parquet(path)
     return pd.read_csv(path)
 
 
@@ -224,6 +236,13 @@ def available(df, columns):
     return [c for c in columns if c in df.columns]
 
 
+def display_path(path: Path) -> str:
+    try:
+        return path.relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        return str(path)
+
+
 def top_counts(data, column, n=10):
     if column not in data.columns:
         return pd.Series(dtype=int)
@@ -267,8 +286,21 @@ def timestamp_age_hours(value):
 df = load_csv(DATA_PATH)
 
 if df is None:
-    st.error(f"Dataset not found: {DATA_PATH}")
-    st.code("python src/prioritization/prioritize_alerts.py", language="bash")
+    st.error(f"Prioritized alert data is missing: {DATA_PATH}")
+    st.info("Generate the synthetic demo dataset to populate this dashboard.")
+    if st.button("Generate demo dataset"):
+        with st.spinner("Building demo data and the investigator queue..."):
+            try:
+                subprocess.run(
+                    [sys.executable, str(PROJECT_ROOT / "ensure_demo_data.py")],
+                    cwd=PROJECT_ROOT,
+                    check=True,
+                )
+                st.cache_data.clear()
+                st.rerun()
+            except subprocess.CalledProcessError as exc:
+                st.error(f"Demo pipeline failed at stage {exc.cmd}: {exc}")
+    st.code("python run_pipeline.py --demo", language="bash")
     st.stop()
 
 if df.empty:
@@ -308,6 +340,15 @@ st.markdown(
     ''',
     unsafe_allow_html=True,
 )
+st.info("Decision support only: scores and explanations prioritize review; human investigation and judgment are required.")
+st.caption(
+    "Shared tiers: "
+    + " · ".join(
+        f"{LEVEL_TO_PRIORITY[level]} {level} ≥{score} — {PRIORITY_DEFINITIONS[LEVEL_TO_PRIORITY[level]]}"
+        for level, score in SCORE_THRESHOLDS.items()
+    )
+    + f" · P4 LOW <{SCORE_THRESHOLDS['MEDIUM']}"
+)
 
 
 # =====================================================================
@@ -317,7 +358,7 @@ st.markdown(
 st.sidebar.markdown("# 🛡️ Investigator Console")
 st.sidebar.caption("Build a focused work queue, then investigate individual alerts.")
 
-if st.sidebar.button("↻ Reset workspace", use_container_width=True):
+if st.sidebar.button("↻ Reset workspace", width="stretch"):
     for key in ["case_status", "case_notes", "assigned_to", "selected_alert"]:
         st.session_state.pop(key, None)
     st.rerun()
@@ -511,7 +552,7 @@ with tabs[0]:
     ])
     if watch_cols and "risk_score" in df.columns:
         watch = df.sort_values("risk_score", ascending=False)[watch_cols].head(12)
-        st.dataframe(watch, use_container_width=True, hide_index=True, height=400)
+        st.dataframe(watch, width="stretch", hide_index=True, height=400)
 
 
 # =====================================================================
@@ -545,7 +586,7 @@ with tabs[1]:
         queue = filtered[queue_cols].head(500).copy()
 
         st.caption(f"Showing {len(queue):,} of {len(filtered):,} matching alerts. Select an alert below to open the investigation desk.")
-        st.dataframe(queue, use_container_width=True, hide_index=True, height=500)
+        st.dataframe(queue, width="stretch", hide_index=True, height=500)
 
         alert_col = "alert_id" if "alert_id" in filtered.columns else filtered.columns[0]
         choices = filtered[alert_col].astype(str).head(500).tolist()
@@ -667,7 +708,7 @@ with tabs[2]:
                     "Feature": [x.replace("_", " ").title() for x in model_signals],
                     "Value": [clean_value(row[x]) for x in model_signals],
                 })
-                st.dataframe(signal_table, use_container_width=True, hide_index=True)
+                st.dataframe(signal_table, width="stretch", hide_index=True)
 
         with detail3:
             st.subheader("Customer profile")
@@ -720,9 +761,9 @@ with tabs[2]:
         st.divider()
         st.subheader("Raw alert record")
         with st.expander("Show all fields"):
-            raw = row.to_frame("value")
+            raw = row.map(lambda value: "N/A" if pd.isna(value) else str(value)).to_frame("value")
             raw.index.name = "field"
-            st.dataframe(raw, use_container_width=True)
+            st.dataframe(raw, width="stretch")
             st.download_button(
                 "⬇ Download alert JSON",
                 data=json.dumps(row.to_dict(), default=str, indent=2),
@@ -777,7 +818,7 @@ with tabs[3]:
             "Std": [df[c].std() for c in signal_cols],
             "Missing %": [df[c].isna().mean() * 100 for c in signal_cols],
         }, index=[c.replace("_", " ").title() for c in signal_cols])
-        st.dataframe(summary.round(3), use_container_width=True)
+        st.dataframe(summary.round(3), width="stretch")
 
     left, right = st.columns(2)
     with left:
@@ -794,7 +835,7 @@ with tabs[3]:
     st.subheader("Top triggered rules")
     if "triggered_rule" in df.columns:
         rules = top_counts(df, "triggered_rule", 20).rename("alert_count").to_frame()
-        st.dataframe(rules, use_container_width=True)
+        st.dataframe(rules, width="stretch")
 
 
 # =====================================================================
@@ -803,7 +844,7 @@ with tabs[3]:
 
 with tabs[4]:
     st.markdown('<div class="section">Model & Explainability</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-sub">Show recruiters and reviewers that the system does more than produce a score: it exposes the model pipeline and its explanatory artifacts.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-sub">Review the model pipeline, held-out performance, feature importance, and explanatory artifacts.</div>', unsafe_allow_html=True)
 
     files = [
         ("Risk scoring output", RISK_PATH),
@@ -816,9 +857,9 @@ with tabs[4]:
     status_table = pd.DataFrame({
         "Artifact": [x[0] for x in files],
         "Status": ["Available" if x[1].exists() else "Missing" for x in files],
-        "Path": [str(x[1].relative_to(PROJECT_ROOT)) if x[1].exists() else str(x[1].relative_to(PROJECT_ROOT)) for x in files],
+        "Path": [display_path(x[1]) for x in files],
     })
-    st.dataframe(status_table, use_container_width=True, hide_index=True)
+    st.dataframe(status_table, width="stretch", hide_index=True)
 
     st.divider()
 
@@ -826,7 +867,7 @@ with tabs[4]:
         try:
             xai = pd.read_csv(XAI_PATH)
             st.subheader("Global feature importance")
-            st.dataframe(xai.head(25), use_container_width=True, hide_index=True)
+            st.dataframe(xai.head(25), width="stretch", hide_index=True)
 
             numeric = [c for c in xai.columns if pd.api.types.is_numeric_dtype(xai[c])]
             if numeric and len(xai.columns) >= 2:
@@ -867,7 +908,7 @@ with tabs[4]:
             "Interactive Streamlit investigation workspace",
         ],
     })
-    st.dataframe(architecture, use_container_width=True, hide_index=True)
+    st.dataframe(architecture, width="stretch", hide_index=True)
 
 
 # =====================================================================
@@ -897,10 +938,10 @@ with tabs[5]:
         "unique": df.nunique(dropna=True),
     })
     quality = quality.sort_values(["missing_%", "unique"], ascending=[False, False])
-    st.dataframe(quality.round(2), use_container_width=True, height=500)
+    st.dataframe(quality.round(2), width="stretch", height=500)
 
     st.subheader("Dataset preview")
-    st.dataframe(df.head(25), use_container_width=True, height=450)
+    st.dataframe(df.head(25), width="stretch", height=450)
 
     st.subheader("Pipeline artifact paths")
     artifact_paths = pd.DataFrame({
@@ -926,7 +967,7 @@ with tabs[5]:
             (PROJECT_ROOT / "models" / "aml_logistic_regression.joblib").exists(),
         ],
     })
-    st.dataframe(artifact_paths, use_container_width=True, hide_index=True)
+    st.dataframe(artifact_paths, width="stretch", hide_index=True)
 
 
 # =====================================================================
