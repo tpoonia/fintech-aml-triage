@@ -35,6 +35,7 @@ All dependencies are pinned to versions exercised by the pipeline and tests.
 
 The Streamlit app (`src/dashboard/app.py`) is laid out like a case-management tool, with top navigation:
 
+- **Start here** – a two-minute scroll story for people new to AML: a pinned 3D scene (three.js, driven by GSAP ScrollTrigger) shows payments becoming alerts, alerts being scored, scores sorting into P1–P4 and where the investigator takes over, using the live dataset's numbers. Followed by a first-five-minutes guide, what each priority means and a plain-English glossary. Every other page has a *New here? What am I looking at?* explainer.
 - **Overview** – the 3D alert galaxy (distance from the core is inverse to risk, color is the P1–P4 tier, P1 pulses), headline KPIs, a "Needs attention" list of open P1 alerts and the workload by tier.
 - **Work queue** – search plus priority, alert-type and case-status filters; click any row to open the case. Export the current view as CSV.
 - **Case** – one alert: animated risk gauge, plain-English reasons it was flagged, its top SHAP drivers, the customer's transaction history around the alert, a customer profile, other alerts for the same customer, and case actions (status, assignee, notes, *Save & next*). Previous/Next follow the queue order. Deep link with `?alert=A003809`.

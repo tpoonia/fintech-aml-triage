@@ -61,3 +61,16 @@ def test_gauge_uses_shared_thresholds_and_escapes_text():
     doc = visuals.risk_gauge("<A1>", 80, "P1", SCORE_THRESHOLDS, [("ML <prob>", 50, "50%")])
     assert "&lt;A1&gt;" in doc and "ML &lt;prob&gt;" in doc
     assert "var score=80.0" in doc
+
+
+def test_learn_story_uses_real_numbers_and_scroll_libs():
+    facts = {
+        "total": 1000, "tiers": {"P1": 10, "P2": 90, "P3": 850, "P4": 50},
+        "thresholds": dict(SCORE_THRESHOLDS), "action_share": 0.15, "p1_share": 0.01, "p1_hit": 1.0,
+        "example": {"id": "A<1>", "score": 88, "type": "New counterparty", "amount": "$10.00", "reasons": ["Burst <x>"]},
+    }
+    doc = visuals.learn_story(facts)
+    assert "ScrollTrigger.min.js" in doc and "three.min.js" in doc
+    assert "1 in 7" in doc and "1,000 alerts" in doc
+    assert "A&lt;1&gt;" in doc and "Burst &lt;x&gt;" in doc
+    assert doc.count('class="step"') == 7

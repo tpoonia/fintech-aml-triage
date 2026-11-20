@@ -49,6 +49,17 @@ def test_demo_pipeline_outputs_and_all_dashboard_tabs(monkeypatch):
     assert "target" not in queue_columns
 
     monkeypatch.setenv("AML_ALERTS_DATA_PATH", str(queue))
-    dashboard = AppTest.from_file(str(ROOT / "src" / "dashboard" / "app.py"), default_timeout=30).run()
+    dashboard = AppTest.from_file(str(ROOT / "src" / "dashboard" / "app.py"), default_timeout=60).run()
     assert not dashboard.exception
-    assert len(dashboard.get("tab")) >= 6
+    for page in ["Start here", "Overview", "Work queue", "Case", "Insights", "Model"]:
+        dashboard.session_state["nav"] = page
+        dashboard.run()
+        assert not dashboard.exception, f"{page} page raised {dashboard.exception}"
+    # Case actions persist for the session and feed back into the queue status.
+    alert_id = dashboard.session_state["selected_alert"]
+    dashboard.session_state["nav"] = "Case"
+    dashboard.run()
+    dashboard.selectbox(key=f"st_{alert_id}").set_value("Escalated")
+    dashboard.button(key=f"sv_{alert_id}").click().run()
+    assert not dashboard.exception
+    assert dashboard.session_state["case_status"][alert_id] == "Escalated"

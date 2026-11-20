@@ -7,6 +7,10 @@ enableStaticServing = true
 [browser]
 gatherUsageStats = false
 
+[client]
+toolbarMode = "minimal"
+showSidebarNavigation = false
+
 [theme]
 base = "dark"
 primaryColor = "#38BDF8"

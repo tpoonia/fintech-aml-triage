@@ -29,6 +29,8 @@ _LIBS = {
               "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"],
     "gsap": ["app/static/vendor/gsap.min.js", "/app/static/vendor/gsap.min.js",
              "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"],
+    "scrolltrigger": ["app/static/vendor/ScrollTrigger.min.js", "/app/static/vendor/ScrollTrigger.min.js",
+                      "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"],
 }
 
 _BASE_CSS = """
@@ -532,4 +534,274 @@ __LIBS__.then(function(){if(REDUCED)return;gsap.from('.node',{opacity:0,y:14,dur
         .replace("__NODES__", "".join(nodes))
         .replace("__LOADER__", _LOADER_JS)
         .replace("__LIBS__", _libs_js("gsap"))
+    )
+
+
+# ---------------------------------------------------------------------------
+# 5. "Start here" scroll story (Three.js + GSAP ScrollTrigger)
+# ---------------------------------------------------------------------------
+
+def learn_story(facts: dict, height: int = 680) -> str:
+    """Scroll-driven 3D explainer of the AML triage process for new users.
+
+    ``facts`` carries real numbers from the current dataset so every chapter is
+    grounded: total alerts, tier counts and shares, thresholds, the share of
+    alerts that historically needed action, the held-out P1 hit rate and one
+    example P1 alert with its reasons.
+    """
+
+    import html as _html
+
+    ex = facts.get("example", {})
+    reasons = "".join(f"<li>{_html.escape(r)}</li>" for r in ex.get("reasons", [])[:3])
+    tiers = facts["tiers"]
+    thr = facts["thresholds"]
+    one_in = max(2, round(1 / max(facts["action_share"], 1e-6)))
+
+    chapters = [
+        ("Money moves all day",
+         "Every dot is a payment: salaries, card spend, transfers to friends, suppliers abroad. "
+         "Almost all of it is ordinary. A bank still has to watch all of it for money laundering.",
+         "Thousands of payments a day"),
+        ("Rules raise alerts",
+         "Monitoring rules flag payments that look unusual for the customer: a new counterparty, a sudden "
+         "burst of transfers, an amount far above normal. Each flag is an <b>alert</b>.",
+         f"{facts['total']:,} alerts in this demo"),
+        ("Most alerts are false alarms",
+         f"Rules are cautious on purpose, so most alerts turn out to be normal activity. Here roughly "
+         f"<b>1 in {one_in}</b> alerts historically needed action. Reviewing them in random order wastes time.",
+         f"≈ {facts['action_share']:.0%} needed action"),
+        ("The model scores every alert",
+         "A machine-learning model and behavioral checks give each alert a <b>risk score from 0 to 100</b>, "
+         "using only information available when the alert fired. Taller columns mean more alerts at that score.",
+         "Score 0 → 100, left to right"),
+        ("Scores become priorities",
+         f"Scores map to four queues: <b style='color:#ff4d6d'>P1 Critical</b> ≥ {thr['CRITICAL']}, "
+         f"<b style='color:#ff9f43'>P2 High</b> ≥ {thr['HIGH']}, <b style='color:#f7c948'>P3 Medium</b> ≥ {thr['MEDIUM']}, "
+         f"<b style='color:#2dd4bf'>P4 Low</b> below that. The same rules are used everywhere in the app.",
+         f"P1 {tiers['P1']:,} · P2 {tiers['P2']:,} · P3 {tiers['P3']:,} · P4 {tiers['P4']:,}"),
+        ("Start with P1",
+         f"P1 is a small slice ({facts['p1_share']:.1%} of alerts), but on customers the model never saw, "
+         f"<b>{facts['p1_hit']:.0%}</b> of P1 alerts were truly suspicious. Working top-down finds real cases first.",
+         f"{facts['p1_hit']:.0%} P1 hit rate (held-out)"),
+        ("Read the reasons, then decide",
+         "Open a case to see why it was flagged, the customer's history and the model's top drivers. "
+         "<b>You</b> decide: close it, escalate it, or file a Suspicious Activity Report (SAR). The score never decides for you.",
+         "Decision support, not a verdict"),
+    ]
+    steps = "".join(
+        f'<section class="step" data-i="{i}"><div class="num">{i + 1:02d}</div><h2>{t}</h2><p>{body}</p>'
+        f'<div class="pill">{pill}</div>'
+        + (f'''<div class="case"><div class="ch"><span class="mono">{_html.escape(ex.get("id", ""))}</span>
+            <span class="t1">P1 · score {ex.get("score", 0):.0f}</span></div>
+            <div class="cs">{_html.escape(ex.get("type", ""))} · {_html.escape(ex.get("amount", ""))}</div>
+            <ul>{reasons}</ul>
+            <div class="acts"><span>Close</span><span>Escalate</span><span>File SAR</span></div></div>
+            <div class="cta"><span class="next">Ready? Use <b>Open the top P1 case</b> just below this panel ↓</span></div>'''
+           if i == len(chapters) - 1 else "")
+        + "</section>"
+        for i, (t, body, pill) in enumerate(chapters)
+    )
+    dots = "".join(f'<button class="dot" data-i="{i}" aria-label="Go to step {i + 1}: {t}"></button>'
+                   for i, (t, _, _) in enumerate(chapters))
+
+    doc = """<!doctype html><html><head><meta charset="utf-8"><style>__CSS__
+html{overflow-x:hidden;overflow-y:auto;height:auto;scroll-behavior:smooth}body{overflow:visible;height:auto}
+body{background:radial-gradient(120% 80% at 30% 20%,#101b3a 0%,#080d1c 55%,#05070f 100%)}
+.wrap{position:relative;display:flex}
+.stage{position:sticky;top:0;height:100vh;width:58%;flex:none;align-self:flex-start}
+canvas{width:100%;height:100%;display:block}
+.steps{width:42%;padding:0 34px 0 10px}
+.step{min-height:92vh;display:flex;flex-direction:column;justify-content:center;opacity:.25;transform:translateY(16px);
+ transition:opacity .45s ease,transform .45s ease}
+.step.on{opacity:1;transform:none}
+.step:last-child{min-height:100vh}
+.num{font:800 13px/1 ui-monospace,Menlo,monospace;color:#38bdf8;letter-spacing:.12em}
+.step h2{font-size:30px;line-height:1.1;margin:10px 0 12px;letter-spacing:-.03em;font-weight:800;
+ background:linear-gradient(92deg,#fff,#bfe3ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.step p{color:#b6c3d8;font-size:15.5px;line-height:1.6;margin:0 0 14px}
+.step b{color:#fff}
+.pill{align-self:flex-start;font:700 12px/1 ui-monospace,Menlo,monospace;color:#e6edf7;background:rgba(56,189,248,.1);
+ border:1px solid rgba(56,189,248,.35);padding:8px 11px;border-radius:999px}
+.case{margin-top:16px;background:rgba(10,16,32,.8);border:1px solid rgba(255,77,109,.35);border-radius:14px;padding:14px 16px;
+ box-shadow:0 0 40px rgba(255,77,109,.12)}
+.ch{display:flex;justify-content:space-between;align-items:center;font-weight:800}
+.t1{color:#ff4d6d;font-size:12px;background:rgba(255,77,109,.12);border:1px solid rgba(255,77,109,.4);padding:2px 8px;border-radius:999px}
+.cs{color:var(--muted);font-size:12.5px;margin:4px 0 6px}
+.case ul{margin:6px 0 10px;padding-left:18px;color:#d5deeb;font-size:13.5px;line-height:1.55}
+.acts{display:flex;gap:8px}.acts span{font-size:12px;border:1px solid var(--line);border-radius:8px;padding:5px 9px;color:#cbd5e1}
+.cta{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.cta .next{font-size:14px;color:#cbd5e1;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.3);padding:10px 14px;border-radius:10px}
+.cta a{font-weight:700;font-size:14px;text-decoration:none;color:#06101f;background:#38bdf8;padding:10px 14px;border-radius:10px}
+.cta a.ghost{background:transparent;color:#e6edf7;border:1px solid var(--line)}
+.cta a:focus-visible,.dot:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.hud{position:fixed;left:18px;top:16px;display:flex;gap:10px;align-items:center;z-index:5}
+.brand{font:700 11px/1 inherit;letter-spacing:.14em;text-transform:uppercase;color:#9fd8ff;background:rgba(56,189,248,.1);
+ border:1px solid rgba(56,189,248,.3);padding:6px 10px;border-radius:999px}
+.prog{position:fixed;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,#38bdf8,#a78bfa,#ff4d6d);z-index:6}
+.dots{position:fixed;left:calc(58% - 26px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:9px;z-index:5}
+.dot{width:9px;height:9px;border-radius:50%;border:0;padding:0;background:rgba(148,163,184,.35);cursor:pointer;transition:all .25s}
+.dot.on{background:#38bdf8;transform:scale(1.4);box-shadow:0 0 10px #38bdf8}
+.hint{position:fixed;left:29%;bottom:16px;transform:translateX(-50%);font-size:12px;color:#8b9ab4;z-index:5;
+ background:rgba(10,16,32,.6);border:1px solid var(--line);border-radius:999px;padding:6px 12px;transition:opacity .4s}
+.lbl{position:fixed;transform:translate(-50%,-100%);font:800 12px/1.2 inherit;text-align:center;pointer-events:none;opacity:0;
+ transition:opacity .3s;text-shadow:0 2px 10px #000;z-index:4;white-space:nowrap}
+.lbl small{display:block;font-weight:600;color:#cbd5e1;font-size:11px}
+.axis{position:fixed;font:600 11px inherit;color:#8b9ab4;opacity:0;transition:opacity .3s;z-index:4;pointer-events:none}
+@media (max-width:760px){.wrap{display:block}.stage{width:100%;height:52vh}.steps{width:100%;padding:0 18px}
+ .step{min-height:70vh}.dots{display:none}.hint{left:50%}}
+@media (prefers-reduced-motion:reduce){.step{transition:none}html,body{scroll-behavior:auto}}
+</style></head><body>
+<div class="prog" id="prog"></div>
+<div class="hud"><span class="brand">How AML triage works · 2 min</span></div>
+<div class="dots">__DOTS__</div>
+<div class="hint" id="hint">Scroll inside this panel ↓</div>
+<div class="lbl" id="l0" style="color:#ff4d6d">P1 Critical<small>__P1__</small></div>
+<div class="lbl" id="l1" style="color:#ff9f43">P2 High<small>__P2__</small></div>
+<div class="lbl" id="l2" style="color:#f7c948">P3 Medium<small>__P3__</small></div>
+<div class="lbl" id="l3" style="color:#2dd4bf">P4 Low<small>__P4__</small></div>
+<div class="axis" id="ax0">score 0</div><div class="axis" id="ax1">score 100</div>
+<div class="wrap"><div class="stage" id="stage"><canvas id="c" aria-hidden="true"></canvas></div>
+<div class="steps" id="steps">__STEPS__</div></div>
+<script>__LOADER__
+var F=__FACTS__;
+__LIBS__.then(function(){
+  gsap.registerPlugin(ScrollTrigger);
+  var steps=[].slice.call(document.querySelectorAll('.step')),dots=[].slice.call(document.querySelectorAll('.dot'));
+  var NCH=steps.length,state={p:0};
+  function setActive(i){steps.forEach(function(s,j){s.classList.toggle('on',j===i);});dots.forEach(function(d,j){d.classList.toggle('on',j===i);});}
+  setActive(0);
+  steps.forEach(function(s,i){ScrollTrigger.create({trigger:s,start:'top 60%',end:'bottom 40%',onToggle:function(self){if(self.isActive)setActive(i);}});});
+  dots.forEach(function(d,i){d.addEventListener('click',function(){steps[i].scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'center'});});});
+  gsap.to(state,{p:NCH-1,ease:'none',scrollTrigger:{trigger:'#steps',start:'top top',end:'bottom bottom',scrub:REDUCED?true:0.8,
+    onUpdate:function(self){document.getElementById('prog').style.width=(self.progress*100)+'%';
+      document.getElementById('hint').style.opacity=self.progress>0.02?0:1;}}});
+  if(!hasWebGL()||!window.THREE)return;
+
+  // ---------- scene ----------
+  var stage=document.getElementById('stage'),canvas=document.getElementById('c');
+  var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  var scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(50,1,0.1,200);
+  var seed=7;function rnd(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646;}
+  function gauss(){return Math.sqrt(-2*Math.log(rnd()+1e-9))*Math.cos(6.2832*rnd());}
+  var N=2600,NA=1000; // payments, alerts
+  // tier sizes among the alert particles (proportional, with visible minimums)
+  var tc=[F.tiers.P1,F.tiers.P2,F.tiers.P3,F.tiers.P4],tot=tc.reduce(function(a,b){return a+b;},0)||1;
+  var ts=tc.map(function(c){return Math.max(28,Math.round(NA*c/tot));});
+  var over=ts.reduce(function(a,b){return a+b;},0)-NA;ts[2]-=over;
+  var tierOf=new Int8Array(N).fill(-1),k=0;for(var t=0;t<4;t++)for(var j=0;j<ts[t];j++)tierOf[k++]=t;
+  var nAct=Math.round(NA*F.action_share);
+  var bands=[[F.thr.CRITICAL,100],[F.thr.HIGH,F.thr.CRITICAL],[F.thr.MEDIUM,F.thr.HIGH],[0,F.thr.MEDIUM]];
+  var score=new Float32Array(N),delay=new Float32Array(N),actionable=new Uint8Array(N);
+  for(var i=0;i<N;i++){delay[i]=rnd();if(i<NA){var b=bands[tierOf[i]];score[i]=b[0]+(b[1]-b[0])*Math.pow(rnd(),tierOf[i]===2?1.8:1);}}
+  // actionable alerts: mostly from the high tiers, consistent with held-out precision
+  for(i=0;i<NA&&nAct>0;i++){if(tierOf[i]<=1&&rnd()<0.85){actionable[i]=1;nAct--;}}
+  for(i=0;i<NA&&nAct>0;i++){if(!actionable[i]&&rnd()<0.12){actionable[i]=1;nAct--;}}
+
+  // ---------- chapter layouts: position, color, size ----------
+  var C={pay:new THREE.Color('#7dd3fc'),amber:new THREE.Color('#f7c948'),red:new THREE.Color('#ff4d6d'),grey:new THREE.Color('#94a3b8'),
+         tier:[new THREE.Color('#ff4d6d'),new THREE.Color('#ff9f43'),new THREE.Color('#f7c948'),new THREE.Color('#2dd4bf')],
+         lo:new THREE.Color('#2dd4bf'),mid:new THREE.Color('#f7c948'),hi:new THREE.Color('#ff4d6d')};
+  var L=[];for(var c=0;c<7;c++)L.push({pos:new Float32Array(N*3),col:new Float32Array(N*3),size:new Float32Array(N)});
+  function setP(c,i,x,y,z){L[c].pos[i*3]=x;L[c].pos[i*3+1]=y;L[c].pos[i*3+2]=z;}
+  function setC(c,i,col,dim){L[c].col[i*3]=col.r*dim;L[c].col[i*3+1]=col.g*dim;L[c].col[i*3+2]=col.b*dim;}
+  var base=[];for(i=0;i<N;i++)base.push([rnd(),gauss(),gauss(),rnd(),rnd(),gauss()]);
+  // histogram stacking for chapter 3
+  var bins={},stackY=new Float32Array(N);
+  for(i=0;i<NA;i++){var bi=Math.min(49,Math.floor(score[i]/2));bins[bi]=(bins[bi]||0)+1;stackY[i]=bins[bi];}
+  var maxBin=0;for(var kk in bins)maxBin=Math.max(maxBin,bins[kk]);
+  var towerX=[-3.6,-1.2,1.3,3.7],towerN=[0,0,0,0],towerIdx=new Int32Array(N);
+  for(i=0;i<NA;i++){towerIdx[i]=towerN[tierOf[i]]++;}
+  var col=new THREE.Color();
+  for(i=0;i<N;i++){
+    var r=base[i],isA=i<NA,t=tierOf[i];
+    // 0: payment stream
+    setP(0,i,(r[0]-0.5)*14,r[1]*0.8,r[2]*1.6);setC(0,i,C.pay,0.85);L[0].size[i]=1.7;
+    // 1: alerts lift into a cloud, the rest recede
+    if(isA){var th=r[3]*6.2832,ph=Math.acos(2*r[4]-1),rad=2.4*Math.cbrt(rnd());
+      setP(1,i,rad*Math.sin(ph)*Math.cos(th),rad*Math.cos(ph)+0.4,rad*Math.sin(ph)*Math.sin(th));setC(1,i,C.amber,0.9);L[1].size[i]=1.5;}
+    else{setP(1,i,(r[0]-0.5)*30,r[1]*1.5-3,-14+r[2]*3);setC(1,i,C.pay,0.18);L[1].size[i]=0.7;}
+    // 2: actionable vs noise
+    for(var q=0;q<3;q++)L[2].pos[i*3+q]=L[1].pos[i*3+q];
+    if(isA){setC(2,i,actionable[i]?C.red:C.grey,actionable[i]?1.15:0.8);L[2].size[i]=actionable[i]?2.8:1.5;}
+    else{setC(2,i,C.pay,0.12);L[2].size[i]=0.6;}
+    // 3: score histogram (x = score, y = stacked count)
+    if(isA){var bx=Math.floor(score[i]/2);var h=stackY[i]/maxBin*4.8;
+      setP(3,i,(bx/49-0.5)*8,h-2.4,(r[5])*0.25);
+      var s=score[i]/100;col.copy(s<0.5?C.lo:C.mid).lerp(s<0.5?C.mid:C.hi,s<0.5?s*2:(s-0.5)*2);setC(3,i,col,1);L[3].size[i]=1.4;}
+    else{setP(3,i,(r[0]-0.5)*30,-6,-16);setC(3,i,C.pay,0.06);L[3].size[i]=0.5;}
+    // 4: four priority towers (cylinders, height grows with count)
+    if(isA){var per=t===2?60:18,ring=towerIdx[i]%per,lvl=Math.floor(towerIdx[i]/per);
+      var rr=t===2?1.25:0.55,ang=ring/per*6.2832+lvl*0.35;
+      setP(4,i,towerX[t]+rr*Math.cos(ang),-2.4+lvl*0.17,rr*Math.sin(ang));setC(4,i,C.tier[t],1);L[4].size[i]=t<=1?1.9:1.3;}
+    else{setP(4,i,(r[0]-0.5)*30,-6,-16);setC(4,i,C.pay,0.05);L[4].size[i]=0.5;}
+    // 5: focus P1
+    for(q=0;q<3;q++)L[5].pos[i*3+q]=L[4].pos[i*3+q];
+    if(isA){setC(5,i,C.tier[t],t===0?1.25:0.16);L[5].size[i]=t===0?3:1.0;}else{setC(5,i,C.pay,0.03);L[5].size[i]=0.4;}
+    // 6: P1 alerts orbit "the case"; everything else fades back
+    if(isA&&t===0){var a6=towerIdx[i]/ts[0]*6.2832;setP(6,i,Math.cos(a6)*1.6,Math.sin(a6*3)*0.25,Math.sin(a6)*1.6);setC(6,i,C.red,1.2);L[6].size[i]=2.6;}
+    else{for(q=0;q<3;q++)L[6].pos[i*3+q]=L[4].pos[i*3+q]*1.6+(q===2?-6:0);setC(6,i,isA?C.tier[Math.max(0,t)]:C.pay,0.07);L[6].size[i]=0.6;}
+  }
+  var cams=[[0,1.2,11,0],[0,1.8,9.5,0.3],[2.5,1.5,8.5,0.3],[0,0.6,11,0],[0,2.6,11.5,-0.6],[-2.6,0.6,6.0,-1.4],[0,2.4,6.4,0]];
+  var looks=[[0,0,0],[0,0.3,0],[0,0.3,0],[0,0,0],[0,-0.8,0],[-3.6,-1.6,0],[0,0,0]];
+
+  var pos=new Float32Array(N*3),colA=new Float32Array(N*3),sz=new Float32Array(N),pulse=new Float32Array(N);
+  for(i=0;i<NA;i++)pulse[i]=tierOf[i]===0?1:0;
+  var g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('aColor',new THREE.BufferAttribute(colA,3));
+  g.setAttribute('aSize',new THREE.BufferAttribute(sz,1));g.setAttribute('aPulse',new THREE.BufferAttribute(pulse,1));
+  var mat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    uniforms:{uTime:{value:0},uPR:{value:renderer.getPixelRatio()},uPulse:{value:0}},
+    vertexShader:'attribute vec3 aColor;attribute float aSize;attribute float aPulse;uniform float uTime;uniform float uPR;uniform float uPulse;'+
+      'varying vec3 vC;void main(){vec4 mv=modelViewMatrix*vec4(position,1.0);float p=1.0+uPulse*aPulse*0.5*sin(uTime*3.0+position.x*5.0);'+
+      'gl_PointSize=aSize*p*uPR*(30.0/-mv.z);gl_Position=projectionMatrix*mv;vC=aColor;}',
+    fragmentShader:'varying vec3 vC;void main(){float d=length(gl_PointCoord-vec2(0.5));float a=smoothstep(0.5,0.0,d);gl_FragColor=vec4(vC,a*a);}'});
+  scene.add(new THREE.Points(g,mat));
+  // a soft "case" core for the last chapter
+  var cv=document.createElement('canvas');cv.width=cv.height=128;var cx=cv.getContext('2d');
+  var gr=cx.createRadialGradient(64,64,0,64,64,64);gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(.25,'rgba(56,189,248,.8)');gr.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=gr;cx.fillRect(0,0,128,128);
+  var core=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:0}));
+  core.scale.set(2.2,2.2,1);scene.add(core);
+  var grid=new THREE.GridHelper(16,16,0x1e293b,0x111a2e);grid.position.y=-2.45;grid.material.transparent=true;grid.material.opacity=0;scene.add(grid);
+
+  function resize(){var w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+  resize();if('ResizeObserver' in window)new ResizeObserver(resize).observe(stage);
+  function ease(t){return t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
+  var lbls=[0,1,2,3].map(function(i){return document.getElementById('l'+i);}),ax=[document.getElementById('ax0'),document.getElementById('ax1')];
+  var v=new THREE.Vector3(),lk=new THREE.Vector3();
+  function place(el,x,y,z,show){v.set(x,y,z).project(camera);var r=stage.getBoundingClientRect();
+    el.style.left=(r.left+(v.x*0.5+0.5)*r.width)+'px';el.style.top=(r.top+(-v.y*0.5+0.5)*r.height)+'px';el.style.opacity=show&&v.z<1?1:0;}
+  runWhileVisible(document.body,function(dt,time){
+    var p=Math.max(0,Math.min(NCH-1,state.p)),a=Math.min(NCH-2,Math.floor(p)),f=p-a;
+    var A=L[a],B=L[a+1],flow=(a===0)?(1-f):0;
+    for(var i=0;i<N;i++){var t=ease(Math.max(0,Math.min(1,f*1.5-delay[i]*0.5)));
+      for(var q=0;q<3;q++){var o=i*3+q;pos[o]=A.pos[o]+(B.pos[o]-A.pos[o])*t;colA[o]=A.col[o]+(B.col[o]-A.col[o])*t;}
+      if(flow>0&&!REDUCED){pos[i*3]+=flow*Math.sin(time*0.7+i*0.37)*0.12;pos[i*3+1]+=flow*Math.cos(time*0.9+i*0.21)*0.05;}
+      sz[i]=A.size[i]+(B.size[i]-A.size[i])*t;}
+    g.attributes.position.needsUpdate=true;g.attributes.aColor.needsUpdate=true;g.attributes.aSize.needsUpdate=true;
+    var ca=cams[a],cb=cams[a+1],ce=ease(f),la=looks[a],lb=looks[a+1];
+    camera.position.set(ca[0]+(cb[0]-ca[0])*ce,ca[1]+(cb[1]-ca[1])*ce,ca[2]+(cb[2]-ca[2])*ce);
+    lk.set(la[0]+(lb[0]-la[0])*ce,la[1]+(lb[1]-la[1])*ce,la[2]+(lb[2]-la[2])*ce);camera.lookAt(lk);
+    if(!REDUCED){scene.rotation.y=Math.sin(time*0.15)*0.08*(p<3?1:0.4);}
+    mat.uniforms.uTime.value=time;mat.uniforms.uPulse.value=REDUCED?0:Math.max(0,Math.min(1,p-3.6));
+    core.material.opacity=Math.max(0,Math.min(1,(p-5.2)*1.6));grid.material.opacity=Math.max(0,1-Math.abs(p-3.5))*0.9;
+    var showT=p>3.6&&p<5.6;for(var k=0;k<4;k++){var top=-2.4+Math.ceil(ts[k]/(k===2?60:18))*0.17+0.5;place(lbls[k],towerX[k],top,0,showT&&(p<4.6||k===0));}
+    var showA=p>2.6&&p<3.6;place(ax[0],-4,-2.75,0,showA);place(ax[1],4,-2.75,0,showA);
+    renderer.render(scene,camera);});
+}).catch(function(){document.querySelectorAll('.step').forEach(function(s){s.classList.add('on');});});
+</script></body></html>"""
+    return (
+        doc.replace("__CSS__", _BASE_CSS)
+        .replace("__STEPS__", steps)
+        .replace("__DOTS__", dots)
+        .replace("__P1__", f"{tiers['P1']:,} alerts")
+        .replace("__P2__", f"{tiers['P2']:,} alerts")
+        .replace("__P3__", f"{tiers['P3']:,} alerts")
+        .replace("__P4__", f"{tiers['P4']:,} alerts")
+        .replace("__LOADER__", _LOADER_JS)
+        .replace("__LIBS__", _libs_js("three", "gsap", "scrolltrigger"))
+        .replace("__FACTS__", json.dumps({"tiers": tiers, "thr": thr, "action_share": facts["action_share"]},
+                                         separators=(",", ":")))
     )
