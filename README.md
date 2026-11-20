@@ -33,14 +33,15 @@ All dependencies are pinned to versions exercised by the pipeline and tests.
 
 ## Investigator dashboard
 
-The Streamlit dashboard uses a dark operations theme and a few purposeful 3D and animated views. Each one shows real alert data:
+The Streamlit app (`src/dashboard/app.py`) is laid out like a case-management tool, with top navigation:
 
-- **Alert galaxy (hero):** every alert is a particle; distance from the glowing core is inverse to risk score, color is the P1–P4 tier, and P1 alerts pulse. KPIs count up on load.
-- **3D risk explorer (Risk Intelligence):** alerts plotted by ML probability, behavioral risk and log transaction amount. Drag to rotate, scroll to zoom, hover for alert details, toggle tiers. Follows the sidebar filters.
-- **Risk gauge (Investigation Desk):** animated needle on the shared tier thresholds plus signal bars for the selected alert.
-- **Pipeline flow and held-out tier precision (Model & XAI).**
+- **Overview** – the 3D alert galaxy (distance from the core is inverse to risk, color is the P1–P4 tier, P1 pulses), headline KPIs, a "Needs attention" list of open P1 alerts and the workload by tier.
+- **Work queue** – search plus priority, alert-type and case-status filters; click any row to open the case. Export the current view as CSV.
+- **Case** – one alert: animated risk gauge, plain-English reasons it was flagged, its top SHAP drivers, the customer's transaction history around the alert, a customer profile, other alerts for the same customer, and case actions (status, assignee, notes, *Save & next*). Previous/Next follow the queue order. Deep link with `?alert=A003809`.
+- **Insights** – interactive 3D risk explorer (drag to rotate, hover for details) and population analytics.
+- **Model** – held-out metrics, how often each tier was right, global SHAP importance, and data quality.
 
-Motion respects `prefers-reduced-motion`, rendering pauses when a view is off screen, and views fall back to static content without WebGL. Three.js and GSAP are vendored under `src/dashboard/static/vendor/` and served with Streamlit static serving (`enableStaticServing` in `.streamlit/config.toml`), with a jsDelivr fallback.
+Case actions are session-only by design and never change the dataset. The synthetic investigation outcome is kept out of the queue and shown only under "Evaluation label" on the case page. Motion respects `prefers-reduced-motion`, 3D rendering pauses off screen, and views fall back to static content without WebGL. Three.js and GSAP are vendored under `src/dashboard/static/vendor/` and served with Streamlit static serving (`enableStaticServing` in `.streamlit/config.toml`), with a jsDelivr fallback.
 
 ## Run the pipeline
 
